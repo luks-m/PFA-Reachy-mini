@@ -1,6 +1,7 @@
 import cv2
 from math import radians
 
+# Mathematical transformations
 def give_center(x, y, w, h):
     return (x + w/2, y + h/2)
 
@@ -14,30 +15,51 @@ def scale_to_angle(gap_from_center):
 def to_radians(angle):
     return radians(angle)
 
+# Capture functionalities
+def open_capture(index):  # index is typed int
+    cap = cv2.VideoCapture(index)
+    if not cap.isOpened():
+        print("Cannot open camera")
+        exit()
+    return cap
 
-face_recognizer = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+def read_capture(cap):
+    return cap.read()
 
-cap = cv2.VideoCapture(0)
-if not cap.isOpened():
-    print("Cannot open camera")
-    exit()
+def face_recognition(frame, face_recognizer):
+    return face_recognizer.detectMultiScale(frame, 1.5, 4)
+
+def draw_rectangle_on_frame(frame, x, y, w, h):
+    cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
+
+def frame_display(frame, window_name):
+    cv2.imshow(window_name, frame)
+
+def free_capture_and_windows(cap):
+    cap.release()
+    cv2.destroyAllWindows()
 
 
-while True:
-    success, frame = cap.read() 
-    if not success:
-        print("Can't receive frame (stream end?). Exiting ...")
-        break
+def main():
+    face_recognizer = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+    cap = open_capture(0)
 
-    faces = face_recognizer.detectMultiScale(frame, 1.5, 4)
-    for (x, y, w, h) in faces:
-        cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
-        pos_2_center = give_pos_from_center(frame.shape[1]/2, frame.shape[0]/2, (x, y, w, h))
-        print("horizontal angle is", round(scale_to_angle(pos_2_center[0]), 1), "° ", "vertical angle is", round(scale_to_angle(pos_2_center[1]), 1), "°")
+    while True:
+        sucess, frame = read_capture(cap)
+        if not success:
+            print("Can't receive frame (stream end?). Exiting ...")
+            break
+        faces = face_recognition(frame, face_recognizer)
+        for (x, y, w, h) in faces:
+            draw_rectangle_on_frame(frame, x, y, w, h)
+            pos_2_center = give_pos_from_center(frame.shape[1]/2, frame.shape[0]/2, (x, y, w, h))
+            print("horizontal angle is", round(scale_to_angle(pos_2_center[0]), 1), "° ", "vertical angle is", round(scale_to_angle(pos_2_center[1]), 1), "°")
 
-    cv2.imshow('face_recognition', frame)
-    if cv2.waitKey(30) == ord('q'):
-        break
+        frame_display('face_recognition', frame)
+        if cv2.waitKey(30) == ord('q'):
+            break
+    
+    free_capture_and_windows(cap)
+    
 
-cap.release()
-cv2.destroyAllWindows()
+main()
