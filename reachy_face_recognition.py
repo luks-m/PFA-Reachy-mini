@@ -1,6 +1,13 @@
 import cv2
 from math import radians
 
+class face_rectangle:
+    def __init__(self, x, y, w, h):
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+
 # Mathematical transformations
 def give_center(x, y, w, h):
     return (x + w/2, y + h/2)
@@ -14,6 +21,21 @@ def scale_to_angle(gap_from_center):
 
 def to_radians(angle):
     return radians(angle)
+
+def get_forward_faces(cv_face_rectangles, minimum_percentage):
+    sum = 0
+    n = len(cv_face_rectangles)
+    # Mean face width computation
+    for i in range(n):
+        sum += cv_face_rectangles[i].w
+    avg = sum/n
+    kept_faces = []
+    # Adding only faces having width grater than average x minimum_%
+    for i in range(n):
+        if cv_face_rectangles[i].w >= (minimum_percentage * avg):
+            kept_faces.append(cv_face_rectangles[i])
+    return kept_faces
+
 
 # Capture functionalities
 def open_capture(index):  # index is typed int
