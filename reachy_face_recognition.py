@@ -67,7 +67,7 @@ def main():
     cap = open_capture(0)
 
     while True:
-        sucess, frame = read_capture(cap)
+        success, frame = read_capture(cap)
         if not success:
             print("Can't receive frame (stream end?). Exiting ...")
             break
