@@ -22,7 +22,7 @@ def scale_to_angle(gap_from_center):
 def to_radians(angle):
     return radians(angle)
 
-def get_forward_faces(cv_face_rectangles, minimum_percentage):
+def get_mean_distant_faces(cv_face_rectangles, minimum_percentage):
     sum = 0
     n = len(cv_face_rectangles)
     # Mean face width computation
@@ -34,6 +34,19 @@ def get_forward_faces(cv_face_rectangles, minimum_percentage):
     for i in range(n):
         if cv_face_rectangles[i].w >= (minimum_percentage * avg):
             kept_faces.append(cv_face_rectangles[i])
+    return kept_faces
+
+def get_closest_face(n, cv_face_rectangles):
+    n = len(cv_face_rectangles)
+    # Adding only faces having width grater than average x minimum_%
+    if(n < 1):
+        return 
+    else:
+        kept_face = cv_face_rectangles[0]
+    for i in range(n):
+        if cv_face_rectangles[i].w < dist:
+            dist = cv_face_rectangles[i].w
+            ketp_face = cv_face_rectangles[i]
     return kept_faces
 
 
@@ -72,6 +85,7 @@ def main():
             print("Can't receive frame (stream end?). Exiting ...")
             break
         faces = face_recognition(frame, face_recognizer)
+        faces = get_closest_face(1, faces)
         for (x, y, w, h) in faces:
             draw_rectangle_on_frame(frame, x, y, w, h)
             pos_2_center = give_pos_from_center(frame.shape[1]/2, frame.shape[0]/2, (x, y, w, h))
