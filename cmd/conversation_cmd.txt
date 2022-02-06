@@ -1,0 +1,49 @@
+# In this file there is a set of I/O for the conversation. The "I" commands are like
+e_<cmd name> and the "O" are like s_<cmd name>. 
+
+cmd : e_bonjour
+. Bonjour
+. Coucou
+. Salut
+. Hello 
+...
+
+cmd : s_bonjour
+. Bonjour
+. Salut
+...
+
+cmd : e_cava
+. Comment vas-tu ?
+. Comment ça va ?
+...
+
+cmd : s_cava
+. Très bien et vous ? 
+...
+
+cmd : e_gentil
+. gentil
+. sympathique
+. mignon
+. beau
+...
+
+cmd : s_gentil
+. Merci
+...
+
+cmd : e_mechant
+. méchant
+. moche
+. inutile
+. nul
+...
+
+cmd : s_mechant
+. 
+...
+
+cmd : s_incomprehension
+. Je n'ai pas bien compris votre demande
+...

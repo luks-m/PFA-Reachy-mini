@@ -1,0 +1,24 @@
+cmd : activation
+. activation
+...
+
+cmd : photo
+. photo
+. selfie
+. photographie
+. photographier
+. cliché
+...
+
+cmd : simple
+. moi
+. me
+. simple
+...
+
+cmd : groupe
+. nous
+. groupe
+. ensemble
+. les
+...
