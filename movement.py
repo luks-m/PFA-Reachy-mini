@@ -20,8 +20,20 @@ class Mouvement:
         return angle*2*np.pi / 360
 
     def spherical_to_cartesian(self,radius, theta, phi):
-        t = self.degree_to_radian(theta)
-        p = self.degree_to_radian(phi)
+        if theta > 45:
+            if theta < 130:
+                t = self.degree_to_radian(theta)
+            else:
+                t = self.degree_to_radian(130)
+        else:
+            t = self.degree_to_radian(45)
+        if theta > -45:
+            if theta < 45:
+               p = self.degree_to_radian(phi)
+            else:
+                t = self.degree_to_radian(45)
+        else:
+            t = self.degree_to_radian(-45)
         x = round(radius*np.sin(t)*np.cos(p), 2)
         y = round(radius*np.sin(t)*np.sin(p), 2)
         z = round(radius*np.cos(t), 2)
@@ -101,7 +113,8 @@ class Mouvement:
         self.mouv(self.ecoute,self.duree(self.ecoute,1.11))
 
     def mouv_cam(self,angles):
-        self.mouv(1, self.angle_hauteur + angles[0], self.angle_cote + angles[1])
+        pos = self.spherical_to_cartesian(1, self.angle_hauteur + angles[0], self.angle_cote + angles[1])
+        self.mouv(pos,self.duree(pos,2))
 
 reachy = ReachySDK(host='localhost')  # Replace with the actual IP
 
