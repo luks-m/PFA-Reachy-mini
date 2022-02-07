@@ -14,12 +14,7 @@ class Mouvement:
     _remerciement = [0,0,0]
 
     def __init__(self):
-        self._ecoute = self.spherical_to_cartesian(0.5, 5.74 + self._angle_hauteur, self._angle_cote)
-        self._triste = self.spherical_to_cartesian(0.5, 31.15 + self._angle_hauteur, self._angle_cote)
-        self._content = self.spherical_to_cartesian(0.5, 5.74 + self._angle_hauteur, self._angle_cote)
-        self._incitation = self.spherical_to_cartesian(0.5, -5.74 + self._angle_hauteur, self._angle_cote)
-        self._reflexion = self.spherical_to_cartesian(0.5, -16.13 + self._angle_hauteur, 16.7 + self._angle_cote)
-        self._remerciement = self.spherical_to_cartesian(0.5, 26.51 + self._angle_hauteur, self._angle_cote)
+        None
 
     def motor_on(self):
         reachy.turn_on('head')
@@ -64,6 +59,7 @@ class Mouvement:
     def ecoute(self):
         reachy.head.l_antenna.goal_position = 0
         reachy.head.r_antenna.goal_position = 0
+        self._ecoute = self.spherical_to_cartesian(0.5, 5.74 + self._angle_hauteur, self._angle_cote)
         self.mouv(self._ecoute, self.duree(self._ecoute,0.25))
 
     def triste(self):
@@ -72,9 +68,11 @@ class Mouvement:
         
         reachy.head.l_antenna.goal_position = 140.0
         reachy.head.r_antenna.goal_position = -140.0
+        self._triste = self.spherical_to_cartesian(0.5, 31.15 + self._angle_hauteur, self._angle_cote)
         self.mouv(self._triste, self.duree(self._triste,0.29))
 
     def content(self):
+        self._content = self.spherical_to_cartesian(0.5, 5.74 + self._angle_hauteur, self._angle_cote)
         self.mouv(self._content, self.duree(self._content,0.25))
         reachy.head.l_antenna.speed_limit = 300.0
         reachy.head.r_antenna.speed_limit = 300.0
@@ -95,6 +93,7 @@ class Mouvement:
         reachy.head.r_antenna.speed_limit = 70.0
         reachy.head.l_antenna.goal_position = +35.0
         reachy.head.r_antenna.goal_position = -35.0
+        self._incitation = self.spherical_to_cartesian(0.5, -5.74 + self._angle_hauteur, self._angle_cote)
         self.mouv(self._incitation, self.duree(self._incitation,0.50))
 
     def reflexion(self):
@@ -102,6 +101,7 @@ class Mouvement:
         reachy.head.r_antenna.speed_limit = 70.0
         reachy.head.l_antenna.goal_position = -40.0
         reachy.head.r_antenna.goal_position = +40.0
+        self._reflexion = self.spherical_to_cartesian(0.5, -16.13 + self._angle_hauteur, 16.7 + self._angle_cote)
         self.mouv(self._reflexion,self.duree(self._reflexion,0.54))
 
     def remerciement(self):
@@ -110,6 +110,9 @@ class Mouvement:
         reachy.head.l_antenna.goal_position = 0.0
         reachy.head.r_antenna.goal_position = 0.0
         
+        self._ecoute = self.spherical_to_cartesian(0.5, 5.74 + self._angle_hauteur, self._angle_cote)
+        self._remerciement = self.spherical_to_cartesian(0.5, 26.51 + self._angle_hauteur, self._angle_cote)
+
         self.mouv(self._ecoute, self.duree(self._ecoute,0.25))
         time.sleep(0.1)    
         reachy.head.l_antenna.goal_position = +40.0
