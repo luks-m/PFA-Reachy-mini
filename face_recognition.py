@@ -16,6 +16,11 @@ class Scale:
         self.width = w
         self.height = h
 
+class Angles:
+    def __init__(self, horizontal, vertical):
+        self.h = horizontal
+        self.v = vertical
+
 class Face:
     def __init__(self, x, y, w, h):
         self.pos = Pos(x, y)
@@ -32,40 +37,67 @@ class Face_and_value:
 def give_face_center(face):
     return Pos(face.pos.x + face.scale.width/2, face.pos.y + face.scale.height/2)
 
-def vector_face_from_center(frame_center_pos, face):
+def vector_center_to_pos(frame_center_pos, pos):
+    return Scale(pos.x - frame_center_pos.x, pos.y - frame_center_pos.y)
+
+def vector_center_to_face(frame_center_pos, face):
     center_pos = give_face_center(face)
-    return [frame_center_pos.x - center_pos.x, frame_center_pos.y - center_pos.y]
+    return vector_center_to_pos(frame_center_pos, center_pos)
 
 def scale_to_angle(dist):
     return dist / 150 * 20
 
-def get_n_closest_face(n, cv_face_rectangles): # TODO ==============================================================
-    n = len(cv_face_rectangles)
-    # Adding only faces having width grater than average x minimum_%
-    if(n < 1):
-        return 
-    else:
-        kept_face = cv_face_rectangles[0]
-    for i in range(n):
-        if cv_face_rectangles[i].w < dist:
-            dist = cv_face_rectangles[i].w
-            ketp_face = cv_face_rectangles[i]
-    return kept_faces
+def faces_to_faces_and_values(faces):
+    faces_and_values = []
+    for face in faces:
+        faces_and_values.append(Face_and_value(face, 0))
+    return faces_and_values
 
-def get_mean_distant_faces(cv_face_rectangles, minimum_percentage): # TODO VERIFY ==============================================================
-    sum = 0
-    n = len(cv_face_rectangles)
-    # Mean face width computation
-    for i in range(n):
-        sum += cv_face_rectangles[i].w
-    avg = sum/n
+def faces_and_values_to_faces(faces_and_values):
+    faces = []
+    for face_and_value in faces_and_values:
+        faces.append(face_and_value.face)
+    return faces
+
+def face_buble_sort(faces_and_values):
+    if(len(faces_and_values) < 2):
+        return faces_and_values
+    has_switched = True
+    while has_switched:
+        has_switched = False
+        for i in range(len(faces_and_values) - 1):
+            if(faces_and_values[i].value > faces_and_values[i+1].value):
+                has_switched = True
+                faces_and_values[i], faces_and_values[i+1] = faces_and_values[i+1], faces_and_values[i]
+    return faces_and_values
+
+def get_mean_position(faces):
+    x = 0, y = 0, n = len(faces)
+    for face in faces:
+        cent_pos = give_face_center(face)
+        x += cent_pos.x, y += cent_pos.y
+    x /= n, y /= n
+    return Pos(x, y)
+
+def get_n_closest_faces(faces, n):
+    faces_and_values = faces_to_faces_and_values(faces)
+    for face_and_val in range(len(faces_and_values)):
+        face_and_val.val = face_and_val.face.height     # Height is an approximation of distances, despite of the different face dimensions
+    faces_and_values = face_buble_sort(faces_and_values)
+    return faces_and_values_to_faces(faces_and_values[:n])
+
+def get_closest_to_mean_faces(faces, percent_relat_to_avg):
+    sum = 0, n = len(faces)
+    # Mean face height computation
+    for face in faces:
+        sum += face.height
+    avg_size = sum/n
     kept_faces = []
     # Adding only faces having width grater than average x minimum_%
-    for i in range(n):
-        if cv_face_rectangles[i].w >= (minimum_percentage * avg):
-            kept_faces.append(cv_face_rectangles[i])
+    for face in faces:
+        if abs(face.height - avg) <= (percent_relat_to_avg * avg):
+            kept_faces.append(face)
     return kept_faces
-
 
 
 # Capture functionalities
@@ -102,11 +134,20 @@ def free_capture_and_windows(cap):
 
 
 # Interface functions
-def angles_to_closest(frame): # USES get_n_closest_face
-    pass
+def n_closest_angle(frame, n): # USES get_n_closest_face
+    faces = get_faces(frame)
+    faces = get_n_closest_faces(faces, n)
+    mean_faces_pos = get_mean_position(faces)
+    scale = vector_center_to_pos(Pos(frame.shape[1]/2, frame.shape[0]/2), mean_faces_pos)
+    return Angles(scale_to_angle(scale.width), scale_to_angle(scale.height))
 
-def framing_for_group_photo(frame): # USES get_mean_distant_faces
-    pass
+
+def framing_for_group_photo(frame, percent_relat_to_avg): # USES get_mean_distant_faces
+    faces = get_faces(frame)
+    faces = get_closest_to_mean_faces(faces, percent_relat_to_avg)
+    mean_faces_pos = get_mean_position(faces)
+    scale = vector_center_to_pos(Pos(frame.shape[1]/2, frame.shape[0]/2), mean_faces_pos)
+    return Angles(scale_to_angle(scale.width), scale_to_angle(scale.height))
 
 
 # Test function
@@ -125,8 +166,8 @@ def test_all_face_recognised(with_angle_to_center): # Not working on Reachy
             face = faces[i]
             draw_rectangle_on_frame(frame, face)
             if with_angle_to_center:
-                center_to_face = vector_face_from_center(Pos(frame.shape[1]/2, frame.shape[0]/2), face)
-                print(f"Face n°{i} - horizontal angle is {round(scale_to_angle(center_to_face[0]), 1)}° - vertical angle is {round(scale_to_angle(center_to_face[1]), 1)}°")
+                center_to_face = vector_center_to_face(Pos(frame.shape[1]/2, frame.shape[0]/2), face)
+                print(f"Face n°{i} - horizontal angle is {round(scale_to_angle(center_to_face.width), 1)}° - vertical angle is {round(scale_to_angle(center_to_face.height), 1)}°")
 
         frame_display(frame, 'face_recognition')
         if cv2.waitKey(1) == ord('q'):
