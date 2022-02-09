@@ -130,6 +130,7 @@ class Mouvement:
         pos = self.spherical_to_cartesian(1, self._angle_hauteur, self._angle_cote)
         self.mouv(pos,self.duree(pos,2))
 
+
 reachy = ReachySDK(host='localhost')  # Replace with the actual IP
 
 reachy.head

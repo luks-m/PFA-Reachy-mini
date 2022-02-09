@@ -1,6 +1,7 @@
 from distutils.log import debug
 import vocal_recognition as vr
 import cmd
+import movement as mv
 
 def debug_print(str):
     print("DEBUG : " + str)
@@ -23,12 +24,22 @@ actual_state = states["RECHERCHE_INTERACTION"]
 
 command = ""
 
+reachy = ReachySDK(host='localhost')  # Replace with the actual IP
+
+reachy.head
+
+for name, joint in reachy.joints.items():
+    print(f'Joint "{name}" position is {joint.present_position} degree.')
+
+mouv = mv.Mouvement()
+
 def recherche_interaction_func():
     global command
     global actual_state
     while True: 
         command = vr.record_and_transcript()
         if cmd.all_in(command, cmd.set_activation):
+            mouv.content()
             actual_state = states["ATTENTE_ORDRE"]
             break
 
