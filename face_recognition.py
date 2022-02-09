@@ -1,3 +1,4 @@
+# from reachy_sdk import ReachySDK
 import cv2
 
 
@@ -59,7 +60,7 @@ def faces_and_values_to_faces(faces_and_values):
         faces.append(face_and_value.face)
     return faces
 
-def face_buble_sort(faces_and_values):
+def face_and_value_buble_sort(faces_and_values):
     if(len(faces_and_values) < 2):
         return faces_and_values
     has_switched = True
@@ -72,26 +73,26 @@ def face_buble_sort(faces_and_values):
     return faces_and_values
 
 def get_mean_position(faces):
-    x = 0, y = 0, n = len(faces)
+    x, y, n = 0, 0, len(faces)
     for face in faces:
         cent_pos = give_face_center(face)
-        x += cent_pos.x, y += cent_pos.y
-    x /= n, y /= n
+        x += cent_pos.x; y += cent_pos.y
+    x /= n; y /= n
     return Pos(x, y)
 
 def get_n_closest_faces(faces, n):
     faces_and_values = faces_to_faces_and_values(faces)
     for face_and_val in range(len(faces_and_values)):
         face_and_val.val = face_and_val.face.height     # Height is an approximation of distances, despite of the different face dimensions
-    faces_and_values = face_buble_sort(faces_and_values)
+    faces_and_values = face_and_value_buble_sort(faces_and_values)
     return faces_and_values_to_faces(faces_and_values[:n])
 
 def get_closest_to_mean_faces(faces, percent_relat_to_avg):
-    sum = 0, n = len(faces)
+    s, n = 0, len(faces)
     # Mean face height computation
     for face in faces:
-        sum += face.height
-    avg_size = sum/n
+        s += face.height
+    avg_size = s/n
     kept_faces = []
     # Adding only faces having width grater than average x minimum_%
     for face in faces:
@@ -150,15 +151,10 @@ def framing_for_group_photo(frame, percent_relat_to_avg): # USES get_mean_distan
     return Angles(scale_to_angle(scale.width), scale_to_angle(scale.height))
 
 
-# Test function
-def test_all_face_recognised(with_angle_to_center): # Not working on Reachy
-    cap = open_capture(0)
-
+# Test function$
+def run_test(get_frame, with_angle_to_center):
     while True:
-        success, frame = read_capture(cap)
-        if not success:
-            print("Can't receive frame (stream end?). Exiting ...")
-            break
+        frame = get_frame()
         
         faces = get_faces(frame)
         
@@ -172,8 +168,32 @@ def test_all_face_recognised(with_angle_to_center): # Not working on Reachy
         frame_display(frame, 'face_recognition')
         if cv2.waitKey(1) == ord('q'):
             break
-    
+
+def test_all_face_recognised(with_angle_to_center): # Not working on Reachy
+    cap = open_capture(0)
+
+    def get_frame():
+        success, frame = read_capture(cap)
+        if not success:
+            print("Can't receive frame (stream end?). Exiting ...")
+            exit()
+        return frame
+
+    run_test(get_frame, with_angle_to_center)    
     free_capture_and_windows(cap)
 
+def test_all_face_recognised_with_reachy_api(with_angle_to_center):
+    reachy = ReachySDK(host='localhost')  # Replace with the actual IP
+    camera = reachy.camera.Camera('left')
+
+    def get_frame():
+        frame = camera.last_frame
+        return frame
+
+    run_test(get_frame, with_angle_to_center)   
+
+
+
 if __name__ == '__main__':
-    test_all_face_recognised(True)
+    # test_all_face_recognised(True)
+    test_all_face_recognised_with_reachy_api(True)
