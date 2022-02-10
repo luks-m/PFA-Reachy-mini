@@ -141,4 +141,5 @@ for name, joint in reachy.joints.items():
     print(f'Joint "{name}" position is {joint.present_position} degree.')
 
 mouv = Mouvement()
+mouv.motor_on()
 mouv.content()
