@@ -197,7 +197,8 @@ def test_all_face_recognised(with_angle_to_center): # Not working on Reachy
 
 def test_all_face_recognised_with_reachy_api(with_angle_to_center):
     reachy = ReachySDK(host='localhost')  # Replace with the actual IP
-    camera = reachy.left_camera
+    reachy.right_camera.start_autofocus
+    camera = reachy.right_camera
 
     def get_frame():
         frame = camera.last_frame
