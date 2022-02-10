@@ -1,10 +1,12 @@
 from reachy_sdk import ReachySDK
+# from mtcnn import MTCNN
 import time
 import cv2
 
 
-# Defining the face recogniser
-Face_recognizer = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+# Defining the face detedtor
+Face_detector = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+# Detector = MTCNN()
 
 
 # Useful classes
@@ -116,11 +118,15 @@ def read_capture(cap):
 def give_in_gray(frame):
     return cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-def face_recognition(frame):
-    return Face_recognizer.detectMultiScale(frame, 1.5, 4)
+def face_detection_haar_cascade(frame):
+    return Face_detector.detectMultiScale(frame, 
+                                          scaleFactor=1.1,
+                                          minNeighbors=4,
+                                          minSize=(60, 60),
+                                          flags=cv2.CASCADE_SCALE_IMAGE)
 
 def get_faces(frame):
-    recognised = face_recognition(frame)
+    recognised = face_detection_haar_cascade(frame)
     faces = []
     for (x, y, w, h) in recognised:
         faces.append(Face(x, y, w, h))
@@ -172,7 +178,7 @@ def run_all_face_tets(get_frame, with_angle_to_center):
                 print(f"Face n°{i} - horizontal angle is {round(scale_to_angle(center_to_face.width), 1)}° - vertical angle is {round(scale_to_angle(center_to_face.height), 1)}°")
 
         time.sleep(0.1)
-        frame_display(frame, 'face_recognition')
+        frame_display(frame, 'face_detection')
         if cv2.waitKey(1) == ord('q'):
             break
 
@@ -203,4 +209,4 @@ def test_all_face_recognised_with_reachy_api(with_angle_to_center):
 
 if __name__ == '__main__':
     # test_all_face_recognised(True)
-    test_all_face_recognised_with_reachy_api(False)
+    test_all_face_recognised_with_reachy_api(True)
