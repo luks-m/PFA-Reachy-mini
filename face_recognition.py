@@ -1,4 +1,4 @@
-# from reachy_sdk import ReachySDK
+from reachy_sdk import ReachySDK
 import cv2
 
 
@@ -184,16 +184,16 @@ def test_all_face_recognised(with_angle_to_center): # Not working on Reachy
 
 def test_all_face_recognised_with_reachy_api(with_angle_to_center):
     reachy = ReachySDK(host='localhost')  # Replace with the actual IP
-    camera = reachy.camera.Camera('left')
+    camera = reachy.left_camera
 
     def get_frame():
         frame = camera.last_frame
         return frame
 
-    run_test(get_frame, with_angle_to_center)   
+    run_test(get_frame, with_angle_to_center)       
 
 
 
 if __name__ == '__main__':
     # test_all_face_recognised(True)
-    test_all_face_recognised_with_reachy_api(True)
+    test_all_face_recognised_with_reachy_api(False)
