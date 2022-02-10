@@ -209,4 +209,4 @@ def test_all_face_recognised_with_reachy_api(with_angle_to_center):
 
 if __name__ == '__main__':
     # test_all_face_recognised(True)
-    test_all_face_recognised_with_reachy_api(True)
+    test_all_face_recognised_with_reachy_api(False)
