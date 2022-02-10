@@ -1,4 +1,5 @@
 from reachy_sdk import ReachySDK
+import time
 import cv2
 
 
@@ -170,6 +171,7 @@ def run_all_face_tets(get_frame, with_angle_to_center):
                 center_to_face = vector_center_to_face(Pos(frame.shape[1]/2, frame.shape[0]/2), face)
                 print(f"Face n°{i} - horizontal angle is {round(scale_to_angle(center_to_face.width), 1)}° - vertical angle is {round(scale_to_angle(center_to_face.height), 1)}°")
 
+        time.sleep(0.1)
         frame_display(frame, 'face_recognition')
         if cv2.waitKey(1) == ord('q'):
             break
