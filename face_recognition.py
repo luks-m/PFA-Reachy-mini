@@ -1,4 +1,4 @@
-# from reachy_sdk import ReachySDK
+from reachy_sdk import ReachySDK
 import cv2
 
 
@@ -190,7 +190,7 @@ def test_all_face_recognised_with_reachy_api(with_angle_to_center):
         frame = camera.last_frame
         return frame
 
-    run_test(get_frame, with_angle_to_center)   
+    run_test(get_frame, with_angle_to_center)       
 
 
 
