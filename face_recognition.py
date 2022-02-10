@@ -39,7 +39,7 @@ def give_face_center(face):
     return Pos(face.pos.x + face.scale.width/2, face.pos.y + face.scale.height/2)
 
 def vector_center_to_pos(frame_center_pos, pos):
-    return Scale(pos.x - frame_center_pos.x, pos.y - frame_center_pos.y)
+    return Scale(pos.x - frame_center_pos.x, frame_center_pos.y - pos.y)
 
 def vector_center_to_face(frame_center_pos, face):
     center_pos = give_face_center(face)
@@ -112,6 +112,9 @@ def open_capture(index):  # index is typed int
 def read_capture(cap):
     return cap.read()
 
+def give_in_gray(frame):
+    return cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
 def face_recognition(frame):
     return Face_recognizer.detectMultiScale(frame, 1.5, 4)
 
@@ -136,6 +139,7 @@ def free_capture_and_windows(cap):
 
 # Interface functions
 def n_closest_angle(frame, n): # USES get_n_closest_face
+    frame = give_in_gray(frame)
     faces = get_faces(frame)
     faces = get_n_closest_faces(faces, n)
     mean_faces_pos = get_mean_position(faces)
@@ -144,6 +148,7 @@ def n_closest_angle(frame, n): # USES get_n_closest_face
 
 
 def framing_for_group_photo(frame, percent_relat_to_avg): # USES get_mean_distant_faces
+    frame = give_in_gray(frame)
     faces = get_faces(frame)
     faces = get_closest_to_mean_faces(faces, percent_relat_to_avg)
     mean_faces_pos = get_mean_position(faces)
@@ -152,7 +157,7 @@ def framing_for_group_photo(frame, percent_relat_to_avg): # USES get_mean_distan
 
 
 # Test function$
-def run_test(get_frame, with_angle_to_center):
+def run_all_face_tets(get_frame, with_angle_to_center):
     while True:
         frame = get_frame()
         
@@ -177,9 +182,9 @@ def test_all_face_recognised(with_angle_to_center): # Not working on Reachy
         if not success:
             print("Can't receive frame (stream end?). Exiting ...")
             exit()
-        return frame
+        return give_in_gray(frame)
 
-    run_test(get_frame, with_angle_to_center)    
+    run_all_face_tets(get_frame, with_angle_to_center)    
     free_capture_and_windows(cap)
 
 def test_all_face_recognised_with_reachy_api(with_angle_to_center):
@@ -188,9 +193,9 @@ def test_all_face_recognised_with_reachy_api(with_angle_to_center):
 
     def get_frame():
         frame = camera.last_frame
-        return frame
+        return give_in_gray(frame)
 
-    run_test(get_frame, with_angle_to_center)       
+    run_all_face_tets(get_frame, with_angle_to_center)       
 
 
 
