@@ -1,9 +1,11 @@
+from attr import attributes
 from reachy_sdk import ReachySDK
 
 import time
 import numpy as np
 
 class Mouvement:
+    #attributes
     _angle_cote = 0
     _angle_hauteur = 90
     _ecoute = [0,0,0]
