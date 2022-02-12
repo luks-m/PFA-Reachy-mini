@@ -1,12 +1,9 @@
-from reachy_sdk import ReachySDK
-# from mtcnn import MTCNN
-import time
+# from reachy_sdk import ReachySDK
 import cv2
 
 
 # Defining the face detedtor
 Face_detector = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-# Detector = MTCNN()
 
 
 # Useful classes
@@ -85,8 +82,8 @@ def get_mean_position(faces):
 
 def get_n_closest_faces(faces, n):
     faces_and_values = faces_to_faces_and_values(faces)
-    for face_and_val in range(len(faces_and_values)):
-        face_and_val.val = face_and_val.face.height     # Height is an approximation of distances, despite of the different face dimensions
+    for face_and_val in faces_and_values:
+        face_and_val.val = face_and_val.face.scale.height     # Height is an approximation of distances, despite of the different face dimensions
     faces_and_values = face_and_value_buble_sort(faces_and_values)
     return faces_and_values_to_faces(faces_and_values[:n])
 
@@ -94,12 +91,12 @@ def get_closest_to_mean_faces(faces, percent_relat_to_avg):
     s, n = 0, len(faces)
     # Mean face height computation
     for face in faces:
-        s += face.height
+        s += face.scale.height
     avg_size = s/n
     kept_faces = []
     # Adding only faces having width grater than average x minimum_%
     for face in faces:
-        if abs(face.height - avg) <= (percent_relat_to_avg * avg):
+        if abs(face.scale.height - avg) <= (percent_relat_to_avg * avg):
             kept_faces.append(face)
     return kept_faces
 
@@ -149,10 +146,11 @@ def n_closest_angle(frame, n): # USES get_n_closest_face
     frame = give_in_gray(frame)
     faces = get_faces(frame)
     faces = get_n_closest_faces(faces, n)
+    if len(faces) == 0 :
+        return Angles(0, 0)
     mean_faces_pos = get_mean_position(faces)
     scale = vector_center_to_pos(Pos(frame.shape[1]/2, frame.shape[0]/2), mean_faces_pos)
     return Angles(scale_to_angle(scale.width), scale_to_angle(scale.height))
-
 
 def framing_for_group_photo(frame, percent_relat_to_avg): # USES get_mean_distant_faces
     frame = give_in_gray(frame)
@@ -161,52 +159,3 @@ def framing_for_group_photo(frame, percent_relat_to_avg): # USES get_mean_distan
     mean_faces_pos = get_mean_position(faces)
     scale = vector_center_to_pos(Pos(frame.shape[1]/2, frame.shape[0]/2), mean_faces_pos)
     return Angles(scale_to_angle(scale.width), scale_to_angle(scale.height))
-
-
-# Test function$
-def run_all_face_tets(get_frame, with_angle_to_center):
-    while True:
-        frame = get_frame()
-        
-        faces = get_faces(frame)
-        
-        for i in range(len(faces)):
-            face = faces[i]
-            draw_rectangle_on_frame(frame, face)
-            if with_angle_to_center:
-                center_to_face = vector_center_to_face(Pos(frame.shape[1]/2, frame.shape[0]/2), face)
-                print(f"Face n°{i} - horizontal angle is {round(scale_to_angle(center_to_face.width), 1)}° - vertical angle is {round(scale_to_angle(center_to_face.height), 1)}°")
-
-        time.sleep(0.1)
-        frame_display(frame, 'face_detection')
-        if cv2.waitKey(1) == ord('q'):
-            break
-
-def test_all_face_recognised(with_angle_to_center): # Not working on Reachy
-    cap = open_capture(0)
-
-    def get_frame():
-        success, frame = read_capture(cap)
-        if not success:
-            print("Can't receive frame (stream end?). Exiting ...")
-            exit()
-        return give_in_gray(frame)
-
-    run_all_face_tets(get_frame, with_angle_to_center)    
-    free_capture_and_windows(cap)
-
-def test_all_face_recognised_with_reachy_api(with_angle_to_center):
-    reachy = ReachySDK(host='localhost')  # Replace with the actual IP
-    camera = reachy.left_camera
-
-    def get_frame():
-        frame = camera.last_frame
-        return give_in_gray(frame)
-
-    run_all_face_tets(get_frame, with_angle_to_center)       
-
-
-
-if __name__ == '__main__':
-    # test_all_face_recognised(True)
-    test_all_face_recognised_with_reachy_api(False)
