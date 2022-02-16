@@ -21,7 +21,7 @@ class Mouvement:
     def motor_on(self):
         reachy.turn_on('head')
 
-    def notor_off(self):
+    def motor_off(self):
         reachy.turn_off('head')
 
     def degree_to_radian(self,angle):
@@ -143,3 +143,4 @@ for name, joint in reachy.joints.items():
 mouv = Mouvement()
 mouv.motor_on()
 mouv.content()
+mouv.motor_off()
