@@ -44,7 +44,7 @@ class Reachy_camera:
         return camera.last_frame
     def take_picture(path): # Take a picture, with an automatic focus, and save it at the 'path' location
         launch_zoom()
-        cv2.imwrite(path + ".png", camera.last_frame)
+        cv2.imwrite(path + ".png", camera.get_frame())
 
 
 
