@@ -4,7 +4,7 @@ import cv2
 
 # Defining the face detedtor
 Face_detector = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-
+Reachy_cam = None
 
 # Useful classes
 class Pos:      # Represent a face square upper left position
@@ -170,12 +170,12 @@ def draw_rectangle_on_frame(frame, face):
 def frame_display(frame, window_name):
     cv2.imshow(window_name, frame)
 
-def initiate_reachy_camera(reachy): # Initiate and give the reachy's camera chosen by the Reachy_camera class
-    return Reachy_camera(reachy)
-
 # Interface functions
 def n_closest_angle(frame, n, for_test = False): # Give the average angle for the n closest faces using get_n_closest_face
     return global_face_detection_service(frame, get_n_closest_faces, n, for_test)
 
 def framing_for_group_photo_angle(frame, percent_relat_to_avg, for_test = False): # Give the average angle for the faces whose the height is 'percent_relat_to_avg' or less near from the height average, using get_mean_distant_faces
     return global_face_detection_service(frame, get_closest_to_mean_faces, percent_relat_to_avg, for_test)
+
+def initiate_reachy_camera(reachy): # Initiate and give the reachy's camera chosen by the Reachy_camera class
+    Reachy_cam = Reachy_camera(reachy)
