@@ -100,9 +100,28 @@ def test_framing_for_group_photo_angle__with_reachy_api(percent_relat_to_avg):
 
     run_get_angle_functions_tests(get_frame, framing_for_group_photo_angle, percent_relat_to_avg)
 
+def smart_give_angle_test():
+    cap = open_capture(0)
+
+    def get_frame():
+        success, frame = read_capture(cap)
+        if not success:
+            print("Can't receive frame (stream end?). Exiting ...")
+            exit()
+        return frame
+    
+    while True :
+        angle = smart_give_angle(5, get_frame, n_closest_angle, 2, for_test = True)
+
+        print(f"horizontal angle is {round(angle.h, 1)}° - vertical angle is {round(angle.v, 1)}°")
+
+        time.sleep(0.1)
+        if cv2.waitKey(1) == ord('q'):
+            break
+
 
 if __name__ == '__main__': # Relevant test experiences
-    test_all_face_recognised(True)
+    # test_all_face_recognised(True)
     # test_all_face_recognised_with_reachy_api(False)
 
     # test_n_closest_angle(0)
@@ -116,3 +135,5 @@ if __name__ == '__main__': # Relevant test experiences
     # test_framing_for_group_photo_angle(0.5)
     # test_framing_for_group_photo_angle__with_reachy_api(0.2)
     # test_framing_for_group_photo_angle__with_reachy_api(0.5)
+
+    smart_give_angle_test()

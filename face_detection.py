@@ -1,4 +1,5 @@
 # from reachy_sdk import ReachySDK
+from math import sqrt
 import cv2
 
 
@@ -17,7 +18,7 @@ class Scale:    # Represent a face dimensions, or a vector coordinates
         self.width = w
         self.height = h
 
-class Angles:   # Represent both angle values (resp. for the horizontal angle and the vertical one)
+class Angle:   # Represent both angle values (resp. for the horizontal angle and the vertical one)
     def __init__(self, horizontal, vertical):
         self.h = horizontal
         self.v = vertical
@@ -58,6 +59,9 @@ def vector_center_to_pos(frame_center_pos, pos):    # Give the vector from the c
 def vector_center_to_face(frame_center_pos, face):  # Give the vector from the frame_center to the face center
     center_pos = give_face_center(face)
     return vector_center_to_pos(frame_center_pos, center_pos)
+
+def vector_magnitude(pos):  # Give the vector euclidian's magnitude
+    return sqrt((pos.x)**2 + (pos.y)**2)
 
 def scale_to_angle(dist):   # A transformation to translate pixel distance in angle
     return dist / 150 * 20
@@ -126,10 +130,10 @@ def global_face_detection_service(frame, specific_getter_function, specific_gett
             draw_rectangle_on_frame(frame, face)
         frame_display(frame, 'face_detection')
     if len(faces) == 0 :
-        return Angles(0, 0)
+        return Angle(0, 0)
     mean_faces_pos = get_average_position(faces)
     scale = vector_center_to_pos(Pos(frame.shape[1]/2, frame.shape[0]/2), mean_faces_pos)
-    return Angles(scale_to_angle(scale.width), scale_to_angle(scale.height))
+    return Angle(scale_to_angle(scale.width), scale_to_angle(scale.height))
 
 
 # Capture and camera functionalities
@@ -176,6 +180,31 @@ def n_closest_angle(frame, n, for_test = False): # Give the average angle for th
 
 def framing_for_group_photo_angle(frame, percent_relat_to_avg, for_test = False): # Give the average angle for the faces whose the height is 'percent_relat_to_avg' or less near from the height average, using get_mean_distant_faces
     return global_face_detection_service(frame, get_closest_to_mean_faces, percent_relat_to_avg, for_test)
+
+def smart_give_angle(nbr_frame_to_compute, give_frame_function, give_angle_function, give_angle_parameter, for_test = False):  # Give the angle, taking face detection hazard into account (no faces detected, non face object detected) to avoid errors whenever possible
+    angle_table = []
+    avg_angle = Angle(0, 0)
+    
+    for i in range(nbr_frame_to_compute) :   # Angles to analyse, taking only non null angles into account (==> no faces detected not taken into account)
+        angle = give_angle_function(give_frame_function(), give_angle_parameter, for_test)
+        if not(angle.h == 0 and angle.v == 0) :
+            avg_angle.h += angle.h
+            avg_angle.v += angle.v
+            angle_table.append(angle)
+
+    if len(angle_table) == 0 :  # Failure to found a face
+        return Angle(0, 0)
+
+    avg_angle.h /= len(angle_table)
+    avg_angle.v /= len(angle_table)
+    dist = vector_magnitude(Pos(angle_table[0].h - avg_angle.h, angle_table[0].v - avg_angle.v))
+    nearest_angle = angle_table[0]
+    for angle in angle_table :  # Searching for the nearest angle to the average one (it is supposed faces are detected more times than non face objects ==> true face is the nearest from the average location)
+        new_dist = vector_magnitude(Pos(angle.h - avg_angle.h, angle.v - avg_angle.v))
+        if new_dist < dist :
+            dist = new_dist
+            nearest_angle = angle
+    return nearest_angle   
 
 def initiate_reachy_camera(reachy): # Initiate and give the reachy's camera chosen by the Reachy_camera class
     Reachy_cam = Reachy_camera(reachy)
