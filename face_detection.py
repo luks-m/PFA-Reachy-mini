@@ -85,10 +85,8 @@ def face_and_value_decreasing_buble_sort(faces_and_values): # A buble sort based
     while has_switched:
         has_switched = False
         for i in range(len(faces_and_values) - 1):
-            print("FOR !!!!!")
             if faces_and_values[i].value < faces_and_values[i+1].value:
                 has_switched = True
-                print("IF !!!!!!!")
                 faces_and_values[i], faces_and_values[i+1] = faces_and_values[i+1], faces_and_values[i]
     return faces_and_values
 
