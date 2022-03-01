@@ -14,8 +14,8 @@ cmd : s_bonjour
 ...
 
 cmd : e_cava
-. Comment vas-tu ?
-. Comment ça va ?
+. Comment vas-tu 
+. Comment ça va 
 ...
 
 cmd : s_cava

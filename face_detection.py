@@ -1,81 +1,96 @@
-from reachy_sdk import ReachySDK
-# from mtcnn import MTCNN
-import time
+# from reachy_sdk import ReachySDK
+from math import sqrt
 import cv2
 
 
 # Defining the face detedtor
 Face_detector = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-# Detector = MTCNN()
-
+Reachy_cam = None
 
 # Useful classes
-class Pos:
+class Pos:      # Represent a face square upper left position
     def __init__(self, x, y):
         self.x = x
         self.y = y
 
-class Scale:
+class Scale:    # Represent a face dimensions, or a vector coordinates
     def __init__(self, w, h):
         self.width = w
         self.height = h
 
-class Angles:
+class Angle:   # Represent both angle values (resp. for the horizontal angle and the vertical one)
     def __init__(self, horizontal, vertical):
         self.h = horizontal
         self.v = vertical
 
-class Face:
+class Face:     # Represent a face square, with its position and dimensions
     def __init__(self, x, y, w, h):
         self.pos = Pos(x, y)
         self.scale = Scale(w, h)
 
-class Face_and_value:
-    def __init__(self, face, val):
+class Face_and_value:   # Represent a face square extended with a value
+    def __init__(self, face, value):
         self.face = face
-        self.value = val
+        self.value = value
+
+class Reachy_camera:
+    def __init__(self, reachy):
+        self.camera = reachy.left_camera
+        launch_zoom()
+    def launch_zoom(): # Launch an automatic zoom during 2 seconds
+        self.camera.start_autofocus()
+        sleep(2)
+        self.camera.stop_autofocus()
+    def get_frame():
+        return camera.last_frame
+    def take_picture(path): # Take a picture, with an automatic focus, and save it at the 'path' location
+        launch_zoom()
+        cv2.imwrite(path + ".png", camera.get_frame())
 
 
 
 # Mathematical transformations
-def give_face_center(face):
+def give_face_center(face): # Given a face square object, gice the square center
     return Pos(face.pos.x + face.scale.width/2, face.pos.y + face.scale.height/2)
 
-def vector_center_to_pos(frame_center_pos, pos):
+def vector_center_to_pos(frame_center_pos, pos):    # Give the vector from the center to the given position
     return Scale(pos.x - frame_center_pos.x, frame_center_pos.y - pos.y)
 
-def vector_center_to_face(frame_center_pos, face):
+def vector_center_to_face(frame_center_pos, face):  # Give the vector from the frame_center to the face center
     center_pos = give_face_center(face)
     return vector_center_to_pos(frame_center_pos, center_pos)
 
-def scale_to_angle(dist):
+def vector_magnitude(pos):  # Give the vector euclidian's magnitude
+    return sqrt((pos.x)**2 + (pos.y)**2)
+
+def scale_to_angle(dist):   # A transformation to translate pixel distance in angle
     return dist / 150 * 20
 
-def faces_to_faces_and_values(faces):
+def faces_to_faces_and_values(faces):   # Conversion from a face table to a face_and_value table
     faces_and_values = []
     for face in faces:
         faces_and_values.append(Face_and_value(face, 0))
     return faces_and_values
 
-def faces_and_values_to_faces(faces_and_values):
+def faces_and_values_to_faces(faces_and_values):    # Conversion from a face face_and_value table to a face table
     faces = []
     for face_and_value in faces_and_values:
         faces.append(face_and_value.face)
     return faces
 
-def face_and_value_buble_sort(faces_and_values):
+def face_and_value_decreasing_buble_sort(faces_and_values): # A buble sort based on the values into a face_and_value table, giving a decreasing order
     if(len(faces_and_values) < 2):
         return faces_and_values
     has_switched = True
     while has_switched:
         has_switched = False
         for i in range(len(faces_and_values) - 1):
-            if(faces_and_values[i].value > faces_and_values[i+1].value):
+            if faces_and_values[i].value < faces_and_values[i+1].value:
                 has_switched = True
                 faces_and_values[i], faces_and_values[i+1] = faces_and_values[i+1], faces_and_values[i]
     return faces_and_values
 
-def get_mean_position(faces):
+def get_average_position(faces):   # Give the face center average position for a face table
     x, y, n = 0, 0, len(faces)
     for face in faces:
         cent_pos = give_face_center(face)
@@ -83,28 +98,43 @@ def get_mean_position(faces):
     x /= n; y /= n
     return Pos(x, y)
 
-def get_n_closest_faces(faces, n):
+def get_n_closest_faces(faces, n):  # Give the n closest faces unsing the face height as distance approximation
     faces_and_values = faces_to_faces_and_values(faces)
-    for face_and_val in range(len(faces_and_values)):
-        face_and_val.val = face_and_val.face.height     # Height is an approximation of distances, despite of the different face dimensions
-    faces_and_values = face_and_value_buble_sort(faces_and_values)
+    for face_and_val in faces_and_values:
+        face_and_val.value = face_and_val.face.scale.height     # Height is an approximation of distances, despite of the different face dimensions
+    faces_and_values = face_and_value_decreasing_buble_sort(faces_and_values)
     return faces_and_values_to_faces(faces_and_values[:n])
 
-def get_closest_to_mean_faces(faces, percent_relat_to_avg):
+def get_closest_to_mean_faces(faces, percent_relat_to_avg): # Give the faces whose the height is 'percent_relat_to_avg' or less near from the height average
     s, n = 0, len(faces)
     # Mean face height computation
     for face in faces:
-        s += face.height
+        s += face.scale.height
     avg_size = s/n
     kept_faces = []
-    # Adding only faces having width grater than average x minimum_%
+    # Adding only faces having a distance between height and height average of at most percent_relat_to_avg
     for face in faces:
-        if abs(face.height - avg) <= (percent_relat_to_avg * avg):
+        if abs(face.scale.height - avg_size) <= (percent_relat_to_avg * avg_size):
             kept_faces.append(face)
     return kept_faces
 
+def global_face_detection_service(frame, specific_getter_function, specific_getter_param, for_test):    # A code factorization function for interface functions, using multiple services defined in this file
+    frame = give_in_gray(frame)
+    faces = get_faces(frame)
+    faces = specific_getter_function(faces, specific_getter_param)
+    if for_test:
+        for i in range(len(faces)):
+            face = faces[i]
+            draw_rectangle_on_frame(frame, face)
+        frame_display(frame, 'face_detection')
+    if len(faces) == 0 :
+        return Angle(0, 0)
+    mean_faces_pos = get_average_position(faces)
+    scale = vector_center_to_pos(Pos(frame.shape[1]/2, frame.shape[0]/2), mean_faces_pos)
+    return Angle(scale_to_angle(scale.width), scale_to_angle(scale.height))
 
-# Capture functionalities
+
+# Capture and camera functionalities
 def open_capture(index):  # index is typed int
     cap = cv2.VideoCapture(index)
     if not cap.isOpened():
@@ -112,20 +142,24 @@ def open_capture(index):  # index is typed int
         exit()
     return cap
 
+def free_capture_and_windows(cap):
+    cap.release()
+    cv2.destroyAllWindows()
+
 def read_capture(cap):
     return cap.read()
 
 def give_in_gray(frame):
     return cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-def face_detection_haar_cascade(frame):
+def face_detection_haar_cascade(frame): # A face detection using the Haar cascade method
     return Face_detector.detectMultiScale(frame, 
                                           scaleFactor=1.1,
                                           minNeighbors=4,
                                           minSize=(60, 60),
                                           flags=cv2.CASCADE_SCALE_IMAGE)
 
-def get_faces(frame):
+def get_faces(frame):   # Translate the faces detected into a face class table
     recognised = face_detection_haar_cascade(frame)
     faces = []
     for (x, y, w, h) in recognised:
@@ -138,76 +172,37 @@ def draw_rectangle_on_frame(frame, face):
 def frame_display(frame, window_name):
     cv2.imshow(window_name, frame)
 
-def free_capture_and_windows(cap):
-    cap.release()
-    cv2.destroyAllWindows()
-
-
-
 # Interface functions
-def n_closest_angle(frame, n): # USES get_n_closest_face
-    frame = give_in_gray(frame)
-    faces = get_faces(frame)
-    faces = get_n_closest_faces(faces, n)
-    mean_faces_pos = get_mean_position(faces)
-    scale = vector_center_to_pos(Pos(frame.shape[1]/2, frame.shape[0]/2), mean_faces_pos)
-    return Angles(scale_to_angle(scale.width), scale_to_angle(scale.height))
+def n_closest_angle(frame, n, for_test = False): # Give the average angle for the n closest faces using get_n_closest_face
+    return global_face_detection_service(frame, get_n_closest_faces, n, for_test)
 
+def framing_for_group_photo_angle(frame, percent_relat_to_avg, for_test = False): # Give the average angle for the faces whose the height is 'percent_relat_to_avg' or less near from the height average, using get_mean_distant_faces
+    return global_face_detection_service(frame, get_closest_to_mean_faces, percent_relat_to_avg, for_test)
 
-def framing_for_group_photo(frame, percent_relat_to_avg): # USES get_mean_distant_faces
-    frame = give_in_gray(frame)
-    faces = get_faces(frame)
-    faces = get_closest_to_mean_faces(faces, percent_relat_to_avg)
-    mean_faces_pos = get_mean_position(faces)
-    scale = vector_center_to_pos(Pos(frame.shape[1]/2, frame.shape[0]/2), mean_faces_pos)
-    return Angles(scale_to_angle(scale.width), scale_to_angle(scale.height))
+def smart_give_angle(nbr_frame_to_compute, give_frame_function, give_angle_function, give_angle_parameter, for_test = False):  # Give the angle, taking face detection hazard into account (no faces detected, non face object detected) to avoid errors whenever possible
+    angle_table = []
+    avg_angle = Angle(0, 0)
+    
+    for i in range(nbr_frame_to_compute) :   # Angles to analyse, taking only non null angles into account (==> no faces detected not taken into account)
+        angle = give_angle_function(give_frame_function(), give_angle_parameter, for_test)
+        if not(angle.h == 0 and angle.v == 0) :
+            avg_angle.h += angle.h
+            avg_angle.v += angle.v
+            angle_table.append(angle)
 
+    if len(angle_table) == 0 :  # Failure to found a face
+        return Angle(0, 0)
 
-# Test function$
-def run_all_face_tets(get_frame, with_angle_to_center):
-    while True:
-        frame = get_frame()
-        
-        faces = get_faces(frame)
-        
-        for i in range(len(faces)):
-            face = faces[i]
-            draw_rectangle_on_frame(frame, face)
-            if with_angle_to_center:
-                center_to_face = vector_center_to_face(Pos(frame.shape[1]/2, frame.shape[0]/2), face)
-                print(f"Face n°{i} - horizontal angle is {round(scale_to_angle(center_to_face.width), 1)}° - vertical angle is {round(scale_to_angle(center_to_face.height), 1)}°")
+    avg_angle.h /= len(angle_table)
+    avg_angle.v /= len(angle_table)
+    dist = vector_magnitude(Pos(angle_table[0].h - avg_angle.h, angle_table[0].v - avg_angle.v))
+    nearest_angle = angle_table[0]
+    for angle in angle_table :  # Searching for the nearest angle to the average one (it is supposed faces are detected more times than non face objects ==> true face is the nearest from the average location)
+        new_dist = vector_magnitude(Pos(angle.h - avg_angle.h, angle.v - avg_angle.v))
+        if new_dist < dist :
+            dist = new_dist
+            nearest_angle = angle
+    return nearest_angle   
 
-        time.sleep(0.1)
-        frame_display(frame, 'face_detection')
-        if cv2.waitKey(1) == ord('q'):
-            break
-
-def test_all_face_recognised(with_angle_to_center): # Not working on Reachy
-    cap = open_capture(0)
-
-    def get_frame():
-        success, frame = read_capture(cap)
-        if not success:
-            print("Can't receive frame (stream end?). Exiting ...")
-            exit()
-        return give_in_gray(frame)
-
-    run_all_face_tets(get_frame, with_angle_to_center)    
-    free_capture_and_windows(cap)
-
-def test_all_face_recognised_with_reachy_api(with_angle_to_center):
-    reachy = ReachySDK(host='localhost')  # Replace with the actual IP
-    reachy.right_camera.start_autofocus
-    camera = reachy.right_camera
-
-    def get_frame():
-        frame = camera.last_frame
-        return give_in_gray(frame)
-
-    run_all_face_tets(get_frame, with_angle_to_center)       
-
-
-
-if __name__ == '__main__':
-    # test_all_face_recognised(True)
-    test_all_face_recognised_with_reachy_api(False)
+def initiate_reachy_camera(reachy): # Initiate and give the reachy's camera chosen by the Reachy_camera class
+    Reachy_cam = Reachy_camera(reachy)

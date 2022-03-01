@@ -71,10 +71,7 @@ def traitement_ordre_func():
 def conversation_func():
     global command
     global actual_state
-    if cmd.one_in(command, ["bonjour", "salut"]):
-        debug_print("> Bonjour")
-    else:
-        debug_print("> Je ne connais pas cette commande")
+    cmd.conversation(command)
     actual_state = states["ATTENTE_ORDRE"]
 
 def photo_func():
