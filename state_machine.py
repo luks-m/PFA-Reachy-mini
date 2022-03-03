@@ -1,7 +1,10 @@
 from distutils.log import debug
 import vocal_recognition as vr
 import cmd
-#import movement as mv
+import movement as mv
+#import conversation as conv
+from reachy_sdk import ReachySDK
+import time
 
 def debug_print(str):
     print("DEBUG : " + str)
@@ -20,18 +23,22 @@ states = {  "RECHERCHE_INTERACTION": 0,
             "PRISE_PHOTO" : 9,
 }
 
-actual_state = states["RECHERCHE_INTERACTION"]
+actual_state = states["ATTENTE_ORDRE"]
 
 command = ""
 
-#reachy = ReachySDK(host='localhost')  # Replace with the actual IP
+reachy = ReachySDK(host='localhost')  # Replace with the actual IP
 
-#reachy.head
+reachy.head
+for name, joint in reachy.joints.items():
+    print(f'Joint "{name}" position is {joint.present_position} degree.')
 
-#for name, joint in reachy.joints.items():
-#    print(f'Joint "{name}" position is {joint.present_position} degree.')
+r = mv.Movement(reachy)
+r.motor_on()
+r.head.look_at(1, 0, 0, 2)
+t = time.time()
 
-#mouv = mv.Mouvement()
+#conv.init_robot(r)
 
 def recherche_interaction_func():
     global command
@@ -71,7 +78,10 @@ def traitement_ordre_func():
 def conversation_func():
     global command
     global actual_state
-    cmd.conversation(command)
+    if(cmd.one_in(command, cmd.set_gentil["e"])):
+        print(cmd.one_out(cmd.set_gentil["s"])) 
+        r.happy()
+    #conv.conversation(command)
     actual_state = states["ATTENTE_ORDRE"]
 
 def photo_func():
@@ -127,6 +137,9 @@ state_machine = {   states["RECHERCHE_INTERACTION"] : recherche_interaction_func
 }
 
 while True:
+    if time.time() - t > 15 :
+        break
     debug_print(str(actual_state))
     state_machine[actual_state]()
 
+r.motor_off()
