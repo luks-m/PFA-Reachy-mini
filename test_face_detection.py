@@ -92,7 +92,7 @@ def test_framing_for_group_photo_angle(percent_relat_to_avg): # Not working on R
     run_get_angle_functions_tests(get_frame, framing_for_group_photo_angle, percent_relat_to_avg)    
     free_capture_and_windows(cap)
 
-def test_framing_for_group_photo_angle__with_reachy_api(percent_relat_to_avg):
+def test_framing_for_group_photo_angle_with_reachy_api(percent_relat_to_avg):
     camera = initiate_reachy_camera(ReachySDK(host='localhost'))  # Replace with the actual IP
 
     def get_frame():
@@ -119,6 +119,22 @@ def smart_give_angle_test():
         if cv2.waitKey(1) == ord('q'):
             break
 
+def smart_give_angle_test_with_reachy_api():
+    camera = initiate_reachy_camera(ReachySDK(host='localhost'))  # Replace with the actual IP
+
+    def get_frame():
+        return camera.get_frame()
+    
+    while True :
+        angle = smart_give_angle(5, get_frame, n_closest_angle, 2, for_test = True)
+
+        print(f"horizontal angle is {round(angle.h, 1)}° - vertical angle is {round(angle.v, 1)}°")
+
+        time.sleep(0.1)
+        if cv2.waitKey(1) == ord('q'):
+            break
+
+
 
 if __name__ == '__main__': # Relevant test experiences
     # test_all_face_recognised(True)
@@ -133,7 +149,8 @@ if __name__ == '__main__': # Relevant test experiences
 
     # test_framing_for_group_photo_angle(0.2)
     # test_framing_for_group_photo_angle(0.5)
-    # test_framing_for_group_photo_angle__with_reachy_api(0.2)
-    # test_framing_for_group_photo_angle__with_reachy_api(0.5)
+    # test_framing_for_group_photo_angle_with_reachy_api(0.2)
+    # test_framing_for_group_photo_angle_with_reachy_api(0.5)
 
-    smart_give_angle_test()
+    # smart_give_angle_test()
+    smart_give_angle_test_with_reachy_api()
