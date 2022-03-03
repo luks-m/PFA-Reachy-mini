@@ -44,6 +44,16 @@ cmd : s_mechant
 . 
 ...
 
+cmd : e_aurevoir
+. au revoir
+. à bientôt
+. bonne journée
+...
+
+cmd : s_aurevoir
+. au revoir
+...
+
 cmd : s_incomprehension
 . Je n'ai pas bien compris votre demande
 ...

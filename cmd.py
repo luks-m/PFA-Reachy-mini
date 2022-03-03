@@ -75,8 +75,6 @@ set_groupe = transcript_cmd(STATE_CMD_PATH, "groupe")
 def one_out(set):
     return random.choice(set)
 
-
-
 def create_conversation_set(set_name):
     return_set = {}
     return_set["e"] = transcript_cmd(CONVERSATION_CMD_PATH, "e_" + set_name)
@@ -91,5 +89,6 @@ set_gentil = create_conversation_set("gentil")
 
 set_mechant = create_conversation_set("mechant")
 
-set_incomprehension = transcript_cmd(CONVERSATION_CMD_PATH, "s_incomprehension")
+set_aurevoir = create_conversation_set("aurevoir")
 
+set_incomprehension = transcript_cmd(CONVERSATION_CMD_PATH, "s_incomprehension")
