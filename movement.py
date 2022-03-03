@@ -1,145 +1,180 @@
-from attr import attributes
+from turtle import pos
 from reachy_sdk import ReachySDK
-
 import time
 import numpy as np
 
-class Mouvement:
-    #attributes
-    _angle_cote = 0
-    _angle_hauteur = 90
-    _ecoute = [0,0,0]
-    _triste = [0,0,0]
-    _content = [0,0,0]
-    _incitation = [0,0,0]
-    _reflexion = [0,0,0]
-    _remerciement = [0,0,0]
-
-    def __init__(self):
-        None
+class Movement :
+    def __init__(self, reachy):
+        self.robot = reachy
+        self.head = reachy.head
+        self._phi = 0
+        self._theta = 90
+        self._tmpphi = 0
+        self._tmptheta = 90
 
     def motor_on(self):
-        reachy.turn_on('head')
+        self.robot.turn_on('head')
 
-    def notor_off(self):
-        reachy.turn_off('head')
+    def motor_off(self):
+        self.robot.turn_off('head')
+    
+    def degree_to_radian(self, theta):
+        return theta*2*np.pi / 360
 
-    def degree_to_radian(self,angle):
-        return angle*2*np.pi / 360
-
-    def verif(self, theta, phi):
-        if theta > 45:
-            if theta < 130:
-                t = self.degree_to_radian(theta)
-            else:
-                t = self.degree_to_radian(130)
+    def fit_angles(self, theta, phi):
+        if 45 < theta and theta < 130:
+            t = theta 
+        elif 130 < theta:
+            t = 130
         else:
-            t = self.degree_to_radian(45)
-        if phi > -45:
-            if phi < 45:
-               p = self.degree_to_radian(phi)
-            else:
-                p = self.degree_to_radian(45)
+            t = 45
+        if -45 < phi and phi < 45:
+            p = phi
+        elif 45 < phi:
+            p = 45
         else:
-            p = self.degree_to_radian(-45)
+            p = -45
         return t,p
 
     def spherical_to_cartesian(self,radius, theta, phi):
-        t,p = self.verif(theta,phi)
-        x = round(radius*np.sin(t)*np.cos(p), 2)
-        y = round(radius*np.sin(t)*np.sin(p), 2)
-        z = round(radius*np.cos(t), 2)
+        theta = self.degree_to_radian(theta)
+        phi = self.degree_to_radian(phi)
+        x = round(radius*np.sin(theta)*np.cos(phi), 2)
+        y = round(radius*np.sin(theta)*np.sin(phi), 2)
+        z = round(radius*np.cos(theta), 2)
         return [x, y, z]
+    
+    def duration(self, coordinates_prev, coordinates_next, v):
+        duration = round(np.sqrt((coordinates_next[0]-coordinates_prev[0])**2 + (coordinates_next[1]-coordinates_prev[1])**2 + (coordinates_next[2]-coordinates_prev[2])**2)/v,2)
+        if duration <= 0:
+            return 0.5
+        else:
+            return duration
 
-    def duree(self,coords,v):
-        pos_act = self.spherical_to_cartesian(0.5, self._angle_hauteur, self._angle_cote)
-        return np.sqrt((coords[0]-pos_act[0])**2 + (coords[1]-pos_act[1])**2 + (coords[2]-pos_act[2])**2)*v
 
-    def mouv(self,position,d):
-        reachy.head.look_at(x=position[0], y=position[1], z=position[2], duration=d)
+    def move_to(self, radius, theta, phi, v):
+        position_prev = self.spherical_to_cartesian(0.5, self._tmptheta, self._tmpphi)
+        self._tmptheta, self._tmpphi = self.fit_angles(theta, phi)
+        position = self.spherical_to_cartesian(radius, self._tmptheta, self._tmpphi)
+        self.head.look_at(position[0], position[1], position[2], self.duration(position_prev, position, v))
 
-    def ecoute(self):
-        reachy.head.l_antenna.goal_position = 0
-        reachy.head.r_antenna.goal_position = 0
-        self._ecoute = self.spherical_to_cartesian(0.5, 5.74 + self._angle_hauteur, self._angle_cote)
-        self.mouv(self._ecoute, self.duree(self._ecoute,0.25))
+    def update_position(self, theta, phi, v):
+        print(self._theta, self._phi)
+        position_prev = self.spherical_to_cartesian(0.5, self._theta, self._phi)
+        self._theta, self._phi = self.fit_angles(self._theta + theta, self._phi + phi)
+        print(self._theta, self._phi)
+        self._tmptheta = self._theta
+        self._tmpphi = self._phi
+        position = self.spherical_to_cartesian(1, self._theta, self._phi)
+        print(self.duration(position_prev, position, v))
 
-    def triste(self):
-        reachy.head.l_antenna.speed_limit = 70.0
-        reachy.head.r_antenna.speed_limit = 70.0
+        self.head.look_at(position[0], position[1], position[2], self.duration(position_prev, position, v))
+
+    def listen(self):
+        self.head.l_antenna.goal_position = 0
+        self.head.r_antenna.goal_position = 0
+
+        self.move_to(0.5, self._theta, self._phi, 0.15)
         
-        reachy.head.l_antenna.goal_position = 140.0
-        reachy.head.r_antenna.goal_position = -140.0
-        self._triste = self.spherical_to_cartesian(0.5, 31.15 + self._angle_hauteur, self._angle_cote)
-        self.mouv(self._triste, self.duree(self._triste,0.29))
+    def sad(self):
+        self.head.l_antenna.speed_limit = 70.0
+        self.head.r_antenna.speed_limit = 70.0
 
-    def content(self):
-        self._content = self.spherical_to_cartesian(0.5, 5.74 + self._angle_hauteur, self._angle_cote)
-        self.mouv(self._content, self.duree(self._content,0.25))
-        reachy.head.l_antenna.speed_limit = 300.0
-        reachy.head.r_antenna.speed_limit = 300.0
+        self.head.l_antenna.goal_position = 140.0
+        self.head.r_antenna.goal_position = -140.0
+
+        self.move_to(0.5, 31.15 + self._theta, self._phi, 0.13)
+
+    def happy(self):
+        self.move_to(0.5, 5.74 + self._theta, self._phi, 0.15)
+
+        self.head.l_antenna.speed_limit = 300.0
+        self.head.r_antenna.speed_limit = 300.0
         
         for _ in range(10):
-            reachy.head.l_antenna.goal_position = 20.0
-            reachy.head.r_antenna.goal_position = -20.0
+            self.head.l_antenna.goal_position = 20.0
+            self.head.r_antenna.goal_position = -20.0
             time.sleep(0.1)
-            reachy.head.l_antenna.goal_position = -20.0
-            reachy.head.r_antenna.goal_position = 20.0
+            self.head.l_antenna.goal_position = -20.0
+            self.head.r_antenna.goal_position = 20.0
             time.sleep(0.1)
         
-        reachy.head.l_antenna.goal_position = 0.0
-        reachy.head.r_antenna.goal_position = 0.0
+        self.head.l_antenna.goal_position = 0.0
+        self.head.r_antenna.goal_position = 0.0
+    
+    def incentive(self):
+        self.head.l_antenna.speed_limit = 70.0
+        self.head.r_antenna.speed_limit = 70.0
+        self.head.l_antenna.goal_position = +35.0
+        self.head.r_antenna.goal_position = -35.0
 
-    def incitation(self):
-        reachy.head.l_antenna.speed_limit = 70.0
-        reachy.head.r_antenna.speed_limit = 70.0
-        reachy.head.l_antenna.goal_position = +35.0
-        reachy.head.r_antenna.goal_position = -35.0
-        self._incitation = self.spherical_to_cartesian(0.5, -5.74 + self._angle_hauteur, self._angle_cote)
-        self.mouv(self._incitation, self.duree(self._incitation,0.50))
+        self.move_to(0.5, -5.74 + self._theta, self._phi, 0.1)
 
-    def reflexion(self):
-        reachy.head.l_antenna.speed_limit = 70.0
-        reachy.head.r_antenna.speed_limit = 70.0
-        reachy.head.l_antenna.goal_position = -40.0
-        reachy.head.r_antenna.goal_position = +40.0
-        self._reflexion = self.spherical_to_cartesian(0.5, -16.13 + self._angle_hauteur, 16.7 + self._angle_cote)
-        self.mouv(self._reflexion,self.duree(self._reflexion,0.54))
+    def thinking(self):
+        self.head.l_antenna.speed_limit = 70.0
+        self.head.r_antenna.speed_limit = 70.0
+        self.head.l_antenna.goal_position = -40.0
+        self.head.r_antenna.goal_position = +40.0
 
-    def remerciement(self):
-        reachy.head.l_antenna.speed_limit = 70.0
-        reachy.head.r_antenna.speed_limit = 70.0
-        reachy.head.l_antenna.goal_position = 0.0
-        reachy.head.r_antenna.goal_position = 0.0
+        self.move_to(0.5, -16.13 + self._theta, 16.7 + self._phi, 0.21)
+
+    def thanking(self):
+        self.head.l_antenna.speed_limit = 70.0
+        self.head.r_antenna.speed_limit = 70.0
+        self.head.l_antenna.goal_position = 0.0
+        self.head.r_antenna.goal_position = 0.0
+
+        self.move_to(0.5, 5.74 + self._theta, self._phi, 0.15)
+
+        time.sleep(0.1)
+
+        self.head.l_antenna.goal_position = +40.0
+        self.head.r_antenna.goal_position = -40.0
         
-        self._ecoute = self.spherical_to_cartesian(0.5, 5.74 + self._angle_hauteur, self._angle_cote)
-        self._remerciement = self.spherical_to_cartesian(0.5, 26.51 + self._angle_hauteur, self._angle_cote)
-
-        self.mouv(self._ecoute, self.duree(self._ecoute,0.25))
-        time.sleep(0.1)    
-        reachy.head.l_antenna.goal_position = +40.0
-        reachy.head.r_antenna.goal_position = -40.0
-        self.mouv(self._remerciement,self.duree(self._remerciement,1.11))
+        self.move_to(0.5, 26.51 + self._theta, self._phi, 0.35)
+        
         time.sleep(0.3)
-        reachy.head.l_antenna.goal_position = 0.0
-        reachy.head.r_antenna.goal_position = 0.0
-        self.mouv(self._ecoute,self.duree(self._ecoute,1.11))
+        
+        self.head.l_antenna.goal_position = 0.0
+        self.head.r_antenna.goal_position = 0.0
+        
+        self.move_to(0.5, 5.74 + self._theta, self._phi, 0.35)
 
-    def mouv_cam(self,angles):
-        t,p = self.verif(self._angle_hauteur + angles[0], self._angle_cote + angles[1])
-        self._angle_hauteur = t
-        self._angle_cote = p
-        pos = self.spherical_to_cartesian(1, self._angle_hauteur, self._angle_cote)
-        self.mouv(pos,self.duree(pos,2))
+    def move_back(self):
+        self.head.look_at(self._current_position[0], self._current_position[1], self._current_position[2], 0.5)
 
 
-reachy = ReachySDK(host='localhost')  # Replace with the actual IP
+# reachy = ReachySDK(host='localhost')
 
-reachy.head
+# print(reachy.head)
 
-for name, joint in reachy.joints.items():
-    print(f'Joint "{name}" position is {joint.present_position} degree.')
+# print("head")
+# robot = Movement(reachy)
+# print("robot ok")
+# robot.motor_on()
+# print("motor on")
 
-mouv = Mouvement()
-mouv.motor_on()
-mouv.content()
+# robot.head.look_at(1, 0, 0, 2)
+
+# robot.update_position(0,20,0.5)
+
+# robot.listen()
+# time.sleep(0.5)
+# robot.sad()
+# time.sleep(0.5)
+# robot.listen()
+# time.sleep(0.5)
+# robot.happy()
+# time.sleep(0.5)
+# robot.incentive()
+# time.sleep(0.5)
+# robot.thinking()
+# time.sleep(0.5)
+# robot.thanking()
+# time.sleep(0.5)
+
+
+# print("end")
+# time.sleep(5)
+# robot.motor_off()
+# print("motor off")

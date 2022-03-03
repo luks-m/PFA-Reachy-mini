@@ -1,10 +1,30 @@
-from distutils.log import debug
 import vocal_recognition as vr
 import cmd
-#import movement as mv
+import movement as mv
+from reachy_sdk import ReachySDK
+import time
 
 def debug_print(str):
     print("DEBUG : " + str)
+
+
+
+reachy = ReachySDK(host='localhost')  # Replace with the actual IP
+
+reachy.head
+for name, joint in reachy.joints.items():
+    print(f'Joint "{name}" position is {joint.present_position} degree.')
+
+r = mv.Movement(reachy)
+r.motor_on()
+r.head.look_at(1, 0, 0, 2)
+t = time.time()
+
+command = ""
+
+##################################
+####    Main State Machine    ####
+##################################
 
 states = {  "RECHERCHE_INTERACTION": 0,
             "INCITATION_INTERACTION": 1,
@@ -20,18 +40,9 @@ states = {  "RECHERCHE_INTERACTION": 0,
             "PRISE_PHOTO" : 9,
 }
 
-actual_state = states["RECHERCHE_INTERACTION"]
+INITIAL_STATE = states["RECHERCHE_INTERACTION"]
 
-command = ""
-
-#reachy = ReachySDK(host='localhost')  # Replace with the actual IP
-
-#reachy.head
-
-#for name, joint in reachy.joints.items():
-#    print(f'Joint "{name}" position is {joint.present_position} degree.')
-
-#mouv = mv.Mouvement()
+actual_state = INITIAL_STATE
 
 def recherche_interaction_func():
     global command
@@ -71,8 +82,24 @@ def traitement_ordre_func():
 def conversation_func():
     global command
     global actual_state
-    cmd.conversation(command)
-    actual_state = states["ATTENTE_ORDRE"]
+    if(cmd.one_in(command, cmd.set_bonjour["e"])):
+        conv_bonjour_func()
+        return
+    if(cmd.one_in(command, cmd.set_cava["e"])):
+        conv_cava_func()
+        return
+    if(cmd.one_in(command, cmd.set_gentil["e"])):
+        conv_gentil_func()
+        return
+    if(cmd.one_in(command, cmd.set_mechant["e"])):
+        conv_mechant_func()
+        return
+    if(cmd.one_in(command, cmd.set_aurevoir["e"])):
+        conv_bonjour_func()
+        return
+    else:
+        conv_incomprehension_func()
+        return
 
 def photo_func():
     global command
@@ -126,7 +153,53 @@ state_machine = {   states["RECHERCHE_INTERACTION"] : recherche_interaction_func
                     states["PRISE_PHOTO"] : prise_photo_func  
 }
 
+##########################################
+####    Conversation Sub Functions    ####
+##########################################
+
+def say_one_in_conv_set(set):
+    cmd.one_out(set["s"]) #to say
+
+def conv_bonjour_func():
+    global actual_state
+    #say_one_in_conv_set(cmd.set_bonjour)
+    actual_state = states["ATTENTE_ORDRE"]
+
+def conv_cava_func():
+    global actual_state
+    #say_one_in_conv_set(cmd.set_cava)
+    actual_state = states["ATTENTE_ORDRE"]
+    
+def conv_gentil_func():
+    global actual_state
+    #say_one_in_conv_set(cmd.set_gentil)
+    r.happy()
+    actual_state = states["ATTENTE_ORDRE"]
+
+def conv_mechant_func():
+    global actual_state
+    #say_one_in_conv_set(cmd.set_mechant)
+    r.sad()
+    actual_state = states["ATTENTE_ORDRE"]
+
+def conv_aurevoir_func():
+    global actual_state
+    #say_one_in_conv_set(cmd.set_aurevoir)
+    actual_state = states["RECHERCHE_INTERACTION"]
+
+def conv_incomprehension_func():
+    global actual_state
+    #say_one_in_conv_set(cmd.set_incomprehensino)
+    actual_state = states["ATTENTE_ORDRE"]
+
+#############################
+####    Main Function    ####
+#############################
+
 while True:
+    if time.time() - t > 15 :
+        break
     debug_print(str(actual_state))
     state_machine[actual_state]()
 
+r.motor_off()

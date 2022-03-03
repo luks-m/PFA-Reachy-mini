@@ -75,13 +75,6 @@ set_groupe = transcript_cmd(STATE_CMD_PATH, "groupe")
 def one_out(set):
     return random.choice(set)
 
-def detect_say_move(str, set_name,): #move):
-    if(one_in(str, set_name["e"])):
-        print(one_out(set_name["s"])) #todo, change to speech
-        #to do movement
-        return True
-    return False
-
 def create_conversation_set(set_name):
     return_set = {}
     return_set["e"] = transcript_cmd(CONVERSATION_CMD_PATH, "e_" + set_name)
@@ -96,23 +89,6 @@ set_gentil = create_conversation_set("gentil")
 
 set_mechant = create_conversation_set("mechant")
 
-set_incomprehension = transcript_cmd(CONVERSATION_CMD_PATH, "s_incomprehension")
+set_aurevoir = create_conversation_set("aurevoir")
 
-# the state machine conversation function
-def conversation(command):
-    #bonjour
-    if(detect_say_move(command, set_bonjour)):
-        return 
-    #ça va
-    if(detect_say_move(command, set_cava)):
-        return
-    #gentil
-    if(detect_say_move(command, set_gentil)):
-        return
-    #méchant
-    if(detect_say_move(command, set_mechant)):
-        return
-    else:
-        #todo replace the print by a "say" function and a "move" function
-        print(one_in(set_incomprehension))
-        return
+set_incomprehension = transcript_cmd(CONVERSATION_CMD_PATH, "s_incomprehension")
