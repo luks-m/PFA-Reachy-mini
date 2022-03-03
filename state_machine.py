@@ -3,6 +3,7 @@ import cmd
 import movement as mv
 from reachy_sdk import ReachySDK
 import time
+import speech_synthesis as speech
 
 def debug_print(str):
     print("DEBUG : " + str)
@@ -18,7 +19,7 @@ for name, joint in reachy.joints.items():
 r = mv.Movement(reachy)
 r.motor_on()
 r.head.look_at(1, 0, 0, 2)
-t = time.time()
+#t = time.time()
 
 command = ""
 
@@ -50,7 +51,6 @@ def recherche_interaction_func():
     while True: 
         command = vr.record_and_transcript()
         if cmd.all_in(command, cmd.set_activation):
-            #mouv.content()
             actual_state = states["ATTENTE_ORDRE"]
             break
 
@@ -158,47 +158,47 @@ state_machine = {   states["RECHERCHE_INTERACTION"] : recherche_interaction_func
 ##########################################
 
 def say_one_in_conv_set(set):
-    cmd.one_out(set["s"]) #to say
+    speech.text_to_speech(cmd.one_out(set["s"])) #to say
 
 def conv_bonjour_func():
     global actual_state
-    #say_one_in_conv_set(cmd.set_bonjour)
+    say_one_in_conv_set(cmd.set_bonjour)
     actual_state = states["ATTENTE_ORDRE"]
 
 def conv_cava_func():
     global actual_state
-    #say_one_in_conv_set(cmd.set_cava)
+    say_one_in_conv_set(cmd.set_cava)
     actual_state = states["ATTENTE_ORDRE"]
     
 def conv_gentil_func():
     global actual_state
-    #say_one_in_conv_set(cmd.set_gentil)
+    say_one_in_conv_set(cmd.set_gentil)
     r.happy()
     actual_state = states["ATTENTE_ORDRE"]
 
 def conv_mechant_func():
     global actual_state
-    #say_one_in_conv_set(cmd.set_mechant)
+    say_one_in_conv_set(cmd.set_mechant)
     r.sad()
     actual_state = states["ATTENTE_ORDRE"]
 
 def conv_aurevoir_func():
     global actual_state
-    #say_one_in_conv_set(cmd.set_aurevoir)
+    say_one_in_conv_set(cmd.set_aurevoir)
     actual_state = states["RECHERCHE_INTERACTION"]
 
 def conv_incomprehension_func():
     global actual_state
-    #say_one_in_conv_set(cmd.set_incomprehensino)
+    #say_one_in_conv_set(cmd.set_incomprehension)
     actual_state = states["ATTENTE_ORDRE"]
 
 #############################
 ####    Main Function    ####
 #############################
 
-while True:
-    if time.time() - t > 15 :
-        break
+# while True:
+for i in range(2) :
+    print("i =", i)
     debug_print(str(actual_state))
     state_machine[actual_state]()
 
