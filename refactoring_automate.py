@@ -8,17 +8,21 @@ class Machine_etat :
     def get_context() :
         return context
     
-    def call_state(state) :
+    def call_state(state, context) :
         return state.action(context)
     
     def get_initial_state() :
         return init_state
 
 class Transition :
-    def __init__(action, next_state) :
+    def __init__(next_state, action, cond) :
         self.next_state = next_state
         self.action = action
+        self.cond = cond
     
-    def action(context) :
+    def verif_condition(context):
+        return bool
+
+    def take_transition(context) :
         context = action(context)
         return next_state, context
