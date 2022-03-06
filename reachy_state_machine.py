@@ -1,5 +1,5 @@
 import executeur as extr
-import state_machine as stm
+import state_machine_obj as stm
 import state as st
 import transition as tr
 
@@ -136,55 +136,55 @@ def M_to_AO_func(context):
 
 # transition verif function between Recherche d'Interaction and Attente d'Ordre
 def RI_to_AO_verif(context):
-    return context
+    return True
 
 # transition verif function between  Attente d'Ordre and Traitement d'Ordre
 def AO_to_TO_verif(context):
-    return context
+    return True
 
 # transition verif function between Traitement d'Ordre and Conversation
 def TO_to_C_verif(context):
-    return context
+    return True
 
 # transition verif function between Conversation and Bonjour
 def C_to_B_verif(context):
-    return context
+    return True
 
 # transition verif function between Bonjour and Attente d'ordre
 def B_to_AO_verif(context):
-    return context
+    return True
 
 # transition verif function between Conversation and Ca Va
 def C_to_CV_verif(context):
-    return context
+    return True
 
 # transition verif function between Ca Va and Attente d'ordre
 def CV_to_AO_verif(context):
-    return context
+    return True
 
 # transition verif function between Conversation and Au Revoir
 def C_to_AR_verif(context):
-    return context
+    return True
 
 # transition verif function between Au Revoir and Attente d'ordre
 def AR_to_AO_verif(context):
-    return context
+    return True
 
 # transition verif function between Conversation and Gentil
 def C_to_G_verif(context):
-    return context
+    return True
 
 # transition verif function between Gentil and Attente d'ordre
 def G_to_AO_verif(context):
-    return context
+    return True
 
 # transition verif function between Conversation and Mechant
 def C_to_M_verif(context):
-    return context
+    return True
 
 # transition verif function between Mechant and Attente d'ordre
 def M_to_AO_verif(context):
-    return context
+    return True
 
 ##########################
 ## Transitions Creation ##
@@ -312,7 +312,7 @@ states = {  recherche_interaction,
 
 context ={"command" : ""}
 
-state_machine = stm.StateMachine(states, recherche_interaction, context)
+state_machine = stm.State_Machine(states, recherche_interaction, context)
 
 ##########
 ## Test ##
@@ -320,4 +320,4 @@ state_machine = stm.StateMachine(states, recherche_interaction, context)
 
 executeur = extr.Executeur(state_machine)
 
-executeur.execute(recherche_interaction, context)
+executeur.execute(context, 5)

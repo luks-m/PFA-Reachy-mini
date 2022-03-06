@@ -1,3 +1,5 @@
+from transition import *
+
 class State :
 
     def __init__(self, action):
@@ -10,6 +12,6 @@ class State :
     def play_state(self, context):
         context = self.action(context)
         for T in self.transitions:
-            if(T.verif(context) == True):
-                return T.play_transition(context)
+            if(T.verif_condition(context) == True):
+                return T.take_transition(context)
         return self, context
