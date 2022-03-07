@@ -1,5 +1,4 @@
 import numpy as np
-from reachy_sdk import ReachySDK
 
 r = 1
 t = 0
@@ -35,12 +34,33 @@ incitation = cartesian_to_spherical(0.5, 0, 0.05)
 reflexion = cartesian_to_spherical(0.5, 0.15, 0.15)
 remerciement = cartesian_to_spherical(0.5, 0, -0.25)
 
+ecoute = spherical_to_cartesian(0.5, 0, -0.05)
+triste = spherical_to_cartesian(0.5, 0, -0.3)
+content = spherical_to_cartesian(0.5, 95.74, 0)
+print(content)
+incitation = spherical_to_cartesian(0.5, 0, 0.05)
+reflexion = spherical_to_cartesian(0.5, 0.15, 0.15)
+remerciement = spherical_to_cartesian(0.5, 0, -0.25)
 
-ec = spherical_to_cartesian(0.5, 95.74, 0)
-tr = spherical_to_cartesian(0.58, 121.15, 0)
-t=2
-v = np.sqrt((ec[0]-tr[0])**2+(ec[1]-tr[1])**2+(0.3-tr[2])**2)/t
-print(v)
+test = spherical_to_cartesian(0.5, 90, 0)
+print(test)
+
+def vitesse(coords,t):
+    return np.sqrt(coords[0]**2 + coords[1]**2 + coords[2]**2)/t
+
+v_ecoute = vitesse([0, 0, -0.05],2)
+v_triste = vitesse([0, 0, -0.3],2)
+v_content = vitesse([0, 0, -0.05],2)
+v_incitation = vitesse([0, 0, 0.05],1)
+v_reflexion = vitesse([0, 0.15, 0.15],1)
+v_remerciement = vitesse([0, 0, -0.25],0.5)
+
+print(v_ecoute)
+print(v_triste)
+print(v_content)
+print(v_incitation)
+print(v_reflexion)
+print(v_remerciement)
 
 
 
