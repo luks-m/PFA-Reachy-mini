@@ -49,7 +49,7 @@ class Reachy_camera:
 
   #  def take_picture(noun): # Take a picture, with an automatic focus, and save it at the 'path' location
    #     launch_zoom()
-    #    cv2.imwrite("../tmp/" + noun + ".png", camera.get_frame())
+    #    cv2.imwrite("./tmp/" + noun + ".png", camera.get_frame())
 
 # Mathematical transformations
 def give_face_center(face): # Given a face square object, gice the square center
