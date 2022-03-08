@@ -20,6 +20,15 @@ def f(x,y,z,angle):
     reachy.head.goto({joint: pos for joint,pos in zip(reachy.head.joints.values(), mouv)}, duration=1.0)
 
 
+def euler_to_quaternion(theta, phi, alpha):
+
+        qx = np.sin(alpha/2) * np.cos(phi/2) * np.cos(theta/2) - np.cos(alpha/2) * np.sin(phi/2) * np.sin(theta/2)
+        qy = np.cos(alpha/2) * np.sin(phi/2) * np.cos(theta/2) + np.sin(alpha/2) * np.cos(phi/2) * np.sin(theta/2)
+        qz = np.cos(alpha/2) * np.cos(phi/2) * np.sin(theta/2) - np.sin(alpha/2) * np.sin(phi/2) * np.cos(theta/2)
+        qw = np.cos(alpha/2) * np.cos(phi/2) * np.cos(theta/2) + np.sin(alpha/2) * np.sin(phi/2) * np.sin(theta/2)
+
+        return [qx, qy, qz, qw]
+
 reachy = ReachySDK(host='localhost')
 
 print(reachy.head)
@@ -29,7 +38,8 @@ print("head")
 reachy.turn_on('head')
 print("on")
 
-m4 = f(1,0,0,45)
+mouv = reachy.head.inverse_kinematics(euler_to_quaternion(20,0,0))
+reachy.head.goto({joint: pos for joint,pos in zip(reachy.head.joints.values(), mouv)}, duration=1.0)
 time.sleep(5)
 
 # angle = { reachy.head.neck_disk_top : -104.70,
