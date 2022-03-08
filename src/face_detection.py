@@ -43,11 +43,13 @@ class Reachy_camera:
         self.camera.stop_autofocus()
     def get_frame():
         return camera.last_frame
-    def take_picture(path): # Take a picture, with an automatic focus, and save it at the 'path' location
+    def take_picture(noun): # Take a picture, with an automatic focus, and save it at the 'path' location
         launch_zoom()
-        cv2.imwrite(path + ".png", camera.get_frame())
+        cv2.imwrite(noun + ".png", camera.get_frame())
 
-
+  #  def take_picture(noun): # Take a picture, with an automatic focus, and save it at the 'path' location
+   #     launch_zoom()
+    #    cv2.imwrite("../tmp/" + noun + ".png", camera.get_frame())
 
 # Mathematical transformations
 def give_face_center(face): # Given a face square object, gice the square center
