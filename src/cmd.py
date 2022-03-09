@@ -1,7 +1,7 @@
 import random
 
-STATE_CMD_PATH = "./assert/cmd/state_cmd.txt"
-CONVERSATION_CMD_PATH = "./assert/cmd/conversation_cmd.txt"
+STATE_CMD_PATH = "../assert/cmd/state_cmd.txt"
+CONVERSATION_CMD_PATH = "../assert/cmd/conversation_cmd.txt"
 
 ### COMMANDS PART ###
 
