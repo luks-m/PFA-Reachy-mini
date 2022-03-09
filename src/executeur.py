@@ -14,9 +14,11 @@ class Executeur :
     def execute(self, initial_context = {}, iteration = 0):
         initial_state = self.state_machine.get_initial_state()
         state, context = self.__execute_once(initial_state, initial_context)
+        print(state, context)
         if(iteration == 0):
             while(True):
                 state, context = self.__execute_once(state, context)
         else:
             for i in range(iteration - 1):
                 state, context = self.__execute_once(state, context)
+                print(state, context)

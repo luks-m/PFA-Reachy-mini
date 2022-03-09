@@ -260,36 +260,37 @@ gentil_transitions = {G_to_AO}
 # create the transition set of Mechant
 mechant_transitions = {M_to_AO}   
 
-#######################################
-## Filling Transition sets in States ##
-#######################################
+#################################################
+## Filling Transition sets in transition_table ##
+#################################################
+transition_table = {}
 
 # filling the transitions of Recherche d'Interaction
-recherche_interaction.fill_transitions(recherche_interaction_transitions)
+transition_table[str(recherche_interaction)] = recherche_interaction_transitions
 
 # filling the transitions of Attente d'Ordre
-attente_ordre.fill_transitions(attente_ordre_transitions)
+transition_table[str(attente_ordre)] = attente_ordre_transitions
 
 # filling the transitions of Traitement d'ordre
-traitement_ordre.fill_transitions(traitement_ordre_transitions)
+transition_table[str(traitement_ordre)] = traitement_ordre_transitions
 
 # filling the transitions of Conversation
-conversation.fill_transitions(conversation_transitions)
+transition_table[str(conversation)] = conversation_transitions
 
 # filling the transitions of Bonjour
-bonjour.fill_transitions(bonjour_transitions)
+transition_table[str(recherche_interaction)] = recherche_interaction_transitions
 
 # filling the transitions of Ca Va
-cava.fill_transitions(cava_transitions)
+transition_table[str(cava)] = cava_transitions
 
 # filling the transitions of Au Revoir
-aurevoir.fill_transitions(aurevoir_transitions)
+transition_table[str(aurevoir)] = aurevoir_transitions
 
 # filling the transitions of Gentil
-gentil.fill_transitions(gentil_transitions)
+transition_table[str(gentil)] = gentil_transitions
 
 # filling the transitions of Mechant
-mechant.fill_transitions(mechant_transitions)
+transition_table[str(mechant)] = mechant_transitions
 
 ##########################
 ## Create the State set ##
@@ -312,7 +313,7 @@ states = {  recherche_interaction,
 
 context ={"command" : ""}
 
-state_machine = stm.State_Machine(states, recherche_interaction, context)
+state_machine = stm.State_Machine(states, transition_table, recherche_interaction, context)
 
 ##########
 ## Test ##
