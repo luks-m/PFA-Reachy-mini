@@ -1,9 +1,7 @@
-from turtle import pos
 from reachy_sdk import ReachySDK
 from reachy_sdk.trajectory import goto
 import time
 import numpy as np
-from scipy.spatial.transform import Rotation as R
 
 def f(x,y,z,angle):
     m3 = np.around(R.from_euler('z', np.deg2rad(angle)).as_matrix(), 3)
@@ -20,12 +18,12 @@ def f(x,y,z,angle):
     reachy.head.goto({joint: pos for joint,pos in zip(reachy.head.joints.values(), mouv)}, duration=1.0)
 
 
-def euler_to_quaternion(theta, phi, alpha):
+def euler_to_quaternion(roll, pitch, yaw):
 
-        qx = np.sin(alpha/2) * np.cos(phi/2) * np.cos(theta/2) - np.cos(alpha/2) * np.sin(phi/2) * np.sin(theta/2)
-        qy = np.cos(alpha/2) * np.sin(phi/2) * np.cos(theta/2) + np.sin(alpha/2) * np.cos(phi/2) * np.sin(theta/2)
-        qz = np.cos(alpha/2) * np.cos(phi/2) * np.sin(theta/2) - np.sin(alpha/2) * np.sin(phi/2) * np.cos(theta/2)
-        qw = np.cos(alpha/2) * np.cos(phi/2) * np.cos(theta/2) + np.sin(alpha/2) * np.sin(phi/2) * np.sin(theta/2)
+        qx = np.sin(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) - np.cos(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
+        qy = np.cos(roll/2) * np.sin(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.cos(pitch/2) * np.sin(yaw/2)
+        qz = np.cos(roll/2) * np.cos(pitch/2) * np.sin(yaw/2) - np.sin(roll/2) * np.sin(pitch/2) * np.cos(yaw/2)
+        qw = np.cos(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
 
         return [qx, qy, qz, qw]
 
@@ -38,8 +36,15 @@ print("head")
 reachy.turn_on('head')
 print("on")
 
-mouv = reachy.head.inverse_kinematics(euler_to_quaternion(20,0,0))
-reachy.head.goto({joint: pos for joint,pos in zip(reachy.head.joints.values(), mouv)}, duration=1.0)
+mouv = reachy.head.inverse_kinematics(euler_to_quaternion(0,3.14/6,3.14/6))
+print(mouv)
+# tab = {joint: pos for joint,pos in zip(reachy.head.joints.values(), mouv)}
+# tab = tab
+angle = { reachy.head.neck_disk_top : mouv[0],
+           reachy.head.neck_disk_middle : mouv[1],
+           reachy.head.neck_disk_bottom : mouv[2]}
+print(angle)
+goto(angle, duration=1.0)
 time.sleep(5)
 
 # angle = { reachy.head.neck_disk_top : -104.70,
