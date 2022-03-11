@@ -3,16 +3,38 @@ import state_machine_obj as stm
 import state as st
 import transition as tr
 
+import vocal_recognition as vr
+import cmd
+# import movement as mv
+# from reachy_sdk import ReachySDK
+import time
+# import speech_synthesis as speech
+
+def debug_print(str):
+    print("DEBUG : " + str)
+
+# reachy = ReachySDK(host='localhost')  # Replace with the actual IP
+
+# reachy.head
+# for name, joint in reachy.joints.items():
+#     print(f'Joint "{name}" position is {joint.present_position} degree.')
+
+# r = mv.Movement(reachy)
+# r.motor_on()
+# r.head.look_at(1, 0, 0, 2)
+
 ####################
 ## States Actions ##
 ####################
 
 # state action of Recherche d'Interaction
 def recherche_interaction_func(context):
+    context["command"] = vr.record_and_transcript()
     return context
 
 # state action of Attente d'Ordre
 def attente_ordre_func(context):
+    context["command"] = vr.record_and_transcript()
     return context
 
 # state action of Traitement d'ordre
@@ -25,22 +47,34 @@ def conversation_func(context):
 
 # state action of Bonjour
 def bonjour_func(context):
+    # speech.text_to_speech(cmd.one_out(cmd.set_bonjour["s"]))
+    debug_print(cmd.one_out(cmd.set_bonjour["s"]))
     return context
 
 # state action of Ca Va
 def cava_func(context):
+    # speech.text_to_speech(cmd.one_out(cmd.set_cava["s"]))
+    debug_print(cmd.one_out(cmd.set_cava["s"]))
     return context
 
 # state action of Au Revoir
 def aurevoir_func(context):
+    # speech.text_to_speech(cmd.one_out(cmd.set_aurevoir["s"]))
+    debug_print(cmd.one_out(cmd.set_aurevoir["s"]))
     return context
 
 # state action of Gentil
 def gentil_func(context):
+    # speech.text_to_speech(cmd.one_out(cmd.set_gentil["s"]))
+    debug_print(cmd.one_out(cmd.set_gentil["s"]))
+    # r.happy()
     return context
 
 # state action of Mechant
 def mechant_func(context):
+    # speech.text_to_speech(cmd.one_out(cmd.set_mechant["s"]))
+    debug_print(cmd.one_out(cmd.set_mechant["s"]))
+    # r.sad()
     return context
 
 #####################
@@ -96,6 +130,7 @@ def C_to_B_func(context):
 
 # transition action between Bonjour and Attente d'ordre
 def B_to_AO_func(context):
+    context["command"] = ""
     return context
 
 # transition action between Conversation and Ca Va
@@ -104,6 +139,7 @@ def C_to_CV_func(context):
 
 # transition action between Ca Va and Attente d'ordre
 def CV_to_AO_func(context):
+    context["command"] = ""
     return context
 
 # transition action between Conversation and Au Revoir
@@ -111,7 +147,8 @@ def C_to_AR_func(context):
     return context
 
 # transition action between Au Revoir and Attente d'ordre
-def AR_to_AO_func(context):
+def AR_to_RI_func(context):
+    context["command"] = ""
     return context
 
 # transition action between Conversation and Gentil
@@ -120,6 +157,7 @@ def C_to_G_func(context):
 
 # transition action between Gentil and Attente d'ordre
 def G_to_AO_func(context):
+    context["command"] = ""
     return context
 
 # transition action between Conversation and Mechant
@@ -128,6 +166,12 @@ def C_to_M_func(context):
 
 # transition action between Mechant and Attente d'ordre
 def M_to_AO_func(context):
+    context["command"] = ""
+    return context
+
+# transition action between Conversation and Attente d'ordre
+def C_to_AO_func(context):
+    context["command"] = ""
     return context
 
 ###########################
@@ -136,11 +180,11 @@ def M_to_AO_func(context):
 
 # transition verif function between Recherche d'Interaction and Attente d'Ordre
 def RI_to_AO_verif(context):
-    return True
+    return cmd.all_in(context["command"], cmd.set_activation)
 
 # transition verif function between  Attente d'Ordre and Traitement d'Ordre
 def AO_to_TO_verif(context):
-    return True
+    return (context["command"] != "ERROR")
 
 # transition verif function between Traitement d'Ordre and Conversation
 def TO_to_C_verif(context):
@@ -148,7 +192,8 @@ def TO_to_C_verif(context):
 
 # transition verif function between Conversation and Bonjour
 def C_to_B_verif(context):
-    return True
+    return (cmd.one_in(context["command"], cmd.set_bonjour["e"]))
+
 
 # transition verif function between Bonjour and Attente d'ordre
 def B_to_AO_verif(context):
@@ -156,7 +201,7 @@ def B_to_AO_verif(context):
 
 # transition verif function between Conversation and Ca Va
 def C_to_CV_verif(context):
-    return True
+    return (cmd.one_in(context["command"], cmd.set_cava["e"]))
 
 # transition verif function between Ca Va and Attente d'ordre
 def CV_to_AO_verif(context):
@@ -164,15 +209,15 @@ def CV_to_AO_verif(context):
 
 # transition verif function between Conversation and Au Revoir
 def C_to_AR_verif(context):
-    return True
+    return (cmd.one_in(context["command"], cmd.set_aurevoir["e"]))
 
 # transition verif function between Au Revoir and Attente d'ordre
-def AR_to_AO_verif(context):
+def AR_to_RI_verif(context):
     return True
 
 # transition verif function between Conversation and Gentil
 def C_to_G_verif(context):
-    return True
+    return (cmd.one_in(context["command"], cmd.set_gentil["e"]))
 
 # transition verif function between Gentil and Attente d'ordre
 def G_to_AO_verif(context):
@@ -180,12 +225,15 @@ def G_to_AO_verif(context):
 
 # transition verif function between Conversation and Mechant
 def C_to_M_verif(context):
-    return True
+    return (cmd.one_in(context["command"], cmd.set_mechant["e"]))
 
 # transition verif function between Mechant and Attente d'ordre
 def M_to_AO_verif(context):
     return True
 
+# transition verif function between Conversation and Attente d'ordre
+def C_to_AO_verif(context):
+    return True
 ##########################
 ## Transitions Creation ##
 ##########################
@@ -215,7 +263,7 @@ CV_to_AO = tr.Transition(attente_ordre, CV_to_AO_func, CV_to_AO_verif)
 C_to_AR = tr.Transition(aurevoir, C_to_AR_func, C_to_AR_verif)
 
 # create the transition between Au Revoir and Attente d'ordre
-AR_to_AO = tr.Transition(attente_ordre, AR_to_AO_func, AR_to_AO_verif)
+AR_to_RI = tr.Transition(recherche_interaction, AR_to_RI_func, AR_to_RI_verif)
 
 # create the transition between Conversation and Gentil
 C_to_G = tr.Transition(gentil, C_to_G_func, C_to_G_verif)
@@ -228,6 +276,9 @@ C_to_M = tr.Transition(mechant, C_to_M_func, C_to_M_verif)
 
 # create the transition between Mechant and Attente d'ordre
 M_to_AO = tr.Transition(attente_ordre, M_to_AO_func, M_to_AO_verif)
+
+# create the transition between Conversation and Attente d'ordre
+C_to_AO = tr.Transition(attente_ordre, C_to_AO_func, C_to_AO_verif, True)
 
 ##############################
 ## Transition sets Creation ##
@@ -243,7 +294,7 @@ attente_ordre_transitions = {AO_to_TO}
 traitement_ordre_transitions = {TO_to_C}
 
 # create the transition set of Conversation
-conversation_transitions = {C_to_B, C_to_CV, C_to_AR, C_to_G, C_to_M}
+conversation_transitions = {C_to_B, C_to_CV, C_to_AR, C_to_G, C_to_M, C_to_AO}
 
 # create the transition set of Bonjour
 bonjour_transitions = {B_to_AO}
@@ -252,7 +303,7 @@ bonjour_transitions = {B_to_AO}
 cava_transitions = {CV_to_AO}
 
 # create the transition set of Au Revoir
-aurevoir_transitions = {AR_to_AO}
+aurevoir_transitions = {AR_to_RI}
 
 # create the transition set of Gentil
 gentil_transitions = {G_to_AO}
@@ -260,36 +311,37 @@ gentil_transitions = {G_to_AO}
 # create the transition set of Mechant
 mechant_transitions = {M_to_AO}   
 
-#######################################
-## Filling Transition sets in States ##
-#######################################
+#################################################
+## Filling Transition sets in transition_table ##
+#################################################
+transition_table = {}
 
 # filling the transitions of Recherche d'Interaction
-recherche_interaction.fill_transitions(recherche_interaction_transitions)
+transition_table[str(recherche_interaction)] = recherche_interaction_transitions
 
 # filling the transitions of Attente d'Ordre
-attente_ordre.fill_transitions(attente_ordre_transitions)
+transition_table[str(attente_ordre)] = attente_ordre_transitions
 
 # filling the transitions of Traitement d'ordre
-traitement_ordre.fill_transitions(traitement_ordre_transitions)
+transition_table[str(traitement_ordre)] = traitement_ordre_transitions
 
 # filling the transitions of Conversation
-conversation.fill_transitions(conversation_transitions)
+transition_table[str(conversation)] = conversation_transitions
 
 # filling the transitions of Bonjour
-bonjour.fill_transitions(bonjour_transitions)
+transition_table[str(bonjour)] = bonjour_transitions
 
 # filling the transitions of Ca Va
-cava.fill_transitions(cava_transitions)
+transition_table[str(cava)] = cava_transitions
 
 # filling the transitions of Au Revoir
-aurevoir.fill_transitions(aurevoir_transitions)
+transition_table[str(aurevoir)] = aurevoir_transitions
 
 # filling the transitions of Gentil
-gentil.fill_transitions(gentil_transitions)
+transition_table[str(gentil)] = gentil_transitions
 
 # filling the transitions of Mechant
-mechant.fill_transitions(mechant_transitions)
+transition_table[str(mechant)] = mechant_transitions
 
 ##########################
 ## Create the State set ##
@@ -312,7 +364,7 @@ states = {  recherche_interaction,
 
 context ={"command" : ""}
 
-state_machine = stm.State_Machine(states, recherche_interaction, context)
+state_machine = stm.State_Machine(states, transition_table, recherche_interaction, context)
 
 ##########
 ## Test ##
@@ -320,4 +372,4 @@ state_machine = stm.State_Machine(states, recherche_interaction, context)
 
 executeur = extr.Executeur(state_machine)
 
-executeur.execute(context, 5)
+executeur.execute(context)

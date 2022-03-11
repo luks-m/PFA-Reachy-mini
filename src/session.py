@@ -3,7 +3,7 @@ from movement import *
 
 class Session:
 
-    def __init__(sel, robot: r):
+    def __init__(self, robot: r):
         self._robot = r or ReachySDK('localhost')
         self.reachy = Movement(self._robot)
 

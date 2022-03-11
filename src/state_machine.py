@@ -4,22 +4,27 @@ import movement as mv
 from reachy_sdk import ReachySDK
 import time
 import speech_synthesis as speech
+import session as ses
+import mock
 
 def debug_print(str):
     print("DEBUG : " + str)
 
 
+reachy = Mock()
+r = Session(reachy)
 
-reachy = ReachySDK(host='localhost')  # Replace with the actual IP
 
-reachy.head
-for name, joint in reachy.joints.items():
-    print(f'Joint "{name}" position is {joint.present_position} degree.')
+# reachy = ReachySDK(host='localhost')  # Replace with the actual IP
 
-r = mv.Movement(reachy)
-r.motor_on()
-r.head.look_at(1, 0, 0, 2)
-#t = time.time()
+# reachy.head
+# for name, joint in reachy.joints.items():
+#     print(f'Joint "{name}" position is {joint.present_position} degree.')
+
+# r = mv.Movement(reachy)
+# r.motor_on()
+# r.head.look_at(1, 0, 0, 2)
+# #t = time.time()
 
 command = ""
 

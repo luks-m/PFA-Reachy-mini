@@ -2,8 +2,8 @@ import speech_recognition as sr
 from scipy.io import wavfile
 import noisereduce as nr 
 
-WAV_OUTPUT_FILENAME = "enregistrement.wav"
-WAV_OUTPUT_REDUCED_FILENAME = "enregistrement_reduce_noise.wav"
+WAV_OUTPUT_FILENAME = "../tmp/enregistrement.wav"
+WAV_OUTPUT_REDUCED_FILENAME = "../tmp/enregistrement_reduce_noise.wav"
 
 def debug_print(str):
     print("DEBUG : " + str)
