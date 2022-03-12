@@ -1,0 +1,72 @@
+{
+    "recherche_interaction":
+    {
+        "action": "recherche_interaction_func",
+        "transitions": [
+            {
+                "final":"attente_ordre",
+                "predicat":"activation_detection"
+            }
+        ]
+    },
+
+    "attente_ordre":
+    {
+        "action": "attente_ordre_func",
+        "transitions": [
+            {
+                "final":"conversation",
+                "predicat":"command_detection"
+            }
+        ]
+    },
+
+    "conversation":
+    {
+        "action": "converation_func",
+        "transitions": [
+            {
+                "final":"bonjour",
+                "predicat":"bonjour_set_detection"
+            },
+            {
+                "final":"au_revoir",
+                "predicat":"au_revoir_set_detection"
+
+            },
+            {
+                "final":"incomprehension"
+            }
+        ]
+    },
+
+    "bonjour":
+    {
+        "action": "bonjour_func",
+        "transitions": [
+            {
+                "final":"attente_ordre"
+            }
+        ]
+    },
+
+    "au_revoir":
+    {
+        "action": "au_revoir_func",
+        "transitions": [
+            {
+                "final": "recherche_interaction"
+            }
+        ]
+    },
+
+    "incomprehension":
+    {
+        "action": "incomprehension_func",
+        "transitions": [
+            {
+                "final": "attente_ordre"
+            }
+        ]
+    }
+}
