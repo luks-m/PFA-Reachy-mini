@@ -1,14 +1,13 @@
 from state import *
 
 class Transition :
-    def __init__(self, next_state, action, cond, default = False) :
+    def __init__(self, next_state, action, pred) :
         self.next_state = next_state
         self.action = action
-        self.verif = cond
-        self.default = default
+        self.pred = pred
     
     def verif_condition(self, context):
-        return self.verif(context)
+        return self.pred(context)
 
     def take_transition(self, context) :
         context = self.action(context)
