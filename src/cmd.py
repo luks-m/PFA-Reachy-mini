@@ -1,7 +1,7 @@
 import random
 
-STATE_CMD_PATH = "../assert/cmd/state_cmd.txt"
-CONVERSATION_CMD_PATH = "../assert/cmd/conversation_cmd.txt"
+STATE_CMD_PATH = "../assets/cmd/state_cmd.txt"
+CONVERSATION_CMD_PATH = "../assets/cmd/conversation_cmd.txt"
 
 ### COMMANDS PART ###
 
@@ -84,6 +84,8 @@ def create_conversation_set(set_name):
 set_bonjour = create_conversation_set("bonjour")
 
 set_cava = create_conversation_set("cava")
+print(set_cava)
+print(one_in("comment ça va", set_cava["e"]))
 
 set_gentil = create_conversation_set("gentil")
 
