@@ -1,7 +1,8 @@
 import random
-
-STATE_CMD_PATH = "../assets/cmd/state_cmd.txt"
-CONVERSATION_CMD_PATH = "../assets/cmd/conversation_cmd.txt"
+STATE_CMD_PATH = Path("assets/cmd/state_cmd.txt" )
+CONVERSATION_CMD_PATH =Path("assets/cmd/conversation_cmd.txt") #to generalize it for different OS because on Windows it didn't work
+# STATE_CMD_PATH = "../assets/cmd/state_cmd.txt"
+# CONVERSATION_CMD_PATH = "../assets/cmd/conversation_cmd.txt"
 
 ### COMMANDS PART ###
 
