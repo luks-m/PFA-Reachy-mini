@@ -1,32 +1,21 @@
 from turtle import pos
-from reachy_sdk import ReachySDK
-from reachy_sdk.trajectory import goto
 import time
 import numpy as np
+from session import *
 
 class Movement :
-    def __init__(self, reachy):
-        self.robot = reachy
-        self.head = reachy.head
+    def __init__(self, session):
+        self._session = session
         self._phi = 0
         self._theta = 90
         self._tmpphi = 0
         self._tmptheta = 90
 
     def motor_on(self):
-        self.robot.turn_on('head')
+        self._session.turn_on()
 
     def motor_off(self):
-        self.robot.turn_off('head')
-
-    def euler_to_quaternion(roll, pitch, yaw):
-
-        qx = np.sin(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) - np.cos(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
-        qy = np.cos(roll/2) * np.sin(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.cos(pitch/2) * np.sin(yaw/2)
-        qz = np.cos(roll/2) * np.cos(pitch/2) * np.sin(yaw/2) - np.sin(roll/2) * np.sin(pitch/2) * np.cos(yaw/2)
-        qw = np.cos(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
-
-        return [qx, qy, qz, qw]
+        self._session.turn_off()
     
     def degree_to_radian(self, theta):
         return theta*2*np.pi / 360
@@ -65,99 +54,88 @@ class Movement :
         position_prev = self.spherical_to_cartesian(0.5, self._tmptheta, self._tmpphi)
         self._tmptheta, self._tmpphi = self.fit_angles(theta, phi)
         position = self.spherical_to_cartesian(radius, self._tmptheta, self._tmpphi)
-        self.head.look_at(position[0], position[1], position[2], self.duration(position_prev, position, v))
+        self._session.look_at(position[0], position[1], position[2], self.duration(position_prev, position, v))
 
     def update_position(self, theta, phi, v):
-        self.move_back()
+        print(self._theta, self._phi)
         position_prev = self.spherical_to_cartesian(0.5, self._theta, self._phi)
         self._theta, self._phi = self.fit_angles(self._theta + theta, self._phi + phi)
-
+        print(self._theta, self._phi)
         self._tmptheta = self._theta
         self._tmpphi = self._phi
         position = self.spherical_to_cartesian(1, self._theta, self._phi)
+        print(self.duration(position_prev, position, v))
 
-        mouv = self.head.inverse_kinematics(self.euler_to_quaternion(0,theta, phi))
-        angle = { self.head.neck_disk_top : mouv[0],
-           self.head.neck_disk_middle : mouv[1],
-           self.head.neck_disk_bottom : mouv[2]}
-        goto(angle, self.duration(position_prev, position, v))
+        self._session.look_at(position[0], position[1], position[2], self.duration(position_prev, position, v))
 
     def listen(self):
-        self.head.l_antenna.goal_position = 0
-        self.head.r_antenna.goal_position = 0
+        self._session.r_antenna_set_position(0)
+        self._session.l_antenna_set_position(0)
 
         self.move_to(0.5, self._theta, self._phi, 0.15)
         
     def sad(self):
-        self.head.l_antenna.speed_limit = 70.0
-        self.head.r_antenna.speed_limit = 70.0
+        self._session.r_antenna_set_position(70.0)
+        self._session.l_antenna_set_position(70.0)
 
-        self.head.l_antenna.goal_position = 140.0
-        self.head.r_antenna.goal_position = -140.0
+        self._session.r_antenna_set_position(-140.0)
+        self._session.l_antenna_set_position(140.0)
 
         self.move_to(0.5, 31.15 + self._theta, self._phi, 0.13)
 
     def happy(self):
         self.move_to(0.5, 5.74 + self._theta, self._phi, 0.15)
 
-        self.head.l_antenna.speed_limit = 300.0
-        self.head.r_antenna.speed_limit = 300.0
+        self._session.antennas_speed_limit(300.0)
         
         for _ in range(10):
-            self.head.l_antenna.goal_position = 20.0
-            self.head.r_antenna.goal_position = -20.0
+            self._session.r_antenna_set_position(-20.0)
+            self._session.l_antenna_set_position(20.0)
             time.sleep(0.1)
-            self.head.l_antenna.goal_position = -20.0
-            self.head.r_antenna.goal_position = 20.0
+            self._session.r_antenna_set_position(20.0)
+            self._session.l_antenna_set_position(-20.0)
             time.sleep(0.1)
         
-        self.head.l_antenna.goal_position = 0.0
-        self.head.r_antenna.goal_position = 0.0
+        self._session.r_antenna_set_position(0.0)
+        self._session.l_antenna_set_position(0.0)
     
     def incentive(self):
-        self.head.l_antenna.speed_limit = 70.0
-        self.head.r_antenna.speed_limit = 70.0
-        self.head.l_antenna.goal_position = +35.0
-        self.head.r_antenna.goal_position = -35.0
+        self._session.antennas_speed_limit(70.0)
+        self._session.r_antenna_set_position(-35.0)
+        self._session.l_antenna_set_position(35.0)
 
         self.move_to(0.5, -5.74 + self._theta, self._phi, 0.1)
 
     def thinking(self):
-        self.head.l_antenna.speed_limit = 70.0
-        self.head.r_antenna.speed_limit = 70.0
-        self.head.l_antenna.goal_position = -40.0
-        self.head.r_antenna.goal_position = +40.0
+        self._session.antennas_speed_limit(70.0)
+        self._session.r_antenna_set_position(40.0)
+        self._session.l_antenna_set_position(-40.0)
 
         self.move_to(0.5, -16.13 + self._theta, 16.7 + self._phi, 0.21)
 
     def thanking(self):
-        self.head.l_antenna.speed_limit = 70.0
-        self.head.r_antenna.speed_limit = 70.0
-        self.head.l_antenna.goal_position = 0.0
-        self.head.r_antenna.goal_position = 0.0
+        self._session.antennas_speed_limit(70.0)
+        self._session.r_antenna_set_position(0.0)
+        self._session.l_antenna_set_position(0.0)
 
         self.move_to(0.5, 5.74 + self._theta, self._phi, 0.15)
 
         time.sleep(0.1)
 
-        self.head.l_antenna.goal_position = +40.0
-        self.head.r_antenna.goal_position = -40.0
+        self._session.r_antenna_set_position(-40.0)
+        self._session.l_antenna_set_position(40.0)
         
         self.move_to(0.5, 26.51 + self._theta, self._phi, 0.35)
         
         time.sleep(0.3)
         
-        self.head.l_antenna.goal_position = 0.0
-        self.head.r_antenna.goal_position = 0.0
+        self._session.r_antenna_set_position(0.0)
+        self._session.l_antenna_set_position(0.0)
         
         self.move_to(0.5, 5.74 + self._theta, self._phi, 0.35)
 
     def move_back(self):
-        position_prev = self.spherical_to_cartesian(0.5, self._tmptheta, self._tmpphi)
-        self._tmptheta = self._theta
-        self._tmpphi = self._phi
-        position = self.spherical_to_cartesian(0.5, self._theta, self._phi)
-        self.head.look_at(position[0], position[1], position[2], self.duration(position_prev, position, 0.15))
+        self._session.look_at(self._current_position[0], self._current_position[1], self._current_position[2], 0.5)
 
 
 # reachy = ReachySDK(host='localhost')
