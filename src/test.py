@@ -20,11 +20,13 @@ print("motor on")
 session._robot.head.look_at(1, 0, 0, 2)
 
 time.sleep(5)
+t = time.time()
 
-
-angle = n_closest_angle(reachy_cam.get_frame(), 1)
-print(angle.h , angle.v)
-robot.update_position(-radians(angle.v),-radians(angle.h) , 0.5)
+while((time.time() - t) < 20):
+    angle = n_closest_angle(reachy_cam.get_frame(), 1)
+    print(angle.h , angle.v)
+    robot.update_position(-radians(angle.v),-radians(angle.h) , 0.5)
+    time.sleep(1)
 
 
 print("end")
