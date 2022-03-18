@@ -75,7 +75,7 @@ class Movement :
         self._tmpphi = self._phi
         position = self.spherical_to_cartesian(1, self._theta, self._phi)
 
-        mouv = self._head.inverse_kinematics(self.euler_to_quaternion(0,theta, phi))
+        mouv = self._head.inverse_kinematics(self.euler_to_quaternion(0,-self.degree_to_radian(self._theta), -self.degree_to_radian(self._phi)))
         angle = { self._head.neck_disk_top : mouv[0],
            self._head.neck_disk_middle : mouv[1],
            self._head.neck_disk_bottom : mouv[2]}
