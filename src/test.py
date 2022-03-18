@@ -1,9 +1,10 @@
 from movement import *
 from face_detection import *
 from reachy_session import ReachySession
+from math import radians
 
 session = ReachySession()
-robot = Movement(session)
+robot = Movement(session, session._robot)
 
 # camera = reachy.left_camera
 
@@ -23,7 +24,8 @@ time.sleep(5)
 
 angle = n_closest_angle(reachy_cam.get_frame(), 1)
 print(angle.h , angle.v)
-robot.update_position(0, 40, 0.5)
+robot.update_position(-radians(angle.v),-radians(angle.h) , 0.5)
+
 
 print("end")
 time.sleep(5)

@@ -36,7 +36,7 @@ print("head")
 reachy.turn_on('head')
 print("on")
 
-mouv = reachy.head.inverse_kinematics(euler_to_quaternion(0,3.14/6,3.14/6))
+mouv = reachy.head.inverse_kinematics(euler_to_quaternion(0,0,-3.14/2))
 print(mouv)
 # tab = {joint: pos for joint,pos in zip(reachy.head.joints.values(), mouv)}
 # tab = tab

@@ -1,5 +1,6 @@
 from session import *
 from reachy_sdk import ReachySDK
+from reachy_sdk.trajectory import goto
 
 class ReachySession(Session):
 
@@ -19,7 +20,7 @@ class ReachySession(Session):
         self._robot.head.inverse_kinematics(quaternion)
 
     def goto(self, dict, duration):
-        self._robot.head.goto(dict, duration)
+        goto(dict, duration)
 
     def r_antenna_set_position(self, position):
         self._robot.head.r_antenna.goal_position = position

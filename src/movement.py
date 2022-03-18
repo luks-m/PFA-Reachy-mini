@@ -4,8 +4,9 @@ import numpy as np
 from session import *
 
 class Movement :
-    def __init__(self, session):
+    def __init__(self, session,reachy):
         self._session = session
+        self._head = reachy.head
         self._phi = 0
         self._theta = 90
         self._tmpphi = 0
@@ -17,7 +18,7 @@ class Movement :
     def motor_off(self):
         self._session.turn_off()
 
-    def euler_to_quaternion(roll, pitch, yaw):
+    def euler_to_quaternion(self,roll, pitch, yaw):
 
         qx = np.sin(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) - np.cos(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
         qy = np.cos(roll/2) * np.sin(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.cos(pitch/2) * np.sin(yaw/2)
@@ -74,10 +75,10 @@ class Movement :
         self._tmpphi = self._phi
         position = self.spherical_to_cartesian(1, self._theta, self._phi)
 
-        mouv = self._session.inverse_kinematics(self.euler_to_quaternion(0,theta, phi))
-        angle = { self._session.neck_disk_top : mouv[0],
-           self._session.neck_disk_middle : mouv[1],
-           self._session.neck_disk_bottom : mouv[2]}
+        mouv = self._head.inverse_kinematics(self.euler_to_quaternion(0,theta, phi))
+        angle = { self._head.neck_disk_top : mouv[0],
+           self._head.neck_disk_middle : mouv[1],
+           self._head.neck_disk_bottom : mouv[2]}
         self._session.goto(angle, self.duration(position_prev, position, v))
 
     def listen(self):
