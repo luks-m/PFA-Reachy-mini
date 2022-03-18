@@ -1,42 +1,47 @@
-from reachy_sdk import ReachySDK
-from movement import *
+from abc import ABC, abstractmethod
 
-class Session:
+class Session(ABC):
 
-    def __init__(self, robot: r):
-        self._robot = r or ReachySDK('localhost')
-        self.reachy = Movement(self._robot)
+    @abstractmethod
+    def turn_on(self):
+        pass
 
-    def motor_on(self):
-        self._robot.motor_on()
+    @abstractmethod
+    def turn_off(self):
+        pass
 
-    def motor_off(self):
-        self._robot.motor_off()
+    @abstractmethod
+    def look_at(self, radius, theta, phi, v):
+        pass
 
-    def move_to(self, radius, theta, phi, v):
-        self.reachy.move_to(radius, theta, phi, v)
+    @abstractmethod
+    def inverse_kinematics(self, quaternion):
+        pass
 
-    def update_position(self, theta, phi, v):
-        self.reachy.update_position(theta, phi, v)
+    @abstractmethod
+    def goto(self):
+        pass
     
-    def listen(self):
-        self.reachy.listen()
+    @abstractmethod
+    def r_antenna_set_position(self, position):
+        pass
 
-    def sad(self):
-        self.reachy.sad()
+    @abstractmethod
+    def l_antenna_set_position(self, position):
+        pass
 
-    def happy(self):
-        self.reachy.happy()
+    @abstractmethod
+    def antennas_speed_limit(self, v):
+        pass
 
-    def incentive(self):
-        self.reachy.incentive()
+    @abstractmethod
+    def start_autofocus(self):
+        pass
     
-    def thanking(self):
-        self.reachy.thanking()
-    
-    def thinking(self):
-        self.reachy.thinking()
-    
-    def move_back(self):
-        self.reachy.move_back()
-        
+    @abstractmethod
+    def stop_autofocus(self):
+        pass
+
+    @abstractmethod
+    def get_frame(self):
+        pass

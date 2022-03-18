@@ -1,5 +1,5 @@
 # In this file there is a set of I/O for the conversation. The "I" commands are like
-e_<cmd name> and the "O" are like s_<cmd name>. 
+e_<cmd name> and the "O" are like s_<cmd name>. WARNING : don't let space at the end of entries.
 
 cmd : e_bonjour
 . Bonjour
@@ -14,8 +14,8 @@ cmd : s_bonjour
 ...
 
 cmd : e_cava
-. Comment vas-tu 
-. Comment ça va 
+. Comment vas-tu
+. Comment ça va
 ...
 
 cmd : s_cava

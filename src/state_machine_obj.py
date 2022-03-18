@@ -2,21 +2,22 @@ import string
 
 from numpy import character
 # from state import *
-from transition import * 
 from executor import *
 
 class State_Machine :
-    def __init__(self, state_dico, transition_dico, initial_state) :
+    def __init__(self, state_dico, transition_dico, initial_state, module) :
         self.state_dico = state_dico
         self.transition_dico = transition_dico
         self.initial_state = initial_state
+        self.module = module
     
-    def create_executor(session):
+    def create_executor(self, session):
         context = { "session" : session,
-                    "states" : state_dico,
-                    "transitions" : transition_dico
+                    "states" : self.state_dico,
+                    "transitions" : self.transition_dico,
+                    "module" : self.module
         }
-        return Executor(initial_state, context)
+        return Executor(self.initial_state, context)
     
     # def get_context(self) :
     #     return self.context
