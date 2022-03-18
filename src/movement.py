@@ -17,7 +17,7 @@ class Movement :
     def motor_off(self):
         self._session.turn_off()
 
-    def euler_to_quaternion(self, roll, pitch, yaw):
+    def euler_to_quaternion(roll, pitch, yaw):
 
         qx = np.sin(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) - np.cos(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
         qy = np.cos(roll/2) * np.sin(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.cos(pitch/2) * np.sin(yaw/2)
@@ -25,7 +25,6 @@ class Movement :
         qw = np.cos(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
 
         return [qx, qy, qz, qw]
-
     
     def degree_to_radian(self, theta):
         return theta*2*np.pi / 360
@@ -67,85 +66,96 @@ class Movement :
         self._session.look_at(position[0], position[1], position[2], self.duration(position_prev, position, v))
 
     def update_position(self, theta, phi, v):
-        print(self._theta, self._phi)
+        self.move_back()
         position_prev = self.spherical_to_cartesian(0.5, self._theta, self._phi)
         self._theta, self._phi = self.fit_angles(self._theta + theta, self._phi + phi)
-        print(self._theta, self._phi)
+
         self._tmptheta = self._theta
         self._tmpphi = self._phi
         position = self.spherical_to_cartesian(1, self._theta, self._phi)
-        print(self.duration(position_prev, position, v))
 
-        self._session.look_at(position[0], position[1], position[2], self.duration(position_prev, position, v))
+        mouv = self._session.inverse_kinematics(self.euler_to_quaternion(0,theta, phi))
+        angle = { self._session.neck_disk_top : mouv[0],
+           self._session.neck_disk_middle : mouv[1],
+           self._session.neck_disk_bottom : mouv[2]}
+        self._session.goto(angle, self.duration(position_prev, position, v))
 
     def listen(self):
-        self._session.r_antenna_set_position(0)
-        self._session.l_antenna_set_position(0)
+        self._session.l_antenna.goal_position = 0
+        self._session.r_antenna.goal_position = 0
 
         self.move_to(0.5, self._theta, self._phi, 0.15)
         
     def sad(self):
-        self._session.r_antenna_set_position(70.0)
-        self._session.l_antenna_set_position(70.0)
+        self._session.l_antenna.speed_limit = 70.0
+        self._session.r_antenna.speed_limit = 70.0
 
-        self._session.r_antenna_set_position(-140.0)
-        self._session.l_antenna_set_position(140.0)
+        self._session.l_antenna.goal_position = 140.0
+        self._session.r_antenna.goal_position = -140.0
 
         self.move_to(0.5, 31.15 + self._theta, self._phi, 0.13)
 
     def happy(self):
         self.move_to(0.5, 5.74 + self._theta, self._phi, 0.15)
 
-        self._session.antennas_speed_limit(300.0)
+        self._session.l_antenna.speed_limit = 300.0
+        self._session.r_antenna.speed_limit = 300.0
         
         for _ in range(10):
-            self._session.r_antenna_set_position(-20.0)
-            self._session.l_antenna_set_position(20.0)
+            self._session.l_antenna.goal_position = 20.0
+            self._session.r_antenna.goal_position = -20.0
             time.sleep(0.1)
-            self._session.r_antenna_set_position(20.0)
-            self._session.l_antenna_set_position(-20.0)
+            self._session.l_antenna.goal_position = -20.0
+            self._session.r_antenna.goal_position = 20.0
             time.sleep(0.1)
         
-        self._session.r_antenna_set_position(0.0)
-        self._session.l_antenna_set_position(0.0)
+        self._session.l_antenna.goal_position = 0.0
+        self._session.r_antenna.goal_position = 0.0
     
     def incentive(self):
-        self._session.antennas_speed_limit(70.0)
-        self._session.r_antenna_set_position(-35.0)
-        self._session.l_antenna_set_position(35.0)
+        self._session.l_antenna.speed_limit = 70.0
+        self._session.r_antenna.speed_limit = 70.0
+        self._session.l_antenna.goal_position = +35.0
+        self._session.r_antenna.goal_position = -35.0
 
         self.move_to(0.5, -5.74 + self._theta, self._phi, 0.1)
 
     def thinking(self):
-        self._session.antennas_speed_limit(70.0)
-        self._session.r_antenna_set_position(40.0)
-        self._session.l_antenna_set_position(-40.0)
+        self._session.l_antenna.speed_limit = 70.0
+        self._session.r_antenna.speed_limit = 70.0
+        self._session.l_antenna.goal_position = -40.0
+        self._session.r_antenna.goal_position = +40.0
 
         self.move_to(0.5, -16.13 + self._theta, 16.7 + self._phi, 0.21)
 
     def thanking(self):
-        self._session.antennas_speed_limit(70.0)
-        self._session.r_antenna_set_position(0.0)
-        self._session.l_antenna_set_position(0.0)
+        self._session.l_antenna.speed_limit = 70.0
+        self._session.r_antenna.speed_limit = 70.0
+        self._session.l_antenna.goal_position = 0.0
+        self._session.r_antenna.goal_position = 0.0
 
         self.move_to(0.5, 5.74 + self._theta, self._phi, 0.15)
 
         time.sleep(0.1)
 
-        self._session.r_antenna_set_position(-40.0)
-        self._session.l_antenna_set_position(40.0)
+        self._session.l_antenna.goal_position = +40.0
+        self._session.r_antenna.goal_position = -40.0
         
         self.move_to(0.5, 26.51 + self._theta, self._phi, 0.35)
         
         time.sleep(0.3)
         
-        self._session.r_antenna_set_position(0.0)
-        self._session.l_antenna_set_position(0.0)
+        self._session.l_antenna.goal_position = 0.0
+        self._session.r_antenna.goal_position = 0.0
         
         self.move_to(0.5, 5.74 + self._theta, self._phi, 0.35)
 
     def move_back(self):
-        self._session.look_at(self._current_position[0], self._current_position[1], self._current_position[2], 0.5)
+        position_prev = self.spherical_to_cartesian(0.5, self._tmptheta, self._tmpphi)
+        self._tmptheta = self._theta
+        self._tmpphi = self._phi
+        position = self.spherical_to_cartesian(0.5, self._theta, self._phi)
+        self._session.look_at(position[0], position[1], position[2], self.duration(position_prev, position, 0.15))
 
 if __name__ == "__main__":
     reachy = ReachySDK(host='localhost')
