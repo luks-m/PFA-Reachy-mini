@@ -1,5 +1,5 @@
 from session import *
-from reachysdk import ReachySDK
+from reachy_sdk import ReachySDK
 
 class ReachySession(Session):
 

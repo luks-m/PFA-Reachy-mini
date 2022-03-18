@@ -67,14 +67,12 @@ class Movement :
         self._session.look_at(position[0], position[1], position[2], self.duration(position_prev, position, v))
 
     def update_position(self, theta, phi, v):
-        print(self._theta, self._phi)
         position_prev = self.spherical_to_cartesian(0.5, self._theta, self._phi)
         self._theta, self._phi = self.fit_angles(self._theta + theta, self._phi + phi)
-        print(self._theta, self._phi)
         self._tmptheta = self._theta
         self._tmpphi = self._phi
         position = self.spherical_to_cartesian(1, self._theta, self._phi)
-        print(self.duration(position_prev, position, v))
+
 
         self._session.look_at(position[0], position[1], position[2], self.duration(position_prev, position, v))
 

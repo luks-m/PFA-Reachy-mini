@@ -36,21 +36,14 @@ class Face_and_value:   # Represent a face square extended with a value
 class Reachy_camera:
     def __init__(self, reachy):
         self.camera = reachy.right_camera
-        print(self.camera)
-        self.launch_focus()
     def launch_focus(self): # Launch an automatic zoom during 2 seconds
         self.camera.start_autofocus
-        time.sleep(2)
-        self.camera.stop_autofocus
+        # time.sleep(2)
+        # self.camera.stop_autofocus
     def get_frame(self):
         return self.camera.last_frame
     def take_picture(self, noun): # Take a picture, with an automatic focus, and save it at the 'path' location
-        self.launch_focus()
         cv2.imwrite(noun + ".png", self.camera.get_frame())
-
-  #  def take_picture(noun): # Take a picture, with an automatic focus, and save it at the 'path' location
-   #     launch_focus()
-    #    cv2.imwrite("./tmp/" + noun + ".png", camera.get_frame())
 
 # Mathematical transformations
 def give_face_center(face): # Given a face square object, gice the square center
