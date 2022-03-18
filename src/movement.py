@@ -19,7 +19,7 @@ class Movement :
     def motor_off(self):
         self.robot.turn_off('head')
 
-    def euler_to_quaternion(roll, pitch, yaw):
+    def euler_to_quaternion(self, roll, pitch, yaw):
 
         qx = np.sin(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) - np.cos(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
         qy = np.cos(roll/2) * np.sin(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.cos(pitch/2) * np.sin(yaw/2)
@@ -159,38 +159,40 @@ class Movement :
         position = self.spherical_to_cartesian(0.5, self._theta, self._phi)
         self.head.look_at(position[0], position[1], position[2], self.duration(position_prev, position, 0.15))
 
+if __name__ == "__main__":
+    reachy = ReachySDK(host='localhost')
 
-# reachy = ReachySDK(host='localhost')
+    print(reachy.head)
 
-# print(reachy.head)
+    print("head")
+    robot = Movement(reachy)
+    print("robot ok")
+    robot.motor_on()
+    print("motor on")
 
-# print("head")
-# robot = Movement(reachy)
-# print("robot ok")
-# robot.motor_on()
-# print("motor on")
+    robot.head.look_at(1, 0, 0, 2)
 
-# robot.head.look_at(1, 0, 0, 2)
+    time.sleep(5)
 
-# robot.update_position(0,20,0.5)
+    robot.update_position(0,20,0.5)
 
-# robot.listen()
-# time.sleep(0.5)
-# robot.sad()
-# time.sleep(0.5)
-# robot.listen()
-# time.sleep(0.5)
-# robot.happy()
-# time.sleep(0.5)
-# robot.incentive()
-# time.sleep(0.5)
-# robot.thinking()
-# time.sleep(0.5)
-# robot.thanking()
-# time.sleep(0.5)
+    # robot.listen()
+    # time.sleep(0.5)
+    # robot.sad()
+    # time.sleep(0.5)
+    # robot.listen()
+    # time.sleep(0.5)
+    # robot.happy()
+    # time.sleep(0.5)
+    # robot.incentive()
+    # time.sleep(0.5)
+    # robot.thinking()
+    # time.sleep(0.5)
+    # robot.thanking()
+    # time.sleep(0.5)
 
 
-# print("end")
-# time.sleep(5)
-# robot.motor_off()
-# print("motor off")
+    print("end")
+    time.sleep(5)
+    robot.motor_off()
+    print("motor off")

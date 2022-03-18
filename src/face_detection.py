@@ -1,11 +1,11 @@
-# from reachy_sdk import ReachySDK
+from reachy_sdk import ReachySDK
 from math import sqrt
+import time
 import cv2
 
 
 # Defining the face detedtor
 Face_detector = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-Reachy_cam = None
 
 # Useful classes
 class Pos:      # Represent a face square upper left position
@@ -35,20 +35,21 @@ class Face_and_value:   # Represent a face square extended with a value
 
 class Reachy_camera:
     def __init__(self, reachy):
-        self.camera = reachy.left_camera
-        launch_zoom()
-    def launch_zoom(): # Launch an automatic zoom during 2 seconds
-        self.camera.start_autofocus()
-        sleep(2)
-        self.camera.stop_autofocus()
-    def get_frame():
-        return camera.last_frame
-    def take_picture(noun): # Take a picture, with an automatic focus, and save it at the 'path' location
-        launch_zoom()
-        cv2.imwrite(noun + ".png", camera.get_frame())
+        self.camera = reachy.right_camera
+        print(self.camera)
+        self.launch_focus()
+    def launch_focus(self): # Launch an automatic zoom during 2 seconds
+        self.camera.start_autofocus
+        time.sleep(2)
+        self.camera.stop_autofocus
+    def get_frame(self):
+        return self.camera.last_frame
+    def take_picture(self, noun): # Take a picture, with an automatic focus, and save it at the 'path' location
+        self.launch_focus()
+        cv2.imwrite(noun + ".png", self.camera.get_frame())
 
   #  def take_picture(noun): # Take a picture, with an automatic focus, and save it at the 'path' location
-   #     launch_zoom()
+   #     launch_focus()
     #    cv2.imwrite("./tmp/" + noun + ".png", camera.get_frame())
 
 # Mathematical transformations
@@ -207,4 +208,4 @@ def smart_give_angle(nbr_frame_to_compute, give_frame_function, give_angle_funct
     return nearest_angle   
 
 def initiate_reachy_camera(reachy): # Initiate and give the reachy's camera chosen by the Reachy_camera class
-    Reachy_cam = Reachy_camera(reachy)
+    return Reachy_camera(reachy)

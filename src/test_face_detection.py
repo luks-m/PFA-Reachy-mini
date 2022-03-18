@@ -1,4 +1,6 @@
 import time
+import sys
+sys.path.append('../scr')
 from face_detection import *
 
 
@@ -40,6 +42,7 @@ def test_all_face_recognised_with_reachy_api(with_angle_to_center):
     camera = initiate_reachy_camera(ReachySDK(host='localhost'))  # Replace with the actual IP
 
     def get_frame():
+        camera.launch_focus()
         return give_in_gray(camera.get_frame())
 
     run_all_face_tests(get_frame, with_angle_to_center)       
@@ -138,7 +141,7 @@ def smart_give_angle_test_with_reachy_api():
 
 if __name__ == '__main__': # Relevant test experiences
     # test_all_face_recognised(True)
-    # test_all_face_recognised_with_reachy_api(False)
+    test_all_face_recognised_with_reachy_api(False)
 
     # test_n_closest_angle(0)
     # test_n_closest_angle(1)
@@ -153,4 +156,4 @@ if __name__ == '__main__': # Relevant test experiences
     # test_framing_for_group_photo_angle_with_reachy_api(0.5)
 
     # smart_give_angle_test()
-    smart_give_angle_test_with_reachy_api()
+    # smart_give_angle_test_with_reachy_api()
