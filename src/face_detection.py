@@ -182,7 +182,9 @@ def frame_display(frame, window_name):
 def get_aruco_code(frame):
     grey_frame = give_in_gray(frame)
     bbox, ids, r = aruco.detectMarkers(grey_frame, MARKER_DIC, parameters=PARAM_MMARKERS)
-    return ids
+    if len(ids) == 0:
+        return None
+    return ids[1]
 
 
 # Interface functions
