@@ -2,10 +2,13 @@ from reachy_sdk import ReachySDK
 from math import sqrt
 import time
 import cv2
+from turtle import right
+from cv2 import aruco
 
-
-# Defining the face detedtor
+# Defining the face and ArUco detedtors
 Face_detector = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+MARKER_DIC = aruco.Dictionary_get(aruco.DICT_4X4_50)
+PARAM_MMARKERS = aruco.DetectorParameters_create()
 
 # Useful classes
 class Pos:      # Represent a face square upper left position
@@ -42,8 +45,16 @@ class Reachy_camera:
         # self.camera.stop_autofocus
     def get_frame(self):
         return self.camera.last_frame
-    def take_picture(self, noun): # Take a picture, with an automatic focus, and save it at the 'path' location
-        cv2.imwrite(noun + ".png", self.camera.get_frame())
+    def take_picture(noun): # Take a picture, with an automatic focus, and save it at the 'path' location
+       launch_zoom()
+       cv2.imwrite("./tmp/" + noun + ".png", camera.get_frame())
+    def smart_get_aruco_code(nbr_trials):
+        for i in range(nbr_trials):
+            id = get_aruco_code(get_frame())
+            if id != None
+                return id
+        return None
+
 
 # Mathematical transformations
 def give_face_center(face): # Given a face square object, gice the square center
@@ -167,6 +178,12 @@ def draw_rectangle_on_frame(frame, face):
 
 def frame_display(frame, window_name):
     cv2.imshow(window_name, frame)
+
+def get_aruco_code(frame):
+    grey_frame = give_in_gray(frame)
+    bbox, ids, r = aruco.detectMarkers(grey_frame, MARKER_DIC, parameters=PARAM_MMARKERS)
+    return ids
+
 
 # Interface functions
 def n_closest_angle(frame, n, for_test = False): # Give the average angle for the n closest faces using get_n_closest_face
