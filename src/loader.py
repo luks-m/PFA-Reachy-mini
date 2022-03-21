@@ -48,9 +48,9 @@ def load(file_path):
 
                     # fillin the transition dictionary
                     transitions[i[0]].append({"next_state":final, "action":action, "pred":predicat})
-            #a state needs at least one transition in our model (no sink state)
+            #if there is no transition, accessing this state stop the program after its action
             else:
-                raise ValueError("a state needs transitions")
+                transitions[i[0]] = [{"next_state":"quit_program", "action":"quit_program", "pred":"quit_program"}]
     
     initial_state = list(states)[0]
     

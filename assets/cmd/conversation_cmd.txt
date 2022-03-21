@@ -57,3 +57,11 @@ cmd : s_aurevoir
 cmd : s_incomprehension
 . Je n'ai pas bien compris votre demande
 ...
+
+cmd : e_eteindre
+. éteins-toi
+...
+
+cmd : s_eteindre
+. ça marche, à la prochaine
+...

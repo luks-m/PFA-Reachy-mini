@@ -1,7 +1,7 @@
 import random
 from pathlib import Path
-STATE_CMD_PATH = Path("assets/cmd/state_cmd.txt" )
-CONVERSATION_CMD_PATH =Path("assets/cmd/conversation_cmd.txt") #to generalize it for different OS because on Windows it didn't work
+STATE_CMD_PATH = Path("../assets/cmd/state_cmd.txt" )
+CONVERSATION_CMD_PATH =Path("../assets/cmd/conversation_cmd.txt") #to generalize it for different OS because on Windows it didn't work
 # STATE_CMD_PATH = "../assets/cmd/state_cmd.txt"
 # CONVERSATION_CMD_PATH = "../assets/cmd/conversation_cmd.txt"
 
@@ -86,8 +86,8 @@ def create_conversation_set(set_name):
 set_bonjour = create_conversation_set("bonjour")
 
 set_cava = create_conversation_set("cava")
-print(set_cava)
-print(one_in("comment ça va", set_cava["e"]))
+# print(set_cava)
+# print(one_in("comment ça va", set_cava["e"]))
 
 set_gentil = create_conversation_set("gentil")
 
@@ -96,3 +96,5 @@ set_mechant = create_conversation_set("mechant")
 set_aurevoir = create_conversation_set("aurevoir")
 
 set_incomprehension = transcript_cmd(CONVERSATION_CMD_PATH, "s_incomprehension")
+
+set_eteindre = create_conversation_set("eteindre")

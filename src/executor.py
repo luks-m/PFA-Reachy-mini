@@ -10,6 +10,8 @@ class Executor:
         self.module = __import__(context["module"])
 
     def __verif_predicat(self, pred, context):
+        if(pred == "quit_program"):
+            quit()
         if(pred == "basic_predicat"):
             return True
         else:
@@ -38,7 +40,6 @@ class Executor:
         if(iteration <= 0):
             while(True):
                 print("state " + self.current_state)
-                print(self.context)
                 self.current_state, self.context = self.__execute_once(self.current_state, self.context)
         else:
             for i in range(iteration - 1):
