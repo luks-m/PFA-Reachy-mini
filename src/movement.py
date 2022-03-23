@@ -86,81 +86,77 @@ def update_position(session, theta, phi, v):
     session.goto(angle, __duration(position_prev, position, v))
 
 def listen(session):
-    self._session.l_antenna.goal_position = 0
-    self._session.r_antenna.goal_position = 0
+    session.r_antenna_set_position(0)
+    session.l_antenna_set_position(0)
 
-    self.move_to(0.5, self.THETA, self.PHI, 0.15)
+    session.move_to(0.5, THETA, PHI, 0.15)
+        
+def sad(session):
+    session.r_antenna_set_position(70.0)
+    session.l_antenna_set_position(70.0)
 
-def sad(self):
-    self._session.l_antenna.speed_limit = 70.0
-    self._session.r_antenna.speed_limit = 70.0
+    session.r_antenna_set_position(-140.0)
+    session.l_antenna_set_position(140.0)
 
-    self._session.l_antenna.goal_position = 140.0
-    self._session.r_antenna.goal_position = -140.0
+    session.move_to(0.5, 31.15 + THETA, PHI, 0.13)
 
-    self.move_to(0.5, 31.15 + self.THETA, self.PHI, 0.13)
+def happy(session):
+    session.move_to(0.5, 5.74 + THETA, PHI, 0.15)
 
-def happy(self):
-    self.move_to(0.5, 5.74 + self.THETA, self.PHI, 0.15)
-
-    self._session.l_antenna.speed_limit = 300.0
-    self._session.r_antenna.speed_limit = 300.0
-
+    session.antennas_speed_limit(300.0)
+    
     for _ in range(10):
-        self._session.l_antenna.goal_position = 20.0
-        self._session.r_antenna.goal_position = -20.0
+        session.r_antenna_set_position(-20.0)
+        session.l_antenna_set_position(20.0)
         time.sleep(0.1)
-        self._session.l_antenna.goal_position = -20.0
-        self._session.r_antenna.goal_position = 20.0
+        session.r_antenna_set_position(20.0)
+        session.l_antenna_set_position(-20.0)
         time.sleep(0.1)
+    
+    session.r_antenna_set_position(0.0)
+    session.l_antenna_set_position(0.0)
 
-    self._session.l_antenna.goal_position = 0.0
-    self._session.r_antenna.goal_position = 0.0
+def incentive(session):
+    session.antennas_speed_limit(70.0)
+    session.r_antenna_set_position(-35.0)
+    session.l_antenna_set_position(35.0)
 
-def incentive(self):
-    self._session.l_antenna.speed_limit = 70.0
-    self._session.r_antenna.speed_limit = 70.0
-    self._session.l_antenna.goal_position = +35.0
-    self._session.r_antenna.goal_position = -35.0
+    session.move_to(0.5, -5.74 + THETA, PHI, 0.1)
 
-    self.move_to(0.5, -5.74 + self.THETA, self.PHI, 0.1)
+def thinking(session):
+    session.antennas_speed_limit(70.0)
+    session.r_antenna_set_position(40.0)
+    session.l_antenna_set_position(-40.0)
 
-def thinking(self):
-    self._session.l_antenna.speed_limit = 70.0
-    self._session.r_antenna.speed_limit = 70.0
-    self._session.l_antenna.goal_position = -40.0
-    self._session.r_antenna.goal_position = +40.0
+    session.move_to(0.5, -16.13 + THETA, 16.7 + PHI, 0.21)
 
-    self.move_to(0.5, -16.13 + self.THETA, 16.7 + self.PHI, 0.21)
+def thanking(session):
+    session.antennas_speed_limit(70.0)
+    session.r_antenna_set_position(0.0)
+    session.l_antenna_set_position(0.0)
 
-def thanking(self):
-    self._session.l_antenna.speed_limit = 70.0
-    self._session.r_antenna.speed_limit = 70.0
-    self._session.l_antenna.goal_position = 0.0
-    self._session.r_antenna.goal_position = 0.0
-
-    self.move_to(0.5, 5.74 + self.THETA, self.PHI, 0.15)
+    session.move_to(0.5, 5.74 + THETA, PHI, 0.15)
 
     time.sleep(0.1)
 
-    self._session.l_antenna.goal_position = +40.0
-    self._session.r_antenna.goal_position = -40.0
-
-    self.move_to(0.5, 26.51 + self.THETA, self.PHI, 0.35)
-
+    session.r_antenna_set_position(-40.0)
+    session.l_antenna_set_position(40.0)
+    
+    session.move_to(0.5, 26.51 + THETA, PHI, 0.35)
+    
     time.sleep(0.3)
+    
+    session.r_antenna_set_position(0.0)
+    session.l_antenna_set_position(0.0)
+    
+    session.move_to(0.5, 5.74 + THETA, PHI, 0.35)
 
-    self._session.l_antenna.goal_position = 0.0
-    self._session.r_antenna.goal_position = 0.0
-
-    self.move_to(0.5, 5.74 + self.THETA, self.PHI, 0.35)
-
-def move_back(self):
-    position_prev = self.__spherical_to_cartesian(0.5, self.TMP_THETA, self.TMP_PHI)
-    self.TMP_THETA = self.THETA
-    self.TMP_PHI = self.PHI
-    position = self.__spherical_to_cartesian(0.5, self.THETA, self.PHI)
-    self._session.look_at(position[0], position[1], position[2], self.duration(position_prev, position, 0.15))
+def move_back(session):
+    position_prev = __spherical_to_cartesian(0.5, TMP_THETA, TMP_PHI)
+    TMP_THETA = THETA
+    TMP_PHI = PHI
+    position = __spherical_to_cartesian(0.5, THETA, PHI)
+    session.look_at(position[0], position[1], position[2], __duration(position_prev, position, 0.15))
 
 # if __name__ == "__main__":
 #     reachy = ReachySDK(host='localhost')
