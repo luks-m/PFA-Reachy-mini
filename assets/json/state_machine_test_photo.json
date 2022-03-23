@@ -1,0 +1,32 @@
+{
+    "states": {
+        "allumage_robot": {
+            "action": "allumage_robot_func",
+            "transitions": [
+                {   
+                    "final": "photo_simple"
+                }
+            ]
+        },
+        "eteindre":{
+            "action": "eteindre_func"
+        },
+        "photo_simple":{
+            "action": "photo_simple_func",
+            "transitions": [
+                {
+                    "final": "prise_photo"
+                }
+            ]
+        },
+        "prise_photo":{
+            "action": "prise_photo_func",
+            "transitions": [
+                {
+                    "final": "eteindre"
+                }
+            ]
+        }
+    },
+    "module":"reachy_state_machine_100_ans_func"
+}
