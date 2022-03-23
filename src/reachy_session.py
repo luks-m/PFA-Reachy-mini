@@ -32,11 +32,14 @@ class ReachySession(Session):
         self._robot.head.r_antenna.speed_limit = v
         self._robot.head.l_antenna.speed_limit = v
 
+    def get_angles(self):
+        return {"neck_disk_top": self._robot.head.neck_disk_top, "neck_disk_middle": self._robot.head.neck_disk_middle, "neck_disk_bottom": self._robot.head.neck_disk_bottom}
+
     def start_autofocus(self):
-        self._robot.left_camera.start_autofocus()
+        self._robot.right_camera.start_autofocus
 
     def stop_autofocus(self):
-        self._robot.left_camera.stop_autofocus()
+        self._robot.right_camera.stop_autofocus
 
     def get_frame(self):
-        return _robot.left_camera.last_frame
+        return _robot.right_camera.last_frame

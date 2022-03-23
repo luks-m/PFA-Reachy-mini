@@ -4,9 +4,8 @@ import numpy as np
 from session import *
 
 class Movement :
-    def __init__(self, session,reachy):
+    def __init__(self, session):
         self._session = session
-        self._head = reachy.head
         self._phi = 0
         self._theta = 90
         self._tmpphi = 0
@@ -18,7 +17,7 @@ class Movement :
     def motor_off(self):
         self._session.turn_off()
 
-    def euler_to_quaternion(self,roll, pitch, yaw):
+    def euler_to_quaternion(self, roll, pitch, yaw):
 
         qx = np.sin(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) - np.cos(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
         qy = np.cos(roll/2) * np.sin(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.cos(pitch/2) * np.sin(yaw/2)
@@ -75,10 +74,12 @@ class Movement :
         self._tmpphi = self._phi
         position = self.spherical_to_cartesian(1, self._theta, self._phi)
 
-        mouv = self._head.inverse_kinematics(self.euler_to_quaternion(0,-self.degree_to_radian(self._theta), -self.degree_to_radian(self._phi)))
-        angle = { self._head.neck_disk_top : mouv[0],
-           self._head.neck_disk_middle : mouv[1],
-           self._head.neck_disk_bottom : mouv[2]}
+        mouv = self._session.inverse_kinematics(self.euler_to_quaternion(0,-self.degree_to_radian(self._theta), -self.degree_to_radian(self._phi)))
+        angles = self._session.get_angles()
+        angle = { 
+                angles["neck_disk_top"] : mouv[0],
+                angles["neck_disk_middle"] : mouv[1],
+                angles["neck_disk_bottom"] : mouv[2]}
         self._session.goto(angle, self.duration(position_prev, position, v))
 
     def listen(self):
@@ -158,40 +159,40 @@ class Movement :
         position = self.spherical_to_cartesian(0.5, self._theta, self._phi)
         self._session.look_at(position[0], position[1], position[2], self.duration(position_prev, position, 0.15))
 
-if __name__ == "__main__":
-    reachy = ReachySDK(host='localhost')
+# if __name__ == "__main__":
+#     reachy = ReachySDK(host='localhost')
 
-    print(reachy.head)
+#     print(reachy.head)
 
-    print("head")
-    robot = Movement(reachy)
-    print("robot ok")
-    robot.motor_on()
-    print("motor on")
+#     print("head")
+#     robot = Movement(reachy)
+#     print("robot ok")
+#     robot.motor_on()
+#     print("motor on")
 
-    robot.head.look_at(1, 0, 0, 2)
+#     robot.head.look_at(1, 0, 0, 2)
 
-    time.sleep(5)
+#     time.sleep(5)
 
-    robot.update_position(0,20,0.5)
+#     robot.update_position(0,20,0.5)
 
-    # robot.listen()
-    # time.sleep(0.5)
-    # robot.sad()
-    # time.sleep(0.5)
-    # robot.listen()
-    # time.sleep(0.5)
-    # robot.happy()
-    # time.sleep(0.5)
-    # robot.incentive()
-    # time.sleep(0.5)
-    # robot.thinking()
-    # time.sleep(0.5)
-    # robot.thanking()
-    # time.sleep(0.5)
+#     # robot.listen()
+#     # time.sleep(0.5)
+#     # robot.sad()
+#     # time.sleep(0.5)
+#     # robot.listen()
+#     # time.sleep(0.5)
+#     # robot.happy()
+#     # time.sleep(0.5)
+#     # robot.incentive()
+#     # time.sleep(0.5)
+#     # robot.thinking()
+#     # time.sleep(0.5)
+#     # robot.thanking()
+#     # time.sleep(0.5)
 
 
-    print("end")
-    time.sleep(5)
-    robot.motor_off()
-    print("motor off")
+#     print("end")
+#     time.sleep(5)
+#     robot.motor_off()
+#     print("motor off")
