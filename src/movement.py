@@ -17,7 +17,7 @@ class Movement :
     def motor_off(self):
         self._session.turn_off()
 
-    def euler_to_quaternion(self, roll, pitch, yaw):
+    def __euler_to_quaternion(self, roll, pitch, yaw):
 
         qx = np.sin(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) - np.cos(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
         qy = np.cos(roll/2) * np.sin(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.cos(pitch/2) * np.sin(yaw/2)
@@ -26,10 +26,10 @@ class Movement :
 
         return [qx, qy, qz, qw]
     
-    def degree_to_radian(self, theta):
+    def __degree_to_radian(self, theta):
         return theta*2*np.pi / 360
 
-    def fit_angles(self, theta, phi):
+    def __fit_angles(self, theta, phi):
         if 45 < theta and theta < 130:
             t = theta 
         elif 130 < theta:
@@ -44,15 +44,15 @@ class Movement :
             p = -45
         return t,p
 
-    def spherical_to_cartesian(self,radius, theta, phi):
-        theta = self.degree_to_radian(theta)
-        phi = self.degree_to_radian(phi)
+    def __spherical_to_cartesian(self,radius, theta, phi):
+        theta = self.__degree_to_radian(theta)
+        phi = self.__degree_to_radian(phi)
         x = round(radius*np.sin(theta)*np.cos(phi), 2)
         y = round(radius*np.sin(theta)*np.sin(phi), 2)
         z = round(radius*np.cos(theta), 2)
         return [x, y, z]
     
-    def duration(self, coordinates_prev, coordinates_next, v):
+    def __duration(self, coordinates_prev, coordinates_next, v):
         duration = round(np.sqrt((coordinates_next[0]-coordinates_prev[0])**2 + (coordinates_next[1]-coordinates_prev[1])**2 + (coordinates_next[2]-coordinates_prev[2])**2)/v,2)
         if duration <= 0:
             return 0.5
@@ -60,21 +60,21 @@ class Movement :
             return duration
 
     def move_to(self, radius, theta, phi, v):
-        position_prev = self.spherical_to_cartesian(0.5, self._tmptheta, self._tmpphi)
-        self._tmptheta, self._tmpphi = self.fit_angles(theta, phi)
-        position = self.spherical_to_cartesian(radius, self._tmptheta, self._tmpphi)
+        position_prev = self.__spherical_to_cartesian(0.5, self._tmptheta, self._tmpphi)
+        self._tmptheta, self._tmpphi = self.__fit_angles(theta, phi)
+        position = self.__spherical_to_cartesian(radius, self._tmptheta, self._tmpphi)
         self._session.look_at(position[0], position[1], position[2], self.duration(position_prev, position, v))
 
     def update_position(self, theta, phi, v):
         self.move_back()
-        position_prev = self.spherical_to_cartesian(0.5, self._theta, self._phi)
-        self._theta, self._phi = self.fit_angles(self._theta + theta, self._phi + phi)
+        position_prev = self.__spherical_to_cartesian(0.5, self._theta, self._phi)
+        self._theta, self._phi = self.__fit_angles(self._theta + theta, self._phi + phi)
 
         self._tmptheta = self._theta
         self._tmpphi = self._phi
-        position = self.spherical_to_cartesian(1, self._theta, self._phi)
+        position = self.__spherical_to_cartesian(1, self._theta, self._phi)
 
-        mouv = self._session.inverse_kinematics(self.euler_to_quaternion(0,-self.degree_to_radian(self._theta), -self.degree_to_radian(self._phi)))
+        mouv = self._session.inverse_kinematics(self.__euler_to_quaternion(0,-self.__degree_to_radian(self._theta), -self.__degree_to_radian(self._phi)))
         angles = self._session.get_angles()
         angle = { 
                 angles["neck_disk_top"] : mouv[0],
@@ -153,10 +153,10 @@ class Movement :
         self.move_to(0.5, 5.74 + self._theta, self._phi, 0.35)
 
     def move_back(self):
-        position_prev = self.spherical_to_cartesian(0.5, self._tmptheta, self._tmpphi)
+        position_prev = self.__spherical_to_cartesian(0.5, self._tmptheta, self._tmpphi)
         self._tmptheta = self._theta
         self._tmpphi = self._phi
-        position = self.spherical_to_cartesian(0.5, self._theta, self._phi)
+        position = self.__spherical_to_cartesian(0.5, self._theta, self._phi)
         self._session.look_at(position[0], position[1], position[2], self.duration(position_prev, position, 0.15))
 
 # if __name__ == "__main__":
