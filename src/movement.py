@@ -16,14 +16,10 @@ def motor_off(session):
 
 def __euler_to_quaternion(roll, pitch, yaw):
 
-    qx = np.sin(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) - \
-        np.cos(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
-    qy = np.cos(roll/2) * np.sin(pitch/2) * np.cos(yaw/2) + \
-        np.sin(roll/2) * np.cos(pitch/2) * np.sin(yaw/2)
-    qz = np.cos(roll/2) * np.cos(pitch/2) * np.sin(yaw/2) - \
-        np.sin(roll/2) * np.sin(pitch/2) * np.cos(yaw/2)
-    qw = np.cos(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) + \
-        np.sin(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
+    qx = np.sin(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) - np.cos(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
+    qy = np.cos(roll/2) * np.sin(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.cos(pitch/2) * np.sin(yaw/2)
+    qz = np.cos(roll/2) * np.cos(pitch/2) * np.sin(yaw/2) - np.sin(roll/2) * np.sin(pitch/2) * np.cos(yaw/2)
+    qw = np.cos(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
 
     return [qx, qy, qz, qw]
 
@@ -54,8 +50,7 @@ def __spherical_to_cartesian(radius, theta, phi):
     return [x, y, z]
 
 def __duration(coordinates_prev, coordinates_next, v):
-    duration = round(np.sqrt((coordinates_next[0]-coordinates_prev[0])**2 + (
-        coordinates_next[1]-coordinates_prev[1])**2 + (coordinates_next[2]-coordinates_prev[2])**2)/v, 2)
+    duration = round(np.sqrt((coordinates_next[0] - coordinates_prev[0])**2 + (coordinates_next[1]-coordinates_prev[1])**2 + (coordinates_next[2]-coordinates_prev[2])**2)/v, 2)
     if duration <= 0:
         return 0.5
     else:
