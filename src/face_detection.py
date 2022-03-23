@@ -190,7 +190,7 @@ def get_aruco_code(frame):
 
 
 # Service function for interface
-def launch_focus(session): # Launch an automatic zoom during 2 seconds
+def launch_focus(session): # Launch an automatic zoom during 5 seconds
         session.start_autofocus()
         time.sleep(5)
 
