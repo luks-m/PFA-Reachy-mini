@@ -5,6 +5,7 @@ import time
 import cv2
 # from turtle import right
 from cv2 import aruco
+from session import *
 
 
 # Defining the face and ArUco detedtors
