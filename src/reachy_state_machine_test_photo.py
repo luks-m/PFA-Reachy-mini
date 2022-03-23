@@ -19,7 +19,7 @@ S = rs.ReachySession()
 
 executeur = state_machine.create_executor(S)
 
-try:
-    executeur.launch()
-except:
-    S.turn_off()
+# try:
+executeur.launch()
+# except:
+    # S.turn_off()
