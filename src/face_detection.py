@@ -231,6 +231,8 @@ def smart_give_angle(session, nbr_trials, give_angle_function, give_angle_parame
         if new_dist < dist :
             dist = new_dist
             nearest_angle = angle
+    nearest_angle.v *= -1
+    nearest_angle.h *= -1
     return nearest_angle   
 
 def take_picture(session, noun): # Take a picture, with an automatic focus, and save it at the 'path' location
