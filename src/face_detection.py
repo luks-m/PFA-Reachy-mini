@@ -207,11 +207,11 @@ def n_closest_angle(frame, n, for_test = False): # Give the average angle for th
 def framing_for_group_photo_angle(frame, percent_relat_to_avg, for_test = False): # Give the average angle for the faces whose the height is 'percent_relat_to_avg' or less near from the height average, using get_mean_distant_faces
     return global_face_detection_service(frame, get_closest_to_mean_faces, percent_relat_to_avg, for_test)
 
-def smart_give_angle(nbr_frame_to_compute, session, give_angle_function, give_angle_parameter, for_test = False):  # Give the angle, taking face detection hazard into account (no faces detected, non face object detected) to avoid errors whenever possible
+def smart_give_angle(session, nbr_trials, give_angle_function, give_angle_parameter, for_test = False):  # Give the angle, taking face detection hazard into account (no faces detected, non face object detected) to avoid errors whenever possible
     angle_table = []
     avg_angle = Angle(0, 0)
     
-    for i in range(nbr_frame_to_compute) :   # Angles to analyse, taking only non null angles into account (==> no faces detected not taken into account)
+    for i in range(nbr_trials) :   # Angles to analyse, taking only non null angles into account (==> no faces detected not taken into account)
         angle = give_angle_function(get_frame(session), give_angle_parameter, for_test)
         if not(angle.h == 0 and angle.v == 0) :
             avg_angle.h += angle.h
