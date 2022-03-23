@@ -3,6 +3,11 @@ import time
 import numpy as np
 from session import *
 
+global PHI
+global THETA
+global TMP_PHI
+global TMP_THETA
+
 PHI = 0
 THETA = 90
 TMP_PHI = 0
