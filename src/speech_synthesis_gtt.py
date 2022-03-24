@@ -18,5 +18,6 @@ def text_to_speech_gtt(text):
     if os.path.exists(PATH+"file.mp3"):
         os.remove(PATH+"file.mp3")     #removing the mp3 file
 
+if __name__ == '__main__':
 
-text_to_speech_gtt('salut, je suis reachy ! Vous voulez une photo ?')
+    text_to_speech_gtt('salut, je suis reachy ! Vous voulez une photo ?')
