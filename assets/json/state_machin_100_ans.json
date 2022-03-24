@@ -1,0 +1,228 @@
+{
+    "states": {
+        "allumage_robot": {
+            "action": "allumage_robot_func",
+            "transitions": [
+                {   
+                    "final": "recherche_interaction"
+                }
+            ]
+        },
+        "recherche_interaction": {
+            "action": "recherche_interaction_func",
+            "transitions": [
+                {
+                    "final": "recherche_de_personne",
+                    "predicat": "activation_detection",
+                    "action": "enregistrer_date"
+                },
+                {
+                    "final": "incitation_interaction",
+                    "predicat": "detection_personne",
+                    "action": "enregistrer_date"
+                }
+            ]
+        },
+        "recherche_de_personne":{
+            "action": "recherche_de_personne_func",
+            "transition": [
+                {
+                    "final": "attente_ordre",
+                    "predicat": "detection_personne",
+                    "action": "reset_for_attente_ordre"
+                },
+                {
+                    "final": "recherche_interaction",
+                    "predicat": "temps_ecoule",
+                    "action": "reset_for_incitation_interaction"
+                }
+            ]
+        },
+        "incitation_interaction":{
+            "action":"incitation_interaction_func",
+            "transitions": [
+                {
+                    "final": "attente_ordre",
+                    "predicat": "activation_detection",
+                    "action": "reset_for_attente_ordre"
+                },
+                {
+                    "final": "recherche_interaction",
+                    "predicat": "temps_ecoule",
+                    "action": "reset_for_incitation_interaction"
+                }
+            ]
+        },
+        "eteindre":{
+            "action": "eteindre_func"
+        },
+        "attente_ordre": {
+            "action": "attente_ordre_func",
+            "transitions": [
+                {
+                    "final": "eteindre",
+                    "predicat": "eteindre_set_detection"
+                },
+                {
+                    "final": "traitement_ordre",
+                    "predicat": "command_verif"
+                },
+                {
+                    "final": "recherche_interaction",
+                    "predicat": "temps_ecoule",
+                    "action": "temps_ecoule_func"
+                },
+                {
+                    "final": "attente_ordre",
+                    "predicat": "temps_presque_ecoule",
+                    "action": "temps_presque_ecoule_func"
+
+                }
+            ]
+        },
+        "traitement_ordre": {
+            "action": "traitement_ordre_func",
+            "transitions": [
+                {
+                    "final": "photo_simple",
+                    "predicat": "photo_simple_sets_detection"
+                },
+                {
+                    "final": "photo_groupe",
+                    "predicat": "photo_groupe_sets_detection"
+                },
+                {
+                    "final": "photo",
+                    "predicat": "photo_set_detection"
+                },
+                {
+                    "final": "conversation"
+                }
+            ]
+        },
+        "photo":{
+            "action": "photo_func",
+            "transitions": [
+                {
+                    "final": "photo_simple",
+                    "predicat": "simple_set_detection"
+                },
+                {
+                    "final": "photo_groupe",
+                    "predicat": "groupe_set_detection"
+                },
+                {
+                    "final": "attente_ordre",
+                    "predicat": "temps_ecoule"
+                }
+            ]
+        },
+        "photo_simple":{
+            "action": "photo_simple_func",
+            "transitions": [
+                {
+                    "final": "prise_photo"
+                }
+            ]
+        },
+        "photo_groupe":{
+            "action": "photo_groupe_func",
+            "transitions": [
+                {
+                    "final": "prise_photo"
+                }
+            ]
+        },
+        "prise_photo":{
+            "action": "prise_photo_func",
+            "transitions": [
+                {
+                    "final": "attente_ordre"
+                }
+            ]
+        },
+        "conversation": {
+            "action": "conversation_func",
+            "transitions": [
+                {
+                    "final": "bonjour",
+                    "predicat": "bonjour_set_detection"
+                },
+                {
+                    "final": "aurevoir",
+                    "predicat": "aurevoir_set_detection"
+                },
+                {
+                    "final": "cava",
+                    "predicat": "cava_set_detection"
+                },
+                {
+                    "final": "gentil",
+                    "predicat": "gentil_set_detection"
+                },
+                {
+                    "final": "mechant",
+                    "predicat": "mechant_set_detection"
+                },
+                {
+                    "final": "incomprehension"
+                }
+            ]
+        },
+        "bonjour": {
+            "action": "bonjour_func",
+            "transitions": [
+                {
+                    "final": "attente_ordre",
+                    "action": "reset_for_attente_ordre"
+                }
+            ]
+        },
+        "aurevoir": {
+            "action": "aurevoir_func",
+            "transitions": [
+                {
+                    "final": "recherche_interaction",
+                    "action": "reset_for_attente_ordre"
+                }
+            ]
+        },
+        "cava": {
+            "action": "cava_func",
+            "transitions": [
+                {
+                    "final": "attente_ordre",
+                    "action": "reset_for_attente_ordre"
+                }
+            ]
+        },
+        "gentil": {
+            "action": "gentil_func",
+            "transitions": [
+                {
+                    "final": "attente_ordre",
+                    "action": "reset_for_attente_ordre"
+                }
+            ]
+        },
+        "mechant": {
+            "action": "mechant_func",
+            "transitions": [
+                {
+                    "final": "attente_ordre",
+                    "action": "reset_for_attente_ordre"
+                }
+            ]
+        },
+        "incomprehension": {
+            "action": "incomprehension_func",
+            "transitions": [
+                {
+                    "final": "attente_ordre",
+                    "action": "reset_for_attente_ordre"
+                }
+            ]
+        }
+    },
+    "module":"reachy_state_machine_100_ans_func"
+}
