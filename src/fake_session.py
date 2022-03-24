@@ -27,6 +27,9 @@ class FakeSession(Session):
     def antennas_speed_limit(self, v):
         print("Last call : antennas_speed_limit")
 
+    def get_angles(self):
+        print("get angles")
+
     def start_autofocus(self):
         print("start autofocus")
     
@@ -34,4 +37,4 @@ class FakeSession(Session):
         print("stop autofocus")
 
     def get_frame(self):
-        print("getting frame")
+        print("get frame")

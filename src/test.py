@@ -4,7 +4,6 @@ from reachy_session import ReachySession
 from math import radians
 
 session = ReachySession()
-robot = Movement(session, session._robot)
 
 # camera = reachy.left_camera
 
@@ -12,24 +11,24 @@ robot = Movement(session, session._robot)
 # time.sleep(2)
 # camera.stop_autofocus
 
-reachy_cam = initiate_reachy_camera(session._robot)
+initiate_reachy_camera(session)
 print("robot ok")
-robot.motor_on()
+motor_on(session)
 print("motor on")
 
-session._robot.head.look_at(1, 0, 0, 2)
+move_to(session, 1, 90, 0, 0.5)
 
-time.sleep(5)
+time.sleep(2)
 t = time.time()
 
 while((time.time() - t) < 20):
-    angle = n_closest_angle(reachy_cam.get_frame(), 1)
+    angle = n_closest_angle(get_frame(session), 1)
     print(angle.h , angle.v)
-    robot.update_position(-radians(angle.v),-radians(angle.h) , 0.5)
+    update_position(session, -radians(angle.v),-radians(angle.h) , 0.5)
     time.sleep(1)
 
 
 print("end")
 time.sleep(5)
-robot.motor_off()
+motor_off(session)
 print("motor off")

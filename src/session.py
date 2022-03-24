@@ -35,6 +35,10 @@ class Session(ABC):
         pass
 
     @abstractmethod
+    def get_angles(self):
+        pass
+
+    @abstractmethod
     def start_autofocus(self):
         pass
     

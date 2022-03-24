@@ -1,14 +1,18 @@
-from reachy_sdk import ReachySDK
+# from click import launch
+# from reachy_sdk import ReachySDK
 from math import sqrt
 import time
 import cv2
-from turtle import right
+# from turtle import right
 from cv2 import aruco
+from session import *
+
 
 # Defining the face and ArUco detedtors
 Face_detector = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 MARKER_DIC = aruco.Dictionary_get(aruco.DICT_4X4_50)
 PARAM_MMARKERS = aruco.DetectorParameters_create()
+
 
 # Useful classes
 class Pos:      # Represent a face square upper left position
@@ -36,24 +40,22 @@ class Face_and_value:   # Represent a face square extended with a value
         self.face = face
         self.value = value
 
-class Reachy_camera:
-    def __init__(self, reachy):
-        self.camera = reachy.right_camera
-    def launch_focus(self): # Launch an automatic zoom during 2 seconds
-        self.camera.start_autofocus
-        # time.sleep(2)
-        # self.camera.stop_autofocus
-    def get_frame(self):
-        return self.camera.last_frame
-    def take_picture(noun): # Take a picture, with an automatic focus, and save it at the 'path' location
-       launch_zoom()
-       cv2.imwrite("./tmp/" + noun + ".png", camera.get_frame())
-    def smart_get_aruco_code(nbr_trials):
-        for i in range(nbr_trials):
-            id = get_aruco_code(get_frame())
-            if id != None
-                return id
-        return None
+# class Reachy_camera:
+#     def __init__(self, session):
+#         self.session = session
+#     def launch_focus(self): # Launch an automatic zoom during 2 seconds
+#         self.session.start_autofocus()
+#     def get_frame(self):
+#         return self.session.get_frame()
+#     def take_picture(self, noun): # Take a picture, with an automatic focus, and save it at the 'path' location
+#        self.launch_focus()
+#        cv2.imwrite("./tmp/" + noun + ".png", self.get_frame())
+#     def smart_get_aruco_code(self, nbr_trials):
+#         for i in range(nbr_trials):
+#             id = get_aruco_code(self.get_frame())
+#             if id != None :
+#                 return id
+#         return None
 
 
 # Mathematical transformations
@@ -187,19 +189,31 @@ def get_aruco_code(frame):
     return ids[1]
 
 
+# Service function for interface
+def launch_focus(session): # Launch an automatic zoom during 5 seconds
+        session.start_autofocus()
+        time.sleep(5)
+
+def get_frame(session):
+    return session.get_frame()
+
+
 # Interface functions
+def initiate_reachy_camera(session): # Initiate and give the reachy's camera chosen by the Reachy_camera class
+    launch_focus(session)
+
 def n_closest_angle(frame, n, for_test = False): # Give the average angle for the n closest faces using get_n_closest_face
     return global_face_detection_service(frame, get_n_closest_faces, n, for_test)
 
 def framing_for_group_photo_angle(frame, percent_relat_to_avg, for_test = False): # Give the average angle for the faces whose the height is 'percent_relat_to_avg' or less near from the height average, using get_mean_distant_faces
     return global_face_detection_service(frame, get_closest_to_mean_faces, percent_relat_to_avg, for_test)
 
-def smart_give_angle(nbr_frame_to_compute, give_frame_function, give_angle_function, give_angle_parameter, for_test = False):  # Give the angle, taking face detection hazard into account (no faces detected, non face object detected) to avoid errors whenever possible
+def smart_give_angle(session, nbr_trials, give_angle_function, give_angle_parameter, for_test = False):  # Give the angle, taking face detection hazard into account (no faces detected, non face object detected) to avoid errors whenever possible
     angle_table = []
     avg_angle = Angle(0, 0)
     
-    for i in range(nbr_frame_to_compute) :   # Angles to analyse, taking only non null angles into account (==> no faces detected not taken into account)
-        angle = give_angle_function(give_frame_function(), give_angle_parameter, for_test)
+    for i in range(nbr_trials) :   # Angles to analyse, taking only non null angles into account (==> no faces detected not taken into account)
+        angle = give_angle_function(get_frame(session), give_angle_parameter, for_test)
         if not(angle.h == 0 and angle.v == 0) :
             avg_angle.h += angle.h
             avg_angle.v += angle.v
@@ -217,7 +231,17 @@ def smart_give_angle(nbr_frame_to_compute, give_frame_function, give_angle_funct
         if new_dist < dist :
             dist = new_dist
             nearest_angle = angle
+    nearest_angle.v *= -1
+    nearest_angle.h *= -1
     return nearest_angle   
 
-def initiate_reachy_camera(reachy): # Initiate and give the reachy's camera chosen by the Reachy_camera class
-    return Reachy_camera(reachy)
+def take_picture(session, noun): # Take a picture, with an automatic focus, and save it at the 'path' location
+   # launch_focus(session)
+   cv2.imwrite("./tmp/" + noun + ".png", get_frame(session))
+
+def smart_get_aruco_code(session, nbr_trials):
+    for i in range(nbr_trials):
+        id = get_aruco_code(get_frame(session))
+        if id != None :
+            return id
+    return None
