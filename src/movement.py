@@ -68,6 +68,11 @@ def move_to(session, radius, theta, phi, v):
     session.look_at(position[0], position[1], position[2], __duration(position_prev, position, v))
 
 def update_position(session, theta, phi, v):
+    global PHI
+    global THETA
+    global TMP_PHI
+    global TMP_THETA
+
     session.move_back()
     position_prev = __spherical_to_cartesian(0.5, THETA, PHI)
     THETA, PHI = __fit_angles(THETA + theta, PHI + phi)
