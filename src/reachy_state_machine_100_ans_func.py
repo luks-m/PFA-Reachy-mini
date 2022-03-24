@@ -8,7 +8,7 @@ import face_detection as facedet
 import time
 from datetime import datetime
 
-# import speech_synthesis as speech
+import speech_synthesis as speech
 
 def debug_print(str):
     print("DEBUG : " + str)
@@ -59,31 +59,31 @@ def conversation_func(context):
 
 # state action of Bonjour
 def bonjour_func(context):
-    # speech.text_to_speech(cmd.one_out(cmd.set_bonjour["s"]))
+    speech.text_to_speech(cmd.one_out(cmd.set_bonjour["s"]))
     debug_print("(R) " + cmd.one_out(cmd.set_bonjour["s"]))
     return context
 
 # state action of Au Revoir
 def aurevoir_func(context):
-    # speech.text_to_speech(cmd.one_out(cmd.set_aurevoir["s"]))
+    speech.text_to_speech(cmd.one_out(cmd.set_aurevoir["s"]))
     debug_print("(R) " + cmd.one_out(cmd.set_aurevoir["s"]))
     return context
 
 # state action of Ca va
 def cava_func(context):
-    # speech.text_to_speech(cmd.one_out(cmd.set_cava["s"]))
+    speech.text_to_speech(cmd.one_out(cmd.set_cava["s"]))
     debug_print("(R) " + cmd.one_out(cmd.set_cava["s"]))
     return context
 
 # state action of Gentil
 def gentil_func(context):
-    # speech.text_to_speech(cmd.one_out(cmd.set_gentil["s"]))
+    speech.text_to_speech(cmd.one_out(cmd.set_gentil["s"]))
     debug_print("(R) " + cmd.one_out(cmd.set_gentil["s"]))
     return context
 
 # state action of Mechant
 def mechant_func(context):
-    # speech.text_to_speech(cmd.one_out(cmd.set_mechant["s"]))
+    speech.text_to_speech(cmd.one_out(cmd.set_mechant["s"]))
     debug_print("(R) " + cmd.one_out(cmd.set_mechant["s"]))
     return context
 

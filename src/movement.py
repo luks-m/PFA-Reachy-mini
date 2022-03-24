@@ -84,17 +84,19 @@ def update_position(session, theta, phi, v):
     position = __spherical_to_cartesian(1, THETA, PHI)
 
     try:
+        tmp = True
         mouv = session.inverse_kinematics(__euler_to_quaternion(0, -__degree_to_radian(THETA), -__degree_to_radian(PHI)))
     except:
-        mouv = [0,0,0]
+        tmp=False
     
-    angles = session.get_angles()
-    angle = {
-        angles["neck_disk_top"]: mouv[0],
-        angles["neck_disk_middle"]: mouv[1],
-        angles["neck_disk_bottom"]: mouv[2]}
-    print(angle)
-    session.goto(angle, __duration(position_prev, position, v))
+    if tmp:
+        angles = session.get_angles()
+        angle = {
+            angles["neck_disk_top"]: mouv[0],
+            angles["neck_disk_middle"]: mouv[1],
+            angles["neck_disk_bottom"]: mouv[2]}
+
+        session.goto(angle, __duration(position_prev, position, v))
 
 def listen(session):
     session.r_antenna_set_position(0)
