@@ -75,7 +75,6 @@ def update_position(session, theta, phi, v):
     global TMP_PHI
     global TMP_THETA
 
-    #move_back(session)
     position_prev = __spherical_to_cartesian(0.5, THETA, PHI)
     THETA, PHI = __fit_angles(THETA + theta, PHI + phi)
 
@@ -94,13 +93,14 @@ def update_position(session, theta, phi, v):
         angles["neck_disk_top"]: mouv[0],
         angles["neck_disk_middle"]: mouv[1],
         angles["neck_disk_bottom"]: mouv[2]}
+    print(angle)
     session.goto(angle, __duration(position_prev, position, v))
 
 def listen(session):
     session.r_antenna_set_position(0)
     session.l_antenna_set_position(0)
 
-    session.move_to(0.5, THETA, PHI, 0.15)
+    move_to(session, 0.5, THETA, PHI, 0.15)
         
 def sad(session):
     session.r_antenna_set_position(70.0)
@@ -109,10 +109,10 @@ def sad(session):
     session.r_antenna_set_position(-140.0)
     session.l_antenna_set_position(140.0)
 
-    session.move_to(0.5, 31.15 + THETA, PHI, 0.13)
+    move_to(session, 0.5, 31.15 + THETA, PHI, 0.13)
 
 def happy(session):
-    session.move_to(0.5, 5.74 + THETA, PHI, 0.15)
+    move_to(session, 0.5, 5.74 + THETA, PHI, 0.15)
 
     session.antennas_speed_limit(300.0)
     
@@ -132,35 +132,35 @@ def incentive(session):
     session.r_antenna_set_position(-35.0)
     session.l_antenna_set_position(35.0)
 
-    session.move_to(0.5, -5.74 + THETA, PHI, 0.1)
+    move_to(session, 0.5, -5.74 + THETA, PHI, 0.1)
 
 def thinking(session):
     session.antennas_speed_limit(70.0)
     session.r_antenna_set_position(40.0)
     session.l_antenna_set_position(-40.0)
 
-    session.move_to(0.5, -16.13 + THETA, 16.7 + PHI, 0.21)
+    move_to(session, 0.5, -16.13 + THETA, 16.7 + PHI, 0.21)
 
 def thanking(session):
     session.antennas_speed_limit(70.0)
     session.r_antenna_set_position(0.0)
     session.l_antenna_set_position(0.0)
 
-    session.move_to(0.5, 5.74 + THETA, PHI, 0.15)
+    move_to(session, 0.5, 5.74 + THETA, PHI, 0.15)
 
     time.sleep(0.1)
 
     session.r_antenna_set_position(-40.0)
     session.l_antenna_set_position(40.0)
     
-    session.move_to(0.5, 26.51 + THETA, PHI, 0.35)
+    move_to(session, 0.5, 26.51 + THETA, PHI, 0.35)
     
     time.sleep(0.3)
     
     session.r_antenna_set_position(0.0)
     session.l_antenna_set_position(0.0)
     
-    session.move_to(0.5, 5.74 + THETA, PHI, 0.35)
+    move_to(session, 0.5, 5.74 + THETA, PHI, 0.35)
 
 def move_back(session):
     global TMP_PHI

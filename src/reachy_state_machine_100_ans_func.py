@@ -113,7 +113,7 @@ def photo_groupe_func(context):
 
 def prise_photo_func(context):
     debug_print("(R) 3... 2... 1... clic !!")
-    facedet.take_picture(context["session"], __picture_noun)
+    facedet.take_picture(context["session"], __picture_noun())
     return context
     
 ########################
