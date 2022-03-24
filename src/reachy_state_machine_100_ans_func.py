@@ -37,6 +37,14 @@ def recherche_interaction_func(context):
     context["command"] = vr.record_and_transcript()
     return context
 
+def recherche_de_personne_func(context):
+    #TODO
+    return context
+
+def incitation_interaction_func(context):
+    #TODO
+    return context
+
 # state action of Attente d'Ordre
 def attente_ordre_func(context):
     context["command"] = vr.record_and_transcript()
@@ -140,6 +148,10 @@ def enregistrer_date(context):
     context["time"] = datetime.now()
     return context
 
+def reset_for_incitation_interaction(context):
+    #TODO
+    return context
+
 ###########################
 ## Transition predicats ##
 ###########################
@@ -197,3 +209,7 @@ def photo_simple_sets_detection(context):
 
 def photo_groupe_sets_detection(context):
     return (photo_set_detection(context) and groupe_set_detection(context)) 
+
+def detection_personne(context):
+    #TODO
+    return context
