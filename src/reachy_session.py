@@ -42,4 +42,4 @@ class ReachySession(Session):
         self._robot.right_camera.stop_autofocus
 
     def get_frame(self):
-        return _robot.right_camera.last_frame
+        return self._robot.right_camera.last_frame

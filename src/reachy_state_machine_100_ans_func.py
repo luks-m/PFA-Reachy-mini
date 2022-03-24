@@ -29,7 +29,7 @@ def allumage_robot_func(context):
     #TODO
     facedet.initiate_reachy_camera(context["session"])
     mv.motor_on(context["session"])
-    mv.move_to(context["session"], 0.5, 0, 0, 0.5)
+    mv.move_to(context["session"], 0.5, 90, 0, 0.5)
     return context
 
 # state action of Recherche d'Interaction

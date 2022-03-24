@@ -62,6 +62,8 @@ def __duration(coordinates_prev, coordinates_next, v):
         return duration
 
 def move_to(session, radius, theta, phi, v):
+    global TMP_PHI
+    global TMP_THETA
     position_prev = __spherical_to_cartesian(0.5, TMP_THETA, TMP_PHI)
     TMP_THETA, TMP_PHI = __fit_angles(theta, phi)
     position = __spherical_to_cartesian(radius, TMP_THETA, TMP_PHI)
@@ -73,7 +75,7 @@ def update_position(session, theta, phi, v):
     global TMP_PHI
     global TMP_THETA
 
-    session.move_back()
+    #move_back(session)
     position_prev = __spherical_to_cartesian(0.5, THETA, PHI)
     THETA, PHI = __fit_angles(THETA + theta, PHI + phi)
 
@@ -82,7 +84,11 @@ def update_position(session, theta, phi, v):
 
     position = __spherical_to_cartesian(1, THETA, PHI)
 
-    mouv = session.inverse_kinematics(__euler_to_quaternion(0, -__degree_to_radian(THETA), -__degree_to_radian(PHI)))
+    try:
+        mouv = session.inverse_kinematics(__euler_to_quaternion(0, -__degree_to_radian(THETA), -__degree_to_radian(PHI)))
+    except:
+        mouv = [0,0,0]
+    
     angles = session.get_angles()
     angle = {
         angles["neck_disk_top"]: mouv[0],
@@ -157,6 +163,11 @@ def thanking(session):
     session.move_to(0.5, 5.74 + THETA, PHI, 0.35)
 
 def move_back(session):
+    global TMP_PHI
+    global TMP_THETA
+    global THETA
+    global PHI
+
     position_prev = __spherical_to_cartesian(0.5, TMP_THETA, TMP_PHI)
     TMP_THETA = THETA
     TMP_PHI = PHI
