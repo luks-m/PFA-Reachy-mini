@@ -1,4 +1,3 @@
-from email.policy import default
 import loader as ld
 import session
 import reachy_session as rs

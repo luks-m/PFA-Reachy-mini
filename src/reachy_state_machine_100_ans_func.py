@@ -7,8 +7,9 @@ import face_detection as facedet
 # from reachy_sdk import ReachySDK
 import time
 from datetime import datetime
+import advanced_conversation as advconv
 
-# import speech_synthesis as speech
+import speech_synthesis as speech
 
 def debug_print(str):
     print("DEBUG : " + str)
@@ -27,7 +28,7 @@ def __picture_noun():
 
 def allumage_robot_func(context):
     #TODO
-    facedet.initiate_reachy_camera(context["session"])
+    #facedet.initiate_reachy_camera(context["session"])
     mv.motor_on(context["session"])
     mv.move_to(context["session"], 0.5, 90, 0, 0.5)
     return context
@@ -47,6 +48,7 @@ def incitation_interaction_func(context):
 
 # state action of Attente d'Ordre
 def attente_ordre_func(context):
+    mv.listen(context["session"])
     context["command"] = vr.record_and_transcript()
     return context
 
@@ -59,35 +61,40 @@ def conversation_func(context):
 
 # state action of Bonjour
 def bonjour_func(context):
-    # speech.text_to_speech(cmd.one_out(cmd.set_bonjour["s"]))
+    mv.incentive(context["session"])
+    speech.text_to_speech(cmd.one_out(cmd.set_bonjour["s"]))
     debug_print("(R) " + cmd.one_out(cmd.set_bonjour["s"]))
     return context
 
 # state action of Au Revoir
 def aurevoir_func(context):
-    # speech.text_to_speech(cmd.one_out(cmd.set_aurevoir["s"]))
+    mv.thanking(context["session"])
+    speech.text_to_speech(cmd.one_out(cmd.set_aurevoir["s"]))
     debug_print("(R) " + cmd.one_out(cmd.set_aurevoir["s"]))
     return context
 
 # state action of Ca va
 def cava_func(context):
-    # speech.text_to_speech(cmd.one_out(cmd.set_cava["s"]))
+    speech.text_to_speech(cmd.one_out(cmd.set_cava["s"]))
     debug_print("(R) " + cmd.one_out(cmd.set_cava["s"]))
     return context
 
 # state action of Gentil
 def gentil_func(context):
-    # speech.text_to_speech(cmd.one_out(cmd.set_gentil["s"]))
+    mv.happy(context["session"])
+    speech.text_to_speech(cmd.one_out(cmd.set_gentil["s"]))
     debug_print("(R) " + cmd.one_out(cmd.set_gentil["s"]))
     return context
 
 # state action of Mechant
 def mechant_func(context):
-    # speech.text_to_speech(cmd.one_out(cmd.set_mechant["s"]))
+    mv.sad(context["session"])
+    speech.text_to_speech(cmd.one_out(cmd.set_mechant["s"]))
     debug_print("(R) " + cmd.one_out(cmd.set_mechant["s"]))
     return context
 
 def eteindre_func(context):
+    speech.text_to_speech(cmd.one_out(cmd.set_eteindre["s"]))
     debug_print("(R) " + cmd.one_out(cmd.set_eteindre["s"]))
     mv.thanking(context["session"])
     mv.motor_off(context["session"])
@@ -95,8 +102,7 @@ def eteindre_func(context):
 
 # state action of Incomprehension
 def incomprehension_func(context):
-    # speech.text_to_speech(cmd.one_out(cmd.set_incomprehension["s"]))
-    debug_print("(R) " + cmd.one_out(cmd.set_incomprehension))
+    advconv.openai_speech(context["command"])
     return context
 
 def photo_func(context):

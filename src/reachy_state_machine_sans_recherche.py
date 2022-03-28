@@ -1,4 +1,6 @@
 import loader as ld
+import session
+import reachy_session as rs
 
 ###################################
 ## Creation of the State Machine ##
@@ -12,6 +14,8 @@ state_machine = ld.load("../assets/json/state_machine_sans_recherche.json")
 ## Test ##
 ##########
 
-executeur = state_machine.create_executor(0)
+S = rs.ReachySession()
+
+executeur = state_machine.create_executor(S)
 
 executeur.launch()

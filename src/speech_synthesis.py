@@ -12,7 +12,6 @@ def text_to_speech(text,rate=150,volume=1.0):
     engine.say(text)
     engine.runAndWait()
 
-text_to_speech("Au revoir !")
 
 if __name__ == '__main__':
 
@@ -44,3 +43,5 @@ if __name__ == '__main__':
     print("saving voice to the file: ./test1.mp3\n...")
     engine.save_to_file('Salut ! Je suis Reachy.','test1.mp3') #make sure that 'espeak' and 'ffmpeg' are installed
     engine.runAndWait()
+
+    text_to_speech("Au revoir !")

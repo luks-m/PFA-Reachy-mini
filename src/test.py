@@ -21,11 +21,15 @@ move_to(session, 1, 90, 0, 0.5)
 time.sleep(2)
 t = time.time()
 
-while((time.time() - t) < 20):
-    angle = n_closest_angle(get_frame(session), 1)
-    print(angle.h , angle.v)
-    update_position(session, -radians(angle.v),-radians(angle.h) , 0.5)
-    time.sleep(1)
+
+
+# while((time.time() - t) < 20):
+#     frame = get_frame(session)
+#     angle = n_closest_angle(frame, 1)
+#     frame_display(frame, "image")
+#     print(angle.h , angle.v)
+#     update_position(session, -radians(angle.v),-radians(angle.h) , 0.5)
+#     time.sleep(1)
 
 
 print("end")
