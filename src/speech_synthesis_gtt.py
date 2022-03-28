@@ -6,18 +6,15 @@ from gtts import gTTS
 from io import BytesIO
 import os
 
-PATH = "./../tmp"
+PATH = "./../tmp/"
 
 
 def text_to_speech(text):
-
-    mp3_fp = BytesIO()
-    tts = gTTS(text, lang='fr')
-    tts.write_to_fp(mp3_fp)
-    os.system("mpg123 ./../tmp/file.mp3")
-
-    #if os.path.exists(PATH+"file.mp3"):
-     #   os.remove(PATH+"file.mp3")     #removing the mp3 file
+    tts = gTTS(text=text, lang='fr', slow=False)
+    tts.save(PATH+"file.mp3")
+    os.system("mpg123 "+PATH+"file.mp3")
+    if os.path.exists(PATH+"file.mp3"):
+        os.remove(PATH+"file.mp3")     #removing the mp3 file
 
 if __name__ == '__main__':
 
