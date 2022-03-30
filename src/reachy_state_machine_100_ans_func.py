@@ -26,8 +26,16 @@ def __picture_noun():
 ## States Actions ##
 ####################
 
+def __init_context(context):
+    context["aruco"] = None
+    context["time"] = datetime.now()
+    context["command"] = ""
+    context["advanced_command"] = ""
+    return context
+
 def allumage_robot_func(context):
     #TODO
+    context = __init_context(context)
     #facedet.initiate_reachy_camera(context["session"])
     mv.motor_on(context["session"])
     mv.move_to(context["session"], 0.5, 90, 0, 0.5)
@@ -224,3 +232,12 @@ def photo_groupe_sets_detection(context):
 def detection_personne(context):
     #TODO
     return context
+
+def activation_aruco_det(context):
+    return context["aruco"] == 1
+
+def photo_simple_aruco_det(context):
+    return context["aruco"] == 2
+
+def photo_simple_aruco_det(context):
+    return context["aruco"] == 3
