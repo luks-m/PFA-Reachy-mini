@@ -4,7 +4,7 @@ import vocal_recognition as vr
 import cmd
 import movement as mv
 import face_detection as facedet
-# from reachy_sdk import ReachySDK
+from reachy_sdk import ReachySDK
 import time
 from datetime import datetime
 import advanced_conversation as advconv
