@@ -35,6 +35,8 @@ def allumage_robot_func(context):
 
 # state action of Recherche d'Interaction
 def recherche_interaction_func(context):
+    #reset the context for advanced conversation
+    context["advanced_command"] = "Ceci est une conversation entre une Intelligence artificielle et un Humain.\n"
     context["command"] = vr.record_and_transcript()
     return context
 
@@ -102,7 +104,10 @@ def eteindre_func(context):
 
 # state action of Incomprehension
 def incomprehension_func(context):
-    advconv.openai_speech(context["command"])
+    sentence = context["command"]
+    context["advanced_command"] += f"Human:{sentence} \n"
+    answer = advconv.openai_speech(context["advanced_command"])
+    context["advanced_command"] += f"AI{answer} \n"
     return context
 
 def photo_func(context):

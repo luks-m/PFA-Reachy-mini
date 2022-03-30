@@ -9,9 +9,8 @@ def openai_speech(str):
   openai.api_key="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"
 
   var=""
-  dialog="Ceci est une conversation entre une Intelligence artificielle et un Humain.\n"
       
-  dialog +=f"Human:{str} \nAI:"
+  dialog += str
 
   start_sequence = "\nAI:"
   restart_sequence = "\nHuman: "
@@ -34,3 +33,4 @@ def openai_speech(str):
   # print(type(response.get("choices")[0]))
   speech.text_to_speech(var)
   print(var)
+  return var
