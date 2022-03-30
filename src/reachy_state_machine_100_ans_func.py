@@ -9,7 +9,7 @@ import time
 from datetime import datetime
 import advanced_conversation as advconv
 
-import speech_synthesis as speech
+import speech_synthesis_gtt as speech
 
 def debug_print(str):
     print("DEBUG : " + str)
@@ -146,12 +146,12 @@ def reset_for_attente_ordre(context):
     return context
 
 def temps_presque_ecoule_func(context):
-    #speech.text_to_speech(TODO)
+    speech.text_to_speech("Le temps est presque écoulé")
     debug_print("(R) Le temps est presque écoulé")
     return context
 
 def temps_ecoule_func(context):
-    #speech.text_to_speech(TODO)
+    speech.text_to_speech("Le temps est écoulé")
     debug_print("(R) Le temps est écoulé")
     return context
 
