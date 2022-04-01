@@ -1,8 +1,6 @@
 import time
-import sys
-sys.path.append('../scr')
 from face_detection import *
-
+from reachy_session import ReachySession
 
 # Test functions
 
@@ -39,11 +37,11 @@ def test_all_face_recognised(with_angle_to_center): # Not working on Reachy
     free_capture_and_windows(cap)
 
 def test_all_face_recognised_with_reachy_api(with_angle_to_center):
-    camera = initiate_reachy_camera(ReachySDK(host='localhost'))  # Replace with the actual IP
-    camera.launch_focus()
+    session = ReachySession()
+    initiate_reachy_camera(session)
 
     def get_frame():
-        return give_in_gray(camera.get_frame())
+        return give_in_gray(get_frame(session))
 
     run_all_face_tests(get_frame, with_angle_to_center)       
 
@@ -75,10 +73,11 @@ def test_n_closest_angle(n): # Not working on Reachy
     free_capture_and_windows(cap)
 
 def test_n_closest_angle_with_reachy_api(n):
-    camera = initiate_reachy_camera(ReachySDK(host='localhost'))  # Replace with the actual IP
+    session = ReachySession()
+    initiate_reachy_camera(session)
 
     def get_frame():
-        return camera.get_frame()
+        return give_in_gray(get_frame(session))
 
     run_get_angle_functions_tests(get_frame, n_closest_angle, n)
 
@@ -96,10 +95,11 @@ def test_framing_for_group_photo_angle(percent_relat_to_avg): # Not working on R
     free_capture_and_windows(cap)
 
 def test_framing_for_group_photo_angle_with_reachy_api(percent_relat_to_avg):
-    camera = initiate_reachy_camera(ReachySDK(host='localhost'))  # Replace with the actual IP
+    session = ReachySession()
+    initiate_reachy_camera(session)
 
     def get_frame():
-        return camera.get_frame()
+        return give_in_gray(get_frame(session))
 
     run_get_angle_functions_tests(get_frame, framing_for_group_photo_angle, percent_relat_to_avg)
 
@@ -123,10 +123,11 @@ def smart_give_angle_test():
             break
 
 def smart_give_angle_test_with_reachy_api():
-    camera = initiate_reachy_camera(ReachySDK(host='localhost'))  # Replace with the actual IP
+    session = ReachySession()
+    initiate_reachy_camera(session)
 
     def get_frame():
-        return camera.get_frame()
+        return give_in_gray(get_frame(session))
     
     while True :
         angle = smart_give_angle(5, get_frame, n_closest_angle, 2, for_test = True)
@@ -140,8 +141,8 @@ def smart_give_angle_test_with_reachy_api():
 
 
 if __name__ == '__main__': # Relevant test experiences
-    # test_all_face_recognised(True)
-    test_all_face_recognised_with_reachy_api(False)
+    test_all_face_recognised(True)
+    # test_all_face_recognised_with_reachy_api(False)
 
     # test_n_closest_angle(0)
     # test_n_closest_angle(1)
