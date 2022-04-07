@@ -1,0 +1,8 @@
+{
+    "python.analysis.extraPaths": [
+        "./src/speech",
+        "./src/recognition",
+        "./src/detection",
+        "./src/conversation"
+    ]
+}

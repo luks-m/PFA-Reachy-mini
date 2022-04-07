@@ -1,4 +1,6 @@
 import loader as ld
+import sys
+sys.path.append("../session")
 import session
 import reachy_session as rs
 
@@ -8,7 +10,7 @@ import reachy_session as rs
 
 context ={"command" : ""}
 
-state_machine = ld.load("../assets/json/state_machine_test_photo.json")
+state_machine = ld.load("../../assets/json/state_machine_test_photo.json")
 
 ##########
 ## Test ##

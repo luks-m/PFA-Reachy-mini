@@ -1,14 +1,19 @@
 from jinja2 import contextfilter
-import state_machine_obj as stm
-import vocal_recognition as vr
-import cmd
+import time
+from datetime import datetime
+import sys
+sys.path.append("../movement")
+sys.path.append("../detection")
+sys.path.append("../conversation")
+sys.path.append("../speech")
+sys.path.append("../recognition")
 import movement as mv
 import face_detection as facedet
 from reachy_sdk import ReachySDK
-import time
-from datetime import datetime
+import state_machine_obj as stm
+import vocal_recognition as vr
+import cmd
 import advanced_conversation as advconv
-
 import speech_synthesis_gtt as speech
 
 def debug_print(str):
@@ -36,9 +41,9 @@ def __init_context(context):
 def allumage_robot_func(context):
     #TODO
     context = __init_context(context)
-    #facedet.initiate_reachy_camera(context["session"])
     mv.motor_on(context["session"])
     mv.move_to(context["session"], 0.5, 90, 0, 0.5)
+    facedet.initiate_reachy_camera(context["session"])
     return context
 
 # state action of Recherche d'Interaction
@@ -104,7 +109,7 @@ def mechant_func(context):
     return context
 
 def eteindre_func(context):
-    speech.text_to_speech(cmd.one_out(cmd.set_eteindre["s"]))
+    #speech.text_to_speech(cmd.one_out(cmd.set_eteindre["s"]))
     debug_print("(R) " + cmd.one_out(cmd.set_eteindre["s"]))
     mv.thanking(context["session"])
     mv.motor_off(context["session"])

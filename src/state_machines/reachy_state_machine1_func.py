@@ -1,5 +1,6 @@
 import state_machine_obj as stm
-
+import sys
+sys.path.append("../recognition")
 import vocal_recognition as vr
 import cmd
 # import movement as mv

@@ -1,8 +1,11 @@
 import os
 import openai
 import json
-import vocal_recognition as vr
+import sys
+sys.path.append("../speech")
+sys.path.append("../recognition")
 import speech_synthesis as speech
+import vocal_recognition as vr
 
 def openai_speech(str):
   

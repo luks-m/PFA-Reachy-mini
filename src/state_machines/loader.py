@@ -1,6 +1,5 @@
 import json
 from state_machine_obj import State_Machine
-from transition import *
 
 def load(file_path):
     

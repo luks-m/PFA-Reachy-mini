@@ -1,3 +1,5 @@
+import sys
+sys.path.append("../movement")
 from movement import *
 from session import *
 

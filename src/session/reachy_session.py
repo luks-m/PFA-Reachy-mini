@@ -1,6 +1,8 @@
 from session import *
 from reachy_sdk import ReachySDK
 from reachy_sdk.trajectory import goto
+import cv2
+
 
 class ReachySession(Session):
 

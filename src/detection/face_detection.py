@@ -5,6 +5,8 @@ import time
 import cv2
 # from turtle import right
 from cv2 import aruco
+import sys
+sys.path.append("../session")
 from session import *
 
 
@@ -39,24 +41,6 @@ class Face_and_value:   # Represent a face square extended with a value
     def __init__(self, face, value):
         self.face = face
         self.value = value
-
-# class Reachy_camera:
-#     def __init__(self, session):
-#         self.session = session
-#     def launch_focus(self): # Launch an automatic zoom during 2 seconds
-#         self.session.start_autofocus()
-#     def get_frame(self):
-#         return self.session.get_frame()
-#     def take_picture(self, noun): # Take a picture, with an automatic focus, and save it at the 'path' location
-#        self.launch_focus()
-#        cv2.imwrite("./tmp/" + noun + ".png", self.get_frame())
-#     def smart_get_aruco_code(self, nbr_trials):
-#         for i in range(nbr_trials):
-#             id = get_aruco_code(self.get_frame())
-#             if id != None :
-#                 return id
-#         return None
-
 
 # Mathematical transformations
 def give_face_center(face): # Given a face square object, gice the square center
@@ -193,6 +177,7 @@ def get_aruco_code(frame):
 def launch_focus(session): # Launch an automatic zoom during 5 seconds
         session.start_autofocus()
         time.sleep(5)
+        session.stop_autofocus()
 
 def get_frame(session):
     return session.get_frame()
@@ -237,7 +222,7 @@ def smart_give_angle(session, nbr_trials, give_angle_function, give_angle_parame
 
 def take_picture(session, noun): # Take a picture, with an automatic focus, and save it at the 'path' location
    # launch_focus(session)
-   cv2.imwrite("./tmp/" + noun + ".png", get_frame(session))
+   cv2.imwrite("../tmp/" + noun + ".png", get_frame(session))
 
 def smart_get_aruco_code(session, nbr_trials):
     for i in range(nbr_trials):

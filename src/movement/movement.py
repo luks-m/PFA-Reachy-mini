@@ -1,6 +1,8 @@
 from turtle import pos
 import time
 import numpy as np
+import sys
+sys.path.append("../session")
 from session import *
 
 global PHI
@@ -87,12 +89,13 @@ def update_position(session, theta, phi, v):
         tmp = True
         mouv = session.inverse_kinematics(__euler_to_quaternion(0, -__degree_to_radian(THETA), -__degree_to_radian(PHI)))
     except:
-        tmp=False
+        tmp = False
     
     if tmp:
         angles = session.get_angles()
+        print(angles)
         angle = {
-            angles["neck_disk_top"]: mouv[0],
+            f'{angles["neck_disk_top"]}': mouv[0],
             angles["neck_disk_middle"]: mouv[1],
             angles["neck_disk_bottom"]: mouv[2]}
 
@@ -175,41 +178,3 @@ def move_back(session):
     TMP_PHI = PHI
     position = __spherical_to_cartesian(0.5, THETA, PHI)
     session.look_at(position[0], position[1], position[2], __duration(position_prev, position, 0.15))
-
-# if __name__ == "__main__":
-#     reachy = ReachySDK(host='localhost')
-
-#     print(reachy.head)
-
-#     print("head")
-#     robot = Movement(reachy)
-#     print("robot ok")
-#     robot.motor_on()
-#     print("motor on")
-
-#     robot.head.look_at(1, 0, 0, 2)
-
-#     time.sleep(5)
-
-#     robot.update_position(0,20,0.5)
-
-#     # robot.listen()
-#     # time.sleep(0.5)
-#     # robot.sad()
-#     # time.sleep(0.5)
-#     # robot.listen()
-#     # time.sleep(0.5)
-#     # robot.happy()
-#     # time.sleep(0.5)
-#     # robot.incentive()
-#     # time.sleep(0.5)
-#     # robot.thinking()
-#     # time.sleep(0.5)
-#     # robot.thanking()
-#     # time.sleep(0.5)
-
-
-#     print("end")
-#     time.sleep(5)
-#     robot.motor_off()
-#     print("motor off")

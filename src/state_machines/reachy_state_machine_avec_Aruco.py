@@ -1,4 +1,6 @@
 import loader as ld
+import sys
+sys.path.append("../session")
 import session
 #import reachy_session as rs
 import fake_session as fs
@@ -9,7 +11,7 @@ import fake_session as fs
 
 context ={"command" : ""}
 
-state_machine = ld.load("../assets/json/state_machine_avec_Aruco.json")
+state_machine = ld.load("../../assets/json/state_machine_avec_Aruco.json")
 
 ##########
 ## Test ##

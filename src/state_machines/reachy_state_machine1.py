@@ -6,7 +6,7 @@ import loader as ld
 
 context ={"command" : ""}
 
-state_machine = ld.load("../assets/json/state_machine1.json")
+state_machine = ld.load("../../assets/json/state_machine1.json")
 
 ##########
 ## Test ##
