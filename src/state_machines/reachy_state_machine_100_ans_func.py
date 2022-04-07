@@ -43,7 +43,6 @@ def allumage_robot_func(context):
     context = __init_context(context)
     mv.motor_on(context["session"])
     mv.move_to(context["session"], 0.5, 90, 0, 0.5)
-    facedet.initiate_reachy_camera(context["session"])
     return context
 
 # state action of Recherche d'Interaction

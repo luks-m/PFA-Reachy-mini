@@ -172,20 +172,14 @@ def get_aruco_code(frame):
         return None
     return ids[1]
 
-
-# Service function for interface
-def launch_focus(session): # Launch an automatic zoom during 5 seconds
-        session.start_autofocus()
-        time.sleep(5)
-        session.stop_autofocus()
-
 def get_frame(session):
     return session.get_frame()
 
-
 # Interface functions
 def initiate_reachy_camera(session): # Initiate and give the reachy's camera chosen by the Reachy_camera class
-    launch_focus(session)
+    session.start_autofocus()
+    time.sleep(15)
+    session.stop_autofocus()
 
 def n_closest_angle(frame, n, for_test = False): # Give the average angle for the n closest faces using get_n_closest_face
     return global_face_detection_service(frame, get_n_closest_faces, n, for_test)

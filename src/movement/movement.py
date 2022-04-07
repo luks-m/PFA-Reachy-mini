@@ -93,11 +93,11 @@ def update_position(session, theta, phi, v):
     
     if tmp:
         angles = session.get_angles()
-        print(angles)
         angle = {
-            f'{angles["neck_disk_top"]}': mouv[0],
+            angles["neck_disk_top"]: mouv[0],
             angles["neck_disk_middle"]: mouv[1],
             angles["neck_disk_bottom"]: mouv[2]}
+        #NoneObject is not subscriptable mouv = None
 
         session.goto(angle, __duration(position_prev, position, v))
 
