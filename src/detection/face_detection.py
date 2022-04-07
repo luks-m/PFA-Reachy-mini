@@ -176,11 +176,6 @@ def get_frame(session):
     return session.get_frame()
 
 # Interface functions
-def initiate_reachy_camera(session): # Initiate and give the reachy's camera chosen by the Reachy_camera class
-    session.start_autofocus()
-    time.sleep(15)
-    session.stop_autofocus()
-
 def n_closest_angle(frame, n, for_test = False): # Give the average angle for the n closest faces using get_n_closest_face
     return global_face_detection_service(frame, get_n_closest_faces, n, for_test)
 

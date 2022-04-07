@@ -42,7 +42,6 @@ def test_all_face_recognised(with_angle_to_center): # Not working on Reachy
 
 def test_all_face_recognised_with_reachy_api(with_angle_to_center):
     session = ReachySession()
-    initiate_reachy_camera(session)
 
     def get_frame_bis():
         return give_in_gray(get_frame(session))
@@ -78,7 +77,6 @@ def test_n_closest_angle(n): # Not working on Reachy
 
 def test_n_closest_angle_with_reachy_api(n):
     session = ReachySession()
-    initiate_reachy_camera(session)
 
     def get_frame_bis():
         return give_in_gray(get_frame(session))
@@ -100,7 +98,6 @@ def test_framing_for_group_photo_angle(percent_relat_to_avg): # Not working on R
 
 def test_framing_for_group_photo_angle_with_reachy_api(percent_relat_to_avg):
     session = ReachySession()
-    initiate_reachy_camera(session)
 
     def get_frame_bis():
         return give_in_gray(get_frame(session))
@@ -128,7 +125,6 @@ def smart_give_angle_test():
 
 def smart_give_angle_test_with_reachy_api():
     session = ReachySession()
-    initiate_reachy_camera(session)
 
     def get_frame_bis():
         return give_in_gray(get_frame(session))
