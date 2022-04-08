@@ -36,15 +36,15 @@ def __degree_to_radian(theta):
 def __fit_angles(theta, phi):
     if 45 < theta and theta < 130:
         t = theta
-    elif 130 < theta:
+    elif 130 <= theta:
         t = 130
-    else:
+    elif 45 >= theta:
         t = 45
     if -45 < phi and phi < 45:
         p = phi
-    elif 45 < phi:
+    elif 45 <= phi:
         p = 45
-    else:
+    elif -45 >= phi:
         p = -45
     return t, p
 
@@ -77,26 +77,35 @@ def update_position(session, theta, phi, v):
     global TMP_PHI
     global TMP_THETA
 
+    t = THETA
+    p = PHI
+    theta, phi = round(theta,2), round(phi,2)
+
     position_prev = __spherical_to_cartesian(0.5, THETA, PHI)
     THETA, PHI = __fit_angles(THETA + theta, PHI + phi)
 
     TMP_THETA = THETA
     TMP_PHI = PHI
 
+    print(THETA, PHI, theta, phi)
+
     position = __spherical_to_cartesian(1, THETA, PHI)
+    
+    mouv = None
 
     try:
         tmp = True
-        mouv = session.inverse_kinematics(__euler_to_quaternion(0, -__degree_to_radian(THETA), -__degree_to_radian(PHI)))
-    except:
+        mouv = session.inverse_kinematics(__euler_to_quaternion(0, __degree_to_radian(THETA - t), __degree_to_radian(PHI - p)))
+    except ValueError:
         tmp = False
-    
+
     if tmp:
         angles = session.get_angles()
         angle = {
             angles["neck_disk_top"]: mouv[0],
             angles["neck_disk_middle"]: mouv[1],
-            angles["neck_disk_bottom"]: mouv[2]}
+            angles["neck_disk_bottom"]: mouv[2],
+        }
         #NoneObject is not subscriptable mouv = None
 
         session.goto(angle, __duration(position_prev, position, v))

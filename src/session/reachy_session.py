@@ -19,8 +19,8 @@ class ReachySession(Session):
         self._robot.head.look_at(x, y, z, d)
 
     def inverse_kinematics(self, quaternion):
-        print(quaternion)
-        self._robot.head.inverse_kinematics(quaternion)
+        #print(quaternion)
+        return self._robot.head.inverse_kinematics(quaternion)
 
     def goto(self, dict, duration):
         goto(dict, duration)
