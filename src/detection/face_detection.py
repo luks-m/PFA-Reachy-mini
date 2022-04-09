@@ -209,7 +209,7 @@ def smart_give_angle(session, nbr_trials, give_angle_function, give_angle_parame
     return nearest_angle   
 
 def take_picture(session, noun): # Take a picture, with an automatic focus, and save it at the 'path' location
-   # launch_focus(session)
+   time.sleep(2)
    cv2.imwrite("../../tmp/" + noun + ".png", get_frame(session))
 
 def smart_get_aruco_code(session, nbr_trials):
