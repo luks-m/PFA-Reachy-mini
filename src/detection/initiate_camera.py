@@ -12,10 +12,10 @@ def set_focus():
         frame = get_frame(session)
         time.sleep(0.1)
         frame_display(frame, 'focus_setting_window')
-        if cv2.waitKey(0):
+        key = cv2.waitKey(1) & 0xFF
+        if key == ord("q"):
             break
 
-    session.stop_autofocus()
     cv2.destroyAllWindows()
 
 if __name__ == '__main__':
