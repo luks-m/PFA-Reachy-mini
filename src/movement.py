@@ -5,15 +5,6 @@ import sys
 sys.path.append("../session")
 from session import *
 
-global PHI
-global THETA
-global TMP_PHI
-global TMP_THETA
-
-PHI = 0
-THETA = 90
-TMP_PHI = 0
-TMP_THETA = 90
 
 def motor_on(session):
     session.turn_on()
@@ -64,38 +55,29 @@ def __duration(coordinates_prev, coordinates_next, v):
         return duration
 
 def move_to(session, radius, theta, phi, v):
-    global TMP_PHI
-    global TMP_THETA
-    position_prev = __spherical_to_cartesian(0.5, TMP_THETA, TMP_PHI)
-    TMP_THETA, TMP_PHI = __fit_angles(theta, phi)
-    position = __spherical_to_cartesian(radius, TMP_THETA, TMP_PHI)
+    position_prev = __spherical_to_cartesian(0.5, session.TMP_THETA, session.TMP_PHI)
+    session.TMP_THETA, session.TMP_PHI = __fit_angles(theta, phi)
+    position = __spherical_to_cartesian(radius, session.TMP_THETA, session.TMP_PHI)
     session.look_at(position[0], position[1], position[2], __duration(position_prev, position, v))
 
 def update_position(session, theta, phi, v):
-    global PHI
-    global THETA
-    global TMP_PHI
-    global TMP_THETA
-
-    t = THETA
-    p = PHI
+    t = session.THETA
+    p = session.PHI
     theta, phi = round(theta,2), round(phi,2)
 
-    position_prev = __spherical_to_cartesian(0.5, THETA, PHI)
-    THETA, PHI = __fit_angles(THETA + theta, PHI + phi)
+    position_prev = __spherical_to_cartesian(0.5, session.THETA, session.PHI)
+    session.THETA, session.PHI = __fit_angles(session.THETA + theta, session.PHI + phi)
 
-    TMP_THETA = THETA
-    TMP_PHI = PHI
+    session.TMP_THETA = session.THETA
+    session.TMP_PHI = session.PHI
 
-    print(THETA, PHI, theta, phi)
-
-    position = __spherical_to_cartesian(1, THETA, PHI)
+    position = __spherical_to_cartesian(1, session.THETA, session.PHI)
     
     mouv = None
 
     try:
         tmp = True
-        mouv = session.inverse_kinematics(__euler_to_quaternion(0, __degree_to_radian(THETA - t), __degree_to_radian(PHI - p)))
+        mouv = session.inverse_kinematics(__euler_to_quaternion(0, __degree_to_radian(session.THETA - t), __degree_to_radian(session.PHI - p)))
     except ValueError:
         tmp = False
 
@@ -114,7 +96,7 @@ def listen(session):
     session.r_antenna_set_position(0)
     session.l_antenna_set_position(0)
 
-    move_to(session, 0.5, THETA, PHI, 0.15)
+    move_to(session, 0.5, session.THETA, session.PHI, 0.15)
         
 def sad(session):
     session.r_antenna_set_position(70.0)
@@ -123,10 +105,10 @@ def sad(session):
     session.r_antenna_set_position(-140.0)
     session.l_antenna_set_position(140.0)
 
-    move_to(session, 0.5, 31.15 + THETA, PHI, 0.13)
+    move_to(session, 0.5, 31.15 + session.THETA, session.PHI, 0.13)
 
 def happy(session):
-    move_to(session, 0.5, 5.74 + THETA, PHI, 0.15)
+    move_to(session, 0.5, 5.74 + session.THETA, session.PHI, 0.15)
 
     session.antennas_speed_limit(300.0)
     
@@ -146,44 +128,39 @@ def incentive(session):
     session.r_antenna_set_position(-35.0)
     session.l_antenna_set_position(35.0)
 
-    move_to(session, 0.5, -5.74 + THETA, PHI, 0.1)
+    move_to(session, 0.5, -5.74 + session.THETA, session.PHI, 0.1)
 
 def thinking(session):
     session.antennas_speed_limit(70.0)
     session.r_antenna_set_position(40.0)
     session.l_antenna_set_position(-40.0)
 
-    move_to(session, 0.5, -16.13 + THETA, 16.7 + PHI, 0.21)
+    move_to(session, 0.5, -16.13 + session.THETA, 16.7 + session.PHI, 0.21)
 
 def thanking(session):
     session.antennas_speed_limit(70.0)
     session.r_antenna_set_position(0.0)
     session.l_antenna_set_position(0.0)
 
-    move_to(session, 0.5, 5.74 + THETA, PHI, 0.15)
+    move_to(session, 0.5, 5.74 + session.THETA, session.PHI, 0.15)
 
     time.sleep(0.1)
 
     session.r_antenna_set_position(-40.0)
     session.l_antenna_set_position(40.0)
     
-    move_to(session, 0.5, 26.51 + THETA, PHI, 0.35)
+    move_to(session, 0.5, 26.51 + session.THETA, session.PHI, 0.35)
     
     time.sleep(0.3)
     
     session.r_antenna_set_position(0.0)
     session.l_antenna_set_position(0.0)
     
-    move_to(session, 0.5, 5.74 + THETA, PHI, 0.35)
+    move_to(session, 0.5, 5.74 + session.THETA, session.PHI, 0.35)
 
 def move_back(session):
-    global TMP_PHI
-    global TMP_THETA
-    global THETA
-    global PHI
-
-    position_prev = __spherical_to_cartesian(0.5, TMP_THETA, TMP_PHI)
-    TMP_THETA = THETA
-    TMP_PHI = PHI
-    position = __spherical_to_cartesian(0.5, THETA, PHI)
+    position_prev = __spherical_to_cartesian(0.5, session.TMP_THETA, session.TMP_PHI)
+    session.TMP_THETA = session.THETA
+    session.TMP_PHI = session.PHI
+    position = __spherical_to_cartesian(0.5, session.THETA, session.PHI)
     session.look_at(position[0], position[1], position[2], __duration(position_prev, position, 0.15))
