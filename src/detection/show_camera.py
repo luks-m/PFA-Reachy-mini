@@ -10,8 +10,9 @@ def show_camera():
     while True:
         frame = get_frame(session)
         time.sleep(0.1)
-        frame_display(frame, 'focus_setting_window')
-        if cv2.waitKey(0):
+        frame_display(frame, 'show_camera')
+        key = cv2.waitKey(1) & 0xFF
+        if key == ord("q"):
             break
 
     cv2.destroyAllWindows()
