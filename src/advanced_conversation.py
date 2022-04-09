@@ -13,7 +13,7 @@ def openai_speech(str):
 
   var=""
       
-  dialog += str
+  dialog = str
 
   start_sequence = "\nAI:"
   restart_sequence = "\nHuman: "
