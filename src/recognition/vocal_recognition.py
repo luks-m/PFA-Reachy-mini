@@ -2,8 +2,8 @@ import speech_recognition as sr
 from scipy.io import wavfile
 import noisereduce as nr 
 
-WAV_OUTPUT_FILENAME = "../tmp/enregistrement.wav"
-WAV_OUTPUT_REDUCED_FILENAME = "../tmp/enregistrement_reduce_noise.wav"
+WAV_OUTPUT_FILENAME = "../../tmp/enregistrement.wav"
+WAV_OUTPUT_REDUCED_FILENAME = "../../tmp/enregistrement_reduce_noise.wav"
 
 def debug_print(str):
     print("DEBUG : " + str)
@@ -18,7 +18,7 @@ def record_and_transcript():
     with sr.Microphone() as source:
         r.adjust_for_ambient_noise(source, duration=2) #  
         debug_print('Parle !')
-        audio = r.listen(source,phrase_time_limit=5)
+        audio = r.listen(source, phrase_time_limit=5)
         with open(WAV_OUTPUT_FILENAME, "wb") as f:
             f.write(audio.get_wav_data())
         debug_print('Fin !')

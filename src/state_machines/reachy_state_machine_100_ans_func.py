@@ -48,7 +48,7 @@ def allumage_robot_func(context):
 # state action of Recherche d'Interaction
 def recherche_interaction_func(context):
     #reset the context for advanced conversation
-    context["advanced_command"] = "Ceci est une conversation entre une Intelligence artificielle et un Humain.\n"
+    context["advanced_command"] = "Ceci est une conversation entre une Intelligence artificielle et un Humain. Nous allons parler en français et nous sommes dans une école d'ingénieurs.\n"
     context["command"] = vr.record_and_transcript()
     return context
 
@@ -132,6 +132,7 @@ def photo_simple_func(context):
     debug_print("(R) cadrage de la photo simple")
     # penser a enlever le True de test
     angle = facedet.smart_give_angle(context["session"], 10, facedet.n_closest_angle, 1, True)
+    print(angle)
     mv.update_position(context["session"], angle.v, angle.h, 0.5)
     return context
 

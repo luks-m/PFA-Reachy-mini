@@ -12,10 +12,11 @@ class State_Machine :
         self.module = module
     
     def create_executor(self, session):
-        context = { "session" : session,
-                    "states" : self.state_dico,
-                    "transitions" : self.transition_dico,
-                    "module" : self.module
+        context = {
+            "session" : session,
+            "states" : self.state_dico,
+            "transitions" : self.transition_dico,
+            "module" : self.module
         }
         return Executor(self.initial_state, context)
     
