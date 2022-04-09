@@ -2,11 +2,9 @@ from jinja2 import contextfilter
 import time
 from datetime import datetime
 import sys
-sys.path.append("../movement")
+sys.path.append("..")
 sys.path.append("../detection")
-sys.path.append("../conversation")
 sys.path.append("../speech")
-sys.path.append("../recognition")
 import movement as mv
 import face_detection as facedet
 from reachy_sdk import ReachySDK
@@ -132,7 +130,7 @@ def photo_simple_func(context):
     debug_print("(R) cadrage de la photo simple")
     # penser a enlever le True de test
     angle = facedet.smart_give_angle(context["session"], 10, facedet.n_closest_angle, 1, True)
-    print(angle)
+    print("theta = ", angle.v, "phi = ", angle.h)
     mv.update_position(context["session"], angle.v, angle.h, 0.5)
     return context
 

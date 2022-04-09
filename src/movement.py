@@ -61,23 +61,16 @@ def move_to(session, radius, theta, phi, v):
     session.look_at(position[0], position[1], position[2], __duration(position_prev, position, v))
 
 def update_position(session, theta, phi, v):
-    t = session.THETA
-    p = session.PHI
+    print(theta, phi)
     theta, phi = round(theta,2), round(phi,2)
 
-    position_prev = __spherical_to_cartesian(0.5, session.THETA, session.PHI)
-    session.THETA, session.PHI = __fit_angles(session.THETA + theta, session.PHI + phi)
-
-    session.TMP_THETA = session.THETA
-    session.TMP_PHI = session.PHI
-
-    position = __spherical_to_cartesian(1, session.THETA, session.PHI)
+    session.TMP_THETA, session.TMP_PHI = __fit_angles(session.THETA + theta, session.PHI + phi)
     
     mouv = None
 
     try:
         tmp = True
-        mouv = session.inverse_kinematics(__euler_to_quaternion(0, __degree_to_radian(session.THETA - t), __degree_to_radian(session.PHI - p)))
+        mouv = session.inverse_kinematics(__euler_to_quaternion(0, __degree_to_radian(session.TMP_THETA - session.THETA), __degree_to_radian(session.TMP_PHI - session.PHI)))
     except ValueError:
         tmp = False
 
@@ -88,9 +81,11 @@ def update_position(session, theta, phi, v):
             angles["neck_disk_middle"]: mouv[1],
             angles["neck_disk_bottom"]: mouv[2],
         }
-        #NoneObject is not subscriptable mouv = None
 
-        session.goto(angle, __duration(position_prev, position, v))
+    session.goto(angle, __duration(__spherical_to_cartesian(0.5, session.THETA, session.PHI), __spherical_to_cartesian(1, session.TMP_THETA, session.TMP_PHI), v))
+
+    session.THETA = session.TMP_THETA
+    session.PHI = session.TMP_PHI
 
 def listen(session):
     session.r_antenna_set_position(0)

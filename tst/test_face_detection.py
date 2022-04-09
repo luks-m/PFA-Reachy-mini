@@ -130,7 +130,7 @@ def smart_give_angle_test_with_reachy_api():
         return give_in_gray(get_frame(session))
     
     while True :
-        angle = smart_give_angle(5, get_frame_bis, n_closest_angle, 2, for_test = True)
+        angle = smart_give_angle(session, 5, n_closest_angle, 1, for_test = True)
 
         print(f"horizontal angle is {round(angle.h, 1)}° - vertical angle is {round(angle.v, 1)}°")
 
@@ -142,7 +142,7 @@ def smart_give_angle_test_with_reachy_api():
 
 if __name__ == '__main__': # Relevant test experiences
     # test_all_face_recognised(True)
-    test_all_face_recognised_with_reachy_api(False)
+    #test_all_face_recognised_with_reachy_api(True)
 
     # test_n_closest_angle(0)
     # test_n_closest_angle(1)
@@ -157,4 +157,4 @@ if __name__ == '__main__': # Relevant test experiences
     # test_framing_for_group_photo_angle_with_reachy_api(0.5)
 
     # smart_give_angle_test()
-    # smart_give_angle_test_with_reachy_api()
+    smart_give_angle_test_with_reachy_api()

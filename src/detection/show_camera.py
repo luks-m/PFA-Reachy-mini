@@ -4,9 +4,8 @@ import reachy_session as rs
 from face_detection import *
 
 # To set the focus
-def set_focus():
+def show_camera():
     session = rs.ReachySession()
-    session.start_autofocus()
 
     while True:
         frame = get_frame(session)
@@ -15,8 +14,7 @@ def set_focus():
         if cv2.waitKey(0):
             break
 
-    session.stop_autofocus()
     cv2.destroyAllWindows()
 
 if __name__ == '__main__':
-    set_focus()
+    show_camera()
