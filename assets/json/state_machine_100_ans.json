@@ -4,7 +4,7 @@
             "action": "allumage_robot_func",
             "transitions": [
                 {   
-                    "final": "recherche_interaction"
+                    "target": "recherche_interaction"
                 }
             ]
         },
@@ -12,12 +12,12 @@
             "action": "recherche_interaction_func",
             "transitions": [
                 {
-                    "final": "recherche_de_personne",
+                    "target": "recherche_de_personne",
                     "predicat": "activation_detection",
                     "action": "enregistrer_date"
                 },
                 {
-                    "final": "incitation_interaction",
+                    "target": "incitation_interaction",
                     "predicat": "detection_personne",
                     "action": "enregistrer_date"
                 }
@@ -27,12 +27,12 @@
             "action": "recherche_de_personne_func",
             "transition": [
                 {
-                    "final": "attente_ordre",
+                    "target": "attente_ordre",
                     "predicat": "detection_personne",
                     "action": "reset_for_attente_ordre"
                 },
                 {
-                    "final": "recherche_interaction",
+                    "target": "recherche_interaction",
                     "predicat": "temps_ecoule",
                     "action": "reset_for_incitation_interaction"
                 }
@@ -42,12 +42,12 @@
             "action":"incitation_interaction_func",
             "transitions": [
                 {
-                    "final": "attente_ordre",
+                    "target": "attente_ordre",
                     "predicat": "activation_detection",
                     "action": "reset_for_attente_ordre"
                 },
                 {
-                    "final": "recherche_interaction",
+                    "target": "recherche_interaction",
                     "predicat": "temps_ecoule",
                     "action": "reset_for_incitation_interaction"
                 }
@@ -60,20 +60,20 @@
             "action": "attente_ordre_func",
             "transitions": [
                 {
-                    "final": "eteindre",
+                    "target": "eteindre",
                     "predicat": "eteindre_set_detection"
                 },
                 {
-                    "final": "traitement_ordre",
+                    "target": "traitement_ordre",
                     "predicat": "command_verif"
                 },
                 {
-                    "final": "recherche_interaction",
+                    "target": "recherche_interaction",
                     "predicat": "temps_ecoule",
                     "action": "temps_ecoule_func"
                 },
                 {
-                    "final": "attente_ordre",
+                    "target": "attente_ordre",
                     "predicat": "temps_presque_ecoule",
                     "action": "temps_presque_ecoule_func"
 
@@ -84,19 +84,19 @@
             "action": "traitement_ordre_func",
             "transitions": [
                 {
-                    "final": "photo_simple",
+                    "target": "photo_simple",
                     "predicat": "photo_simple_sets_detection"
                 },
                 {
-                    "final": "photo_groupe",
+                    "target": "photo_groupe",
                     "predicat": "photo_groupe_sets_detection"
                 },
                 {
-                    "final": "photo",
+                    "target": "photo",
                     "predicat": "photo_set_detection"
                 },
                 {
-                    "final": "conversation"
+                    "target": "conversation"
                 }
             ]
         },
@@ -104,15 +104,15 @@
             "action": "photo_func",
             "transitions": [
                 {
-                    "final": "photo_simple",
+                    "target": "photo_simple",
                     "predicat": "simple_set_detection"
                 },
                 {
-                    "final": "photo_groupe",
+                    "target": "photo_groupe",
                     "predicat": "groupe_set_detection"
                 },
                 {
-                    "final": "attente_ordre",
+                    "target": "attente_ordre",
                     "predicat": "temps_ecoule"
                 }
             ]
@@ -121,7 +121,7 @@
             "action": "photo_simple_func",
             "transitions": [
                 {
-                    "final": "prise_photo"
+                    "target": "prise_photo"
                 }
             ]
         },
@@ -129,7 +129,7 @@
             "action": "photo_groupe_func",
             "transitions": [
                 {
-                    "final": "prise_photo"
+                    "target": "prise_photo"
                 }
             ]
         },
@@ -137,7 +137,7 @@
             "action": "prise_photo_func",
             "transitions": [
                 {
-                    "final": "attente_ordre"
+                    "target": "attente_ordre"
                 }
             ]
         },
@@ -145,27 +145,27 @@
             "action": "conversation_func",
             "transitions": [
                 {
-                    "final": "bonjour",
+                    "target": "bonjour",
                     "predicat": "bonjour_set_detection"
                 },
                 {
-                    "final": "aurevoir",
+                    "target": "aurevoir",
                     "predicat": "aurevoir_set_detection"
                 },
                 {
-                    "final": "cava",
+                    "target": "cava",
                     "predicat": "cava_set_detection"
                 },
                 {
-                    "final": "gentil",
+                    "target": "gentil",
                     "predicat": "gentil_set_detection"
                 },
                 {
-                    "final": "mechant",
+                    "target": "mechant",
                     "predicat": "mechant_set_detection"
                 },
                 {
-                    "final": "incomprehension"
+                    "target": "incomprehension"
                 }
             ]
         },
@@ -173,7 +173,7 @@
             "action": "bonjour_func",
             "transitions": [
                 {
-                    "final": "attente_ordre",
+                    "target": "attente_ordre",
                     "action": "reset_for_attente_ordre"
                 }
             ]
@@ -182,8 +182,8 @@
             "action": "aurevoir_func",
             "transitions": [
                 {
-                    "final": "recherche_interaction",
-                    "action": "reset_for_attente_ordre"
+                    "target": "recherche_interaction",
+                    "action": "reset_for_recherche_interaction"
                 }
             ]
         },
@@ -191,7 +191,7 @@
             "action": "cava_func",
             "transitions": [
                 {
-                    "final": "attente_ordre",
+                    "target": "attente_ordre",
                     "action": "reset_for_attente_ordre"
                 }
             ]
@@ -200,7 +200,7 @@
             "action": "gentil_func",
             "transitions": [
                 {
-                    "final": "attente_ordre",
+                    "target": "attente_ordre",
                     "action": "reset_for_attente_ordre"
                 }
             ]
@@ -209,7 +209,7 @@
             "action": "mechant_func",
             "transitions": [
                 {
-                    "final": "attente_ordre",
+                    "target": "attente_ordre",
                     "action": "reset_for_attente_ordre"
                 }
             ]
@@ -218,7 +218,7 @@
             "action": "incomprehension_func",
             "transitions": [
                 {
-                    "final": "attente_ordre",
+                    "target": "attente_ordre",
                     "action": "reset_for_attente_ordre"
                 }
             ]

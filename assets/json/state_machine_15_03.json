@@ -4,7 +4,7 @@
             "action": "allumage_robot_func",
             "transitions": [
                 {   
-                    "final": "recherche_interaction"
+                    "target": "recherche_interaction"
                 }
             ]
         },
@@ -12,7 +12,7 @@
             "action": "recherche_interaction_func",
             "transitions": [
                 {
-                    "final": "attente_ordre",
+                    "target": "attente_ordre",
                     "predicat": "activation_detection"
                 }
             ]
@@ -21,7 +21,7 @@
             "action": "attente_ordre_func",
             "transitions": [
                 {
-                    "final": "conversation",
+                    "target": "conversation",
                     "predicat": "command_verif"
                 }
             ]
@@ -30,27 +30,27 @@
             "action": "conversation_func",
             "transitions": [
                 {
-                    "final": "bonjour",
+                    "target": "bonjour",
                     "predicat": "bonjour_set_detection"
                 },
                 {
-                    "final": "aurevoir",
+                    "target": "aurevoir",
                     "predicat": "aurevoir_set_detection"
                 },
                 {
-                    "final": "cava",
+                    "target": "cava",
                     "predicat": "cava_set_detection"
                 },
                 {
-                    "final": "gentil",
+                    "target": "gentil",
                     "predicat": "gentil_set_detection"
                 },
                 {
-                    "final": "mechant",
+                    "target": "mechant",
                     "predicat": "mechant_set_detection"
                 },
                 {
-                    "final": "incomprehension"
+                    "target": "incomprehension"
                 }
             ]
         },
@@ -58,7 +58,7 @@
             "action": "bonjour_func",
             "transitions": [
                 {
-                    "final": "attente_ordre",
+                    "target": "attente_ordre",
                     "action": "reset_command"
                 }
             ]
@@ -67,7 +67,7 @@
             "action": "aurevoir_func",
             "transitions": [
                 {
-                    "final": "recherche_interaction",
+                    "target": "recherche_interaction",
                     "action": "reset_command"
                 }
             ]
@@ -76,7 +76,7 @@
             "action": "cava_func",
             "transitions": [
                 {
-                    "final": "attente_ordre",
+                    "target": "attente_ordre",
                     "action": "reset_command"
                 }
             ]
@@ -85,7 +85,7 @@
             "action": "gentil_func",
             "transitions": [
                 {
-                    "final": "attente_ordre",
+                    "target": "attente_ordre",
                     "action": "reset_command"
                 }
             ]
@@ -94,7 +94,7 @@
             "action": "mechant_func",
             "transitions": [
                 {
-                    "final": "attente_ordre",
+                    "target": "attente_ordre",
                     "action": "reset_command"
                 }
             ]
@@ -103,7 +103,7 @@
             "action": "incomprehension_func",
             "transitions": [
                 {
-                    "final": "attente_ordre",
+                    "target": "attente_ordre",
                     "action": "reset_command"
                 }
             ]
