@@ -134,7 +134,7 @@ def photo_func(context):
 def photo_simple_func(context):
     debug_print("(R) cadrage de la photo simple")
     # penser a enlever le True de test
-    angle = facedet.smart_give_angle(context["session"], 10, facedet.n_closest_angle, 1, True)
+    angle = facedet.smart_give_angle(context["session"], 30, facedet.n_closest_angle, 1, True)
     print("theta = ", angle.v, "phi = ", angle.h)
     mv.update_position(context["session"], angle.v, angle.h, 0.5)
     return context
@@ -142,7 +142,7 @@ def photo_simple_func(context):
 def photo_groupe_func(context):
     debug_print("(R) cadrage de la photo de groupe")
     # penser a enlever le True de test
-    angle = facedet.smart_give_angle(context["session"], 10, facedet.framing_for_group_photo_angle, 25, True)
+    angle = facedet.smart_give_angle(context["session"], 30, facedet.framing_for_group_photo_angle, 99, True)
     mv.update_position(context["session"], angle.v, angle.h, 0.5)
     return context
 
