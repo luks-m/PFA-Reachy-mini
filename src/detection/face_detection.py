@@ -99,6 +99,8 @@ def get_n_closest_faces(faces, n):  # Give the n closest faces unsing the face h
 
 def get_closest_to_mean_faces(faces, percent_relat_to_avg): # Give the faces whose the height is 'percent_relat_to_avg' or less near from the height average
     s, n = 0, len(faces)
+    if n == 0 :
+        return []
     # Mean face height computation
     for face in faces:
         s += face.scale.height
@@ -114,13 +116,13 @@ def global_face_detection_service(frame, specific_getter_function, specific_gett
     frame = give_in_gray(frame)
     faces = get_faces(frame)
     faces = specific_getter_function(faces, specific_getter_param)
+    if len(faces) == 0 :
+        return Angle(0, 0)
     if for_test:
         for i in range(len(faces)):
             face = faces[i]
             draw_rectangle_on_frame(frame, face)
         frame_display(frame, 'face_detection')
-    if len(faces) == 0 :
-        return Angle(0, 0)
     mean_faces_pos = get_average_position(faces)
     scale = vector_center_to_pos(Pos(frame.shape[1]/2, frame.shape[0]/2), mean_faces_pos)
     return Angle(scale_to_angle(scale.width), scale_to_angle(scale.height))
