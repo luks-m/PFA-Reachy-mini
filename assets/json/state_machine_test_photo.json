@@ -4,7 +4,7 @@
             "action": "allumage_robot_func",
             "transitions": [
                 {   
-                    "final": "photo_simple"
+                    "target": "photo_simple"
                 }
             ]
         },
@@ -15,8 +15,7 @@
             "action": "photo_simple_func",
             "transitions": [
                 {
-                    "final": "prise_photo",
-                    "predicat": "temps_ecoule"
+                    "target": "prise_photo"
                 }
             ]
         },
@@ -24,7 +23,7 @@
             "action": "prise_photo_func",
             "transitions": [
                 {
-                    "final": "eteindre"
+                    "target": "eteindre"
                 }
             ]
         }

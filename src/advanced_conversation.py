@@ -4,7 +4,7 @@ import json
 import sys
 sys.path.append("../speech")
 sys.path.append("../recognition")
-import speech_synthesis as speech
+import speech_synthesis_gtt as speech
 import vocal_recognition as vr
 
 def openai_speech(str):
@@ -13,7 +13,7 @@ def openai_speech(str):
 
   var=""
       
-  dialog += str
+  dialog = str
 
   start_sequence = "\nAI:"
   restart_sequence = "\nHuman: "
@@ -30,10 +30,10 @@ def openai_speech(str):
   )
   var=response.get("choices")[0].get("text")
   dialog+=var
-  print(dialog)
+  dialog+="\n"
   # y = json.loads(response.get("choices"))
   # print(y["text"])
   # print(type(response.get("choices")[0]))
-  speech.text_to_speech(var)
-  print(var)
-  return var
+
+  speech.text_to_speech(var[3:])
+  return dialog

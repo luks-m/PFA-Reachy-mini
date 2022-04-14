@@ -1,4 +1,5 @@
 import json
+from socket import timeout
 from state_machine_obj import State_Machine
 
 def load(file_path):
@@ -6,6 +7,7 @@ def load(file_path):
     # prepare the dictionaries
     states = {}
     transitions = {}
+    outtime = {}
     
     with open(file_path) as file:
 
@@ -28,8 +30,8 @@ def load(file_path):
                 # associate transition array
                 for t in i[1]["transitions"]:
                     # a transition needs a next state
-                    if("final" in t):
-                        final = t["final"]
+                    if("target" in t):
+                        final = t["target"]
                     else:
                         raise ValueError("a transition needs a final state")
                     
@@ -50,12 +52,26 @@ def load(file_path):
             #if there is no transition, accessing this state stop the program after its action
             else:
                 transitions[i[0]] = [{"next_state":"quit_program", "action":"quit_program", "pred":"quit_program"}]
-    
+
+            tmp = {}
+                
+            if("timeout" in i[1]):
+                tmp = {}
+                tmp["time"] = i[1]["timeout"]["time"]
+                tmp["next_state"] = i[1]["timeout"]["target"]
+            #if there is no action the program raises an error
+            else:
+                tmp["time"] = "infinite"
+                tmp["next_state"] = ""
+            
+            outtime[i[0]] = tmp
+
     initial_state = list(states)[0]
     
     # fill the module argument, it is the file where to find the 
     # implemantation of the transition and state functions
     module = j["module"]
 
+    print(outtime)
     # initialise the state machine withe the informations of the json file
-    return State_Machine(states, transitions, initial_state, module)
+    return State_Machine(states, transitions, initial_state, outtime, module)

@@ -7,7 +7,6 @@ import cv2
 from cv2 import aruco
 import sys
 sys.path.append("../session")
-from session import *
 
 
 # Defining the face and ArUco detedtors
@@ -210,8 +209,8 @@ def smart_give_angle(session, nbr_trials, give_angle_function, give_angle_parame
     return nearest_angle   
 
 def take_picture(session, noun): # Take a picture, with an automatic focus, and save it at the 'path' location
-   # launch_focus(session)
-   cv2.imwrite("../tmp/" + noun + ".png", get_frame(session))
+   time.sleep(2)
+   cv2.imwrite("../../tmp/" + noun + ".png", get_frame(session))
 
 def smart_get_aruco_code(session, nbr_trials):
     for i in range(nbr_trials):

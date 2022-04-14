@@ -2,11 +2,9 @@ from jinja2 import contextfilter
 import time
 from datetime import datetime
 import sys
-sys.path.append("../movement")
+sys.path.append("..")
 sys.path.append("../detection")
-sys.path.append("../conversation")
 sys.path.append("../speech")
-sys.path.append("../recognition")
 import movement as mv
 import face_detection as facedet
 from reachy_sdk import ReachySDK
@@ -36,6 +34,8 @@ def __init_context(context):
     context["time"] = datetime.now()
     context["command"] = ""
     context["advanced_command"] = ""
+    context["activation"] = False 
+    (context["recognizer"], context["micro"]) = vr.init_record()
     return context
 
 def allumage_robot_func(context):
@@ -48,25 +48,28 @@ def allumage_robot_func(context):
 # state action of Recherche d'Interaction
 def recherche_interaction_func(context):
     #reset the context for advanced conversation
-    context["advanced_command"] = "Ceci est une conversation entre une Intelligence artificielle et un Humain.\n"
-    context["command"] = vr.record_and_transcript()
+    context["advanced_command"] = "Ceci est une conversation entre une Intelligence artificielle et un Humain. Nous allons parler en français et nous sommes dans une école d'ingénieurs.\nAI:Bonjour, c'est super je suis content d'y avoir été invité\n"
+    context["activation"] = vr.hey_reachy_detection()
     return context
 
 def recherche_de_personne_func(context):
-    #TODO
+    mv.move_to(context["session"], 0.5, 90, -45, 0.3)
+    mv.move_to(context["session"], 0.5, 90, 45, 0.3)
+    mv.move_to(context["session"], 0.5, 90, 0, 0.3)
     return context
 
 def incitation_interaction_func(context):
-    #TODO
+    mv.incentive(context["session"])
     return context
 
 # state action of Attente d'Ordre
 def attente_ordre_func(context):
     mv.listen(context["session"])
-    context["command"] = vr.record_and_transcript()
+    context["command"] = vr.record_and_transcript(context["recognizer"], context["micro"])
     return context
 
 def traitement_ordre_func(context):
+    #TODO
     return context
 
 # state action of Conversation
@@ -118,20 +121,21 @@ def eteindre_func(context):
 def incomprehension_func(context):
     sentence = context["command"]
     context["advanced_command"] += f"Human:{sentence} \n"
-    answer = advconv.openai_speech(context["advanced_command"])
-    context["advanced_command"] += f"AI{answer} \n"
+    context["advanced_command"] = advconv.openai_speech(context["advanced_command"])
+    print(context["advanced_command"])
     return context
 
 def photo_func(context):
     #TODO
     debug_print("(R) Quel type de photo voulez vous ? simple ou de groupe ?")
-    context["command"] = vr.record_and_transcript()
+    context["command"] = vr.record_and_transcript(context["recognizer"], context["micro"])
     return context
 
 def photo_simple_func(context):
     debug_print("(R) cadrage de la photo simple")
     # penser a enlever le True de test
     angle = facedet.smart_give_angle(context["session"], 10, facedet.n_closest_angle, 1, True)
+    print("theta = ", angle.v, "phi = ", angle.h)
     mv.update_position(context["session"], angle.v, angle.h, 0.5)
     return context
 
@@ -139,7 +143,7 @@ def photo_groupe_func(context):
     debug_print("(R) cadrage de la photo de groupe")
     # penser a enlever le True de test
     angle = facedet.smart_give_angle(context["session"], 10, facedet.framing_for_group_photo_angle, 25, True)
-    # ajouter movement
+    mv.update_position(context["session"], angle.v, angle.h, 0.5)
     return context
 
 def prise_photo_func(context):
@@ -155,6 +159,14 @@ def prise_photo_func(context):
 def reset_for_attente_ordre(context):
     context["command"] = ""
     enregistrer_date(context)
+    return context
+
+def reset_for_recherche_interaction(context):
+    (context["recognizer"], context["micro"]) = vr.init_record()
+    return context
+
+def reset_activation(context):
+    context["activation"] = False
     return context
 
 def temps_presque_ecoule_func(context):
@@ -181,7 +193,7 @@ def reset_for_incitation_interaction(context):
 
 # transition predicat to detect activation keywords
 def activation_detection(context):
-    return cmd.all_in(context["command"], cmd.set_activation)
+    return context["activation"] == True
 
 # transition predicat function to verify if the command is not an ERROR
 def command_verif(context):
@@ -234,7 +246,7 @@ def photo_groupe_sets_detection(context):
     return (photo_set_detection(context) and groupe_set_detection(context)) 
 
 def detection_personne(context):
-    #TODO
+    mv.happy(context["session"])
     return context
 
 def activation_aruco_det(context):

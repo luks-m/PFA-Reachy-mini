@@ -1,9 +1,8 @@
 import loader as ld
 import sys
 sys.path.append("../session")
-import session
-#import reachy_session as rs
-import fake_session as fs
+sys.path.append("..")
+import reachy_session as fs
 
 ###################################
 ## Creation of the State Machine ##
@@ -18,7 +17,7 @@ state_machine = ld.load("../../assets/json/state_machine_avec_Aruco.json")
 ##########
 
 # S = rs.ReachySession()
-F = fs.FakeSession()
+F = fs.ReachySession()
 
 # executeur = state_machine.create_executor(S)
 executeur = state_machine.create_executor(F)

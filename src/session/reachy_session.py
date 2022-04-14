@@ -8,6 +8,10 @@ class ReachySession(Session):
 
     def __init__(self):
         self._robot = ReachySDK('localhost')
+        self.PHI = 0
+        self.THETA = 90
+        self.TMP_PHI = 0
+        self.TMP_THETA = 90
 
     def turn_on(self):
         self._robot.turn_on('head')

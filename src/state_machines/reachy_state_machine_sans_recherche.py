@@ -1,7 +1,7 @@
 import loader as ld
 import sys
 sys.path.append("../session")
-import session
+sys.path.append("..")
 import reachy_session as rs
 import fake_session as fs
 

@@ -5,19 +5,16 @@ from numpy import character
 from executor import *
 
 class State_Machine :
-    def __init__(self, state_dico, transition_dico, initial_state, module) :
+    def __init__(self, state_dico, transition_dico, initial_state, outtime,  module) :
         self.state_dico = state_dico
         self.transition_dico = transition_dico
         self.initial_state = initial_state
         self.module = module
+        self.outtime = outtime
     
     def create_executor(self, session):
-        context = { "session" : session,
-                    "states" : self.state_dico,
-                    "transitions" : self.transition_dico,
-                    "module" : self.module
-        }
-        return Executor(self.initial_state, context)
+        context = { "session" : session}
+        return Executor(self.initial_state, context, self)
     
     # def get_context(self) :
     #     return self.context

@@ -6,7 +6,7 @@ from gtts import gTTS
 from io import BytesIO
 import os
 
-PATH = "./../tmp/"
+PATH = "../../tmp/"
 
 
 def text_to_speech(text):
