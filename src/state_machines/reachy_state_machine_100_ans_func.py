@@ -51,11 +51,13 @@ def recherche_interaction_func(context):
     return context
 
 def recherche_de_personne_func(context):
-    #TODO
+    mv.move_to(context["session"], 0.5, 90, -45, 0.3)
+    mv.move_to(context["session"], 0.5, 90, 45, 0.3)
+    mv.move_to(context["session"], 0.5, 90, 0, 0.3)
     return context
 
 def incitation_interaction_func(context):
-    #TODO
+    mv.incentive(context["session"])
     return context
 
 # state action of Attente d'Ordre
@@ -65,6 +67,7 @@ def attente_ordre_func(context):
     return context
 
 def traitement_ordre_func(context):
+    #TODO
     return context
 
 # state action of Conversation
@@ -138,7 +141,7 @@ def photo_groupe_func(context):
     debug_print("(R) cadrage de la photo de groupe")
     # penser a enlever le True de test
     angle = facedet.smart_give_angle(context["session"], 10, facedet.framing_for_group_photo_angle, 25, True)
-    # ajouter movement
+    mv.update_position(context["session"], angle.v, angle.h, 0.5)
     return context
 
 def prise_photo_func(context):
@@ -233,7 +236,7 @@ def photo_groupe_sets_detection(context):
     return (photo_set_detection(context) and groupe_set_detection(context)) 
 
 def detection_personne(context):
-    #TODO
+    mv.happy(context["session"])
     return context
 
 def activation_aruco_det(context):
