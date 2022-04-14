@@ -21,7 +21,7 @@ def openai_speech(str):
     engine="text-davinci-002",
     prompt=dialog ,
     temperature=0.9,
-    max_tokens=480,
+    max_tokens=50,
     best_of=4,
     top_p=1,
     frequency_penalty=0.0,
