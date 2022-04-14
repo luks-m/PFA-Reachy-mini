@@ -4,15 +4,15 @@
             "action": "allumage_robot_func",
             "transitions": [
                 {   
-                    "target": "photo_simple"
+                    "target": "photo_groupe"
                 }
             ]
         },
         "eteindre":{
             "action": "eteindre_func"
         },
-        "photo_simple":{
-            "action": "photo_simple_func",
+        "photo_groupe":{
+            "action": "photo_groupe_func",
             "transitions": [
                 {
                     "target": "prise_photo"
