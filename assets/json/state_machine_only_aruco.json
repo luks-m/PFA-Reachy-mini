@@ -1,0 +1,84 @@
+{
+    "states": {
+        "allumage_robot": {
+            "action": "allumage_robot_func",
+            "transitions": [
+                {   
+                    "target": "recherche_interaction_only_aruco"
+                }
+            ]
+        },
+        "recherche_interaction_only_aruco": {
+            "action": "recherche_interaction__only_aruco_func",
+            "transitions": [
+                {
+                    "target": "attente_ordre_only_aruco",
+                    "predicat": "activation_aruco_det",
+                    "action": "reset_activation"
+                }
+            ]
+        },
+        "eteindre":{
+            "action": "eteindre_func"
+        },
+        "attente_ordre_only_aruco": {
+            "action": "attente_ordre_only_aruco_func",
+            "transitions": [
+                {
+                    "target": "eteindre",
+                    "predicat": "eteindre_aruco_det"
+                },
+                {
+                    "target": "traitement_ordre_only_aruco",
+                    "predicat": "aruco_verif"
+                }
+            ],
+            "timeout":{
+                "time":20,
+                "target":"recherche_interaction"
+            }
+        },
+        "traitement_ordre_only_aruco": {
+            "action": "traitement_ordre_only_aruco_func",
+            "transitions": [
+                {
+                    "target": "photo_simple",
+                    "predicat": "photo_simple_aruco_det"
+                },
+                {
+                    "target": "photo_groupe",
+                    "predicat": "photo_groupe_aruco_det"
+                },
+                {
+                    "target": "attente_ordre_only_aruco"
+                }
+ 
+            ]
+        },
+        "photo_simple":{
+            "action": "photo_simple_func",
+            "transitions": [
+                {
+                    "target": "prise_photo"
+                }
+            ]
+        },
+        "photo_groupe":{
+            "action": "photo_groupe_func",
+            "transitions": [
+                {
+                    "target": "prise_photo"
+                }
+            ]
+        },
+        "prise_photo":{
+            "action": "prise_photo_func",
+            "transitions": [
+                {
+                    "target": "attente_ordre_only_aruco"
+                }
+            ]
+        }
+    },
+    "module":"reachy_state_machine_100_ans_func"
+}

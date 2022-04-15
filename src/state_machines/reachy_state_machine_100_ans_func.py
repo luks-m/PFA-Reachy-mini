@@ -52,6 +52,12 @@ def recherche_interaction_func(context):
     context["activation"] = vr.hey_reachy_detection()
     return context
 
+def recherche_interaction__only_aruco_func(context):
+    #reset the context for advanced conversation
+    context["advanced_command"] = "Ceci est une conversation entre une Intelligence artificielle et un Humain. Nous allons parler en français et nous sommes dans une école d'ingénieurs.\nAI:Bonjour, c'est super je suis content d'y avoir été invité\n"
+    context["aruco"] = facedet.smart_get_aruco_code(context["session"], 3)
+    return context
+
 def recherche_de_personne_func(context):
     mv.move_to(context["session"], 0.5, 90, -45, 0.3)
     mv.move_to(context["session"], 0.5, 90, 45, 0.3)
@@ -68,7 +74,15 @@ def attente_ordre_func(context):
     context["command"] = vr.record_and_transcript(context["recognizer"], context["micro"])
     return context
 
+def attente_ordre_only_aruco_func(context):
+    context["aruco"] = facedet.smart_get_aruco_code(context["session"], 3)
+    return context
+
 def traitement_ordre_func(context):
+    #TODO
+    return context
+
+def traitement_ordre_only_aruco_func(context):
     #TODO
     return context
 
@@ -255,5 +269,11 @@ def activation_aruco_det(context):
 def photo_simple_aruco_det(context):
     return context["aruco"] == 2
 
-def photo_simple_aruco_det(context):
+def photo_groupe_aruco_det(context):
     return context["aruco"] == 3
+
+def eteindre_aruco_det(context):
+    return context["aruco"] == 4
+
+def aruco_verif(context):
+    return context["aruco"] != None
