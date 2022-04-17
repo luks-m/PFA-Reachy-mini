@@ -40,7 +40,7 @@ class Executor:
                 return T["next_state"], context
             else:
                 diff = datetime.now() - self.time
-                print("diff = " + str(diff))
+                #print("diff = " + str(diff))
                 if self.state_machine.outtime[state]["time"] != "infinite":
                     if diff.seconds >= self.state_machine.outtime[state]["time"]:
                         state = self.state_machine.outtime[state]["next_state"]
