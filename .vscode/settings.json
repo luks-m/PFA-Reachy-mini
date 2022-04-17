@@ -3,6 +3,7 @@
         "./src/speech",
         "./src/recognition",
         "./src/detection",
-        "./src/conversation"
+        "./src/conversation",
+        "./src/session"
     ]
 }
