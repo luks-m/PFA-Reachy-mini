@@ -272,17 +272,97 @@ def detection_personne(context):
     mv.happy(context["session"])
     return context
 
-def activation_aruco_det(context):
-    return context["aruco"] == 1
-
-def photo_simple_aruco_det(context):
-    return context["aruco"] == 2
-
-def photo_groupe_aruco_det(context):
-    return context["aruco"] == 3
-
-def eteindre_aruco_det(context):
-    return context["aruco"] == 4
+############################
+########## ARUCO ###########
+############################
 
 def aruco_verif(context):
     return context["aruco"] != None
+# photo groupe predicat
+def photo_groupe_aruco_det(context):
+    return context["aruco"] == 3
+
+# éteindre predicat
+def eteindre_aruco_det(context):
+    return context["aruco"] == 4
+
+# éteindre predicat
+def bonjour_aruco_det(context):
+    return context["aruco"] == 5
+
+# éteindre action
+def bonjour_aruco_action(context):
+    context["command"] = "bonjour"
+    return context
+
+# comment vas-tu predicat
+def comment_vas_tu_aruco_det(context):
+    return context["aruco"] == 6
+
+# comment vas-tu action
+def comment_vas_tu_aruco_action(context):
+    context["command"] = "comment vas-tu"
+    return context
+
+# je vais bien predicat
+def je_vais_bien_aruco_det(context):
+    return context["aruco"] == 7
+
+# je vais bien action
+def je_vais_bien_aruco_action(context):
+    context["command"] = "je vais bien"
+    return context
+
+# moyennement bien predicat
+def moyennement_bien_aruco_det(context):
+    return context["aruco"] == 8
+
+# moyennement bien action
+def moyennement_bien_aruco_action(context):
+    context["command"] = "je vais moyennement bien"
+    return context
+
+# pas trop predicat
+def pas_trop_aruco_det(context):
+    return context["aruco"] == 9
+
+# pas trop action
+def pas_trop_aruco_action(context):
+    context["command"] = "ça ne va pas trop"
+    return context
+
+# raconte moi une histoire predicat
+def histoire_aruco_det(context):
+    return context["aruco"] == 10
+
+# raconte moi une histoire action
+def histoire_aruco_action(context):
+    context["command"] = "raconte moi une histoire"
+    return context
+
+# au revoir predicat
+def au_revoir_aruco_det(context):
+    return context["aruco"] == 11
+
+# au revoir action
+def au_revoir_aruco_action(context):
+    context["command"] = "au revoir"
+    return context
+
+# tu es mignon predicat
+def mignon_aruco_det(context):
+    return context["aruco"] == 12
+
+# tu es mignon action
+def mignon_aruco_action(context):
+    context["command"] = "tu es mignon"
+    return context
+
+# tu es moche predicat
+def moche_aruco_det(context):
+    return context["aruco"] == 13
+
+# tu es moche action
+def moche_aruco_action(context):
+    context["command"] = "tu es moche"
+    return context
