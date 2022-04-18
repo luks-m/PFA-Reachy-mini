@@ -43,6 +43,7 @@ def allumage_robot_func(context):
     context = __init_context(context)
     mv.motor_on(context["session"])
     mv.move_to(context["session"], 0.5, 90, 0, 0.5)
+    speech.start_voice()
     return context
 
 # state action of Recherche d'Interaction
@@ -71,6 +72,7 @@ def incitation_interaction_func(context):
 # state action of Attente d'Ordre
 def attente_ordre_func(context):
     mv.listen(context["session"])
+    speech.attente_ordre_speech()
     context["command"] = vr.record_and_transcript(context["recognizer"], context["micro"])
     return context
 
@@ -112,6 +114,7 @@ def cava_func(context):
 
 # state action of Gentil
 def gentil_func(context):
+    speech.happy_voice()
     mv.happy(context["session"])
     speech.text_to_speech(cmd.one_out(cmd.set_gentil["s"]))
     debug_print("(R) " + cmd.one_out(cmd.set_gentil["s"]))
@@ -119,6 +122,7 @@ def gentil_func(context):
 
 # state action of Mechant
 def mechant_func(context):
+    speech.sad_voice()
     mv.sad(context["session"])
     speech.text_to_speech(cmd.one_out(cmd.set_mechant["s"]))
     debug_print("(R) " + cmd.one_out(cmd.set_mechant["s"]))
@@ -126,8 +130,9 @@ def mechant_func(context):
 
 def eteindre_func(context):
     #speech.text_to_speech(cmd.one_out(cmd.set_eteindre["s"]))
-    debug_print("(R) " + cmd.one_out(cmd.set_eteindre["s"]))
+    debug_print("(R) " + cmd.one_out(cmd.set_eteindre["s"]))    
     mv.thanking(context["session"])
+    speech.turn_of_voice()
     mv.motor_off(context["session"])
     return context
 
@@ -142,11 +147,13 @@ def incomprehension_func(context):
 def photo_func(context):
     #TODO
     debug_print("(R) Quel type de photo voulez vous ? simple ou de groupe ?")
+    speech.photo_speech()
     context["command"] = vr.record_and_transcript(context["recognizer"], context["micro"])
     return context
 
 def photo_simple_func(context):
     debug_print("(R) cadrage de la photo simple")
+    speech.cadrage_speech()
     # penser a enlever le True de test
     angle = facedet.smart_give_angle(context["session"], 30, facedet.n_closest_angle, 1, True)
     print("theta = ", angle.v, "phi = ", angle.h)
@@ -155,6 +162,7 @@ def photo_simple_func(context):
 
 def photo_groupe_func(context):
     debug_print("(R) cadrage de la photo de groupe")
+    speech.cadrage_speech()
     # penser a enlever le True de test
     angle = facedet.smart_give_angle(context["session"], 30, facedet.framing_for_group_photo_angle, 99, True)
     mv.update_position(context["session"], angle.v, angle.h, 0.5)
@@ -162,6 +170,7 @@ def photo_groupe_func(context):
 
 def prise_photo_func(context):
     debug_print("(R) 3... 2... 1... clic !!")
+    speech.prise_de_photo()
     facedet.take_picture(context["session"], __picture_noun())
     return context
     
@@ -184,12 +193,12 @@ def reset_activation(context):
     return context
 
 def temps_presque_ecoule_func(context):
-    speech.text_to_speech("Le temps est presque écoulé")
+    speech.temps_presque_ecoule_speech()
     debug_print("(R) Le temps est presque écoulé")
     return context
 
 def temps_ecoule_func(context):
-    speech.text_to_speech("Le temps est écoulé")
+    speech.temps_ecoule_speech()
     debug_print("(R) Le temps est écoulé")
     return context
 
