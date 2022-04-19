@@ -49,13 +49,13 @@ def allumage_robot_func(context):
 # state action of Recherche d'Interaction
 def recherche_interaction_func(context):
     #reset the context for advanced conversation
-    context["advanced_command"] = "Ceci est une conversation entre une Intelligence artificielle et un Humain. Nous allons parler en français et nous sommes dans une école d'ingénieurs.\nAI:Bonjour, c'est super je suis content d'y avoir été invité\n"
+    context["advanced_command"] = "Ceci est une conversation entre une Intelligence artificielle et un Humain. Nous allons parler en français et nous sommes dans une école d'ingénieurs. Actuellement c'est la soirée partenaire de l'école, il y a des élèves et des entreprises qui se rencontrent. Tu es un robot de démonstration, donne ton maximum pour les impressionner.\n Human:Bonjour, j'espère que tu es heureux d'avoir été invité à la soirée partenaire de l'école.\nAI:Bonjour, c'est super je suis content d'y avoir été invité\n"
     context["activation"] = vr.hey_reachy_detection()
     return context
 
 def recherche_interaction__only_aruco_func(context):
     #reset the context for advanced conversation
-    context["advanced_command"] = "Ceci est une conversation entre une Intelligence artificielle et un Humain. Nous allons parler en français et nous sommes dans une école d'ingénieurs.\nAI:Bonjour, c'est super je suis content d'y avoir été invité\n"
+    context["advanced_command"] = "Ceci est une conversation entre une Intelligence artificielle et un Humain. Nous allons parler en français et nous sommes dans une école d'ingénieurs. Actuellement c'est la soirée partenaire de l'école, il y a des élèves et des entreprises qui se rencontrent. Tu es un robot de démonstration, donne ton maximum pour les impressionner.\n Human:Bonjour, j'espère que tu es heureux d'avoir été invité à la soirée partenaire de l'école.\nAI:Bonjour, c'est super je suis content d'y avoir été invité\n"
     context["aruco"] = facedet.smart_get_aruco_code(context["session"], 3)
     return context
 
@@ -86,6 +86,10 @@ def traitement_ordre_func(context):
 
 def traitement_ordre_only_aruco_func(context):
     #TODO
+    return context
+
+def incitation_aruco_func(context):
+    speech.text_to_speech("Si vous voulez communiquer avec moi il faut me montrer les code Aruco qui sont devant vous")
     return context
 
 # state action of Conversation
@@ -278,6 +282,15 @@ def detection_personne(context):
 
 def aruco_verif(context):
     return context["aruco"] != None
+
+# photo simple predicat
+def activation_aruco_det(context):
+    return context["aruco"] == 1
+
+# photo simple predicat
+def photo_simple_aruco_det(context):
+    return context["aruco"] == 2
+
 # photo groupe predicat
 def photo_groupe_aruco_det(context):
     return context["aruco"] == 3
@@ -296,29 +309,29 @@ def bonjour_aruco_action(context):
     return context
 
 # comment vas-tu predicat
-def comment_vas_tu_aruco_det(context):
+def cava_aruco_det(context):
     return context["aruco"] == 6
 
 # comment vas-tu action
-def comment_vas_tu_aruco_action(context):
+def cava_aruco_action(context):
     context["command"] = "comment vas-tu"
     return context
 
 # je vais bien predicat
-def je_vais_bien_aruco_det(context):
+def bien_aruco_det(context):
     return context["aruco"] == 7
 
 # je vais bien action
-def je_vais_bien_aruco_action(context):
+def bien_aruco_action(context):
     context["command"] = "je vais bien"
     return context
 
 # moyennement bien predicat
-def moyennement_bien_aruco_det(context):
+def moyennement_aruco_det(context):
     return context["aruco"] == 8
 
 # moyennement bien action
-def moyennement_bien_aruco_action(context):
+def moyennement_aruco_action(context):
     context["command"] = "je vais moyennement bien"
     return context
 
@@ -341,11 +354,11 @@ def histoire_aruco_action(context):
     return context
 
 # au revoir predicat
-def au_revoir_aruco_det(context):
+def aurevoir_aruco_det(context):
     return context["aruco"] == 11
 
 # au revoir action
-def au_revoir_aruco_action(context):
+def aurevoir_aruco_action(context):
     context["command"] = "au revoir"
     return context
 
@@ -365,4 +378,13 @@ def moche_aruco_det(context):
 # tu es moche action
 def moche_aruco_action(context):
     context["command"] = "tu es moche"
+    return context
+
+# continue predicat
+def continue_aruco_det(context):
+    return context["aruco"] == 14
+
+# continue action
+def continue_aruco_action(context):
+    context["command"] = "continue"
     return context

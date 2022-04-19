@@ -16,7 +16,19 @@
                     "predicat": "activation_aruco_det",
                     "action": "reset_activation"
                 }
-            ]
+            ],
+            "timeout":{
+                "time":40,
+                "target":"incitation_aruco"
+            }
+        },
+        "incitation_aruco":{
+            "action": "incitation_aruco_func",
+            "transitions": [
+                {
+                    "target": "recherche_interaction_only_aruco"
+                }
+            ] 
         },
         "eteindre":{
             "action": "eteindre_func"
@@ -25,17 +37,13 @@
             "action": "attente_ordre_only_aruco_func",
             "transitions": [
                 {
-                    "target": "eteindre",
-                    "predicat": "eteindre_aruco_det"
-                },
-                {
                     "target": "traitement_ordre_only_aruco",
                     "predicat": "aruco_verif"
                 }
             ],
             "timeout":{
-                "time":20,
-                "target":"recherche_interaction"
+                "time":30,
+                "target":"recherche_interaction_only_aruco"
             }
         },
         "traitement_ordre_only_aruco": {
@@ -50,9 +58,145 @@
                     "predicat": "photo_groupe_aruco_det"
                 },
                 {
+                    "target": "eteindre",
+                    "predicat": "eteindre_aruco_det"
+                },
+                {
+                    "target": "conversation",
+                    "predicat": "bonjour_aruco_det",
+                    "action": "bonjour_aruco_action"
+                },
+                {
+                    "target": "conversation",
+                    "predicat": "cava_aruco_det",
+                    "action": "cava_aruco_action"
+                },
+                {
+                    "target": "conversation",
+                    "predicat": "bien_aruco_det",
+                    "action": "bien_aruco_action"
+                },
+                {
+                    "target": "conversation",
+                    "predicat": "moyennement_aruco_det",
+                    "action": "moyennement_aruco_action"
+                },
+                {
+                    "target": "conversation",
+                    "predicat": "pas_trop_aruco_det",
+                    "action": "pas_trop_aruco_action"
+                },
+                {
+                    "target": "conversation",
+                    "predicat": "histoire_aruco_det",
+                    "action": "histoire_aruco_action"
+                },
+                {
+                    "target": "conversation",
+                    "predicat": "aurevoir_aruco_det",
+                    "action": "aurevoir_aruco_action"
+                },
+                {
+                    "target": "conversation",
+                    "predicat": "mignon_aruco_det",
+                    "action": "mignon_aruco_action"
+                },
+                {
+                    "target": "conversation",
+                    "predicat": "moche_aruco_det",
+                    "action": "moche_aruco_action"
+                },  
+                {
+                    "target": "conversation",
+                    "predicat": "continue_aruco_det",
+                    "action": "continue_aruco_action"
+                },  
+                {
                     "target": "attente_ordre_only_aruco"
                 }
  
+            ]
+        },
+        "conversation": {
+            "action": "conversation_func",
+            "transitions": [
+                {
+                    "target": "bonjour",
+                    "predicat": "bonjour_set_detection"
+                },
+                {
+                    "target": "aurevoir",
+                    "predicat": "aurevoir_set_detection"
+                },
+                {
+                    "target": "cava",
+                    "predicat": "cava_set_detection"
+                },
+                {
+                    "target": "gentil",
+                    "predicat": "gentil_set_detection"
+                },
+                {
+                    "target": "mechant",
+                    "predicat": "mechant_set_detection"
+                },
+                {
+                    "target": "incomprehension"
+                }
+            ]
+        },
+        "bonjour": {
+            "action": "bonjour_func",
+            "transitions": [
+                {
+                    "target": "attente_ordre",
+                    "action": "reset_for_attente_ordre"
+                }
+            ]
+        },
+        "aurevoir": {
+            "action": "aurevoir_func",
+            "transitions": [
+                {
+                    "target": "recherche_interaction",
+                    "action": "reset_for_attente_ordre"
+                }
+            ]
+        },
+        "cava": {
+            "action": "cava_func",
+            "transitions": [
+                {
+                    "target": "attente_ordre",
+                    "action": "reset_for_attente_ordre"
+                }
+            ]
+        },
+        "gentil": {
+            "action": "gentil_func",
+            "transitions": [
+                {
+                    "target": "attente_ordre",
+                    "action": "reset_for_attente_ordre"
+                }
+            ]
+        },
+        "mechant": {
+            "action": "mechant_func",
+            "transitions": [
+                {
+                    "target": "attente_ordre",
+                    "action": "reset_for_attente_ordre"
+                }
+            ]
+        },
+        "incomprehension": {
+            "action": "incomprehension_func",
+            "transitions": [
+                {
+                    "target": "attente_ordre",
+                    "action": "reset_for_attente_ordre"
+                }
             ]
         },
         "photo_simple":{

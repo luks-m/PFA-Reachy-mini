@@ -1,9 +1,15 @@
 import sys
-sys.path.append("../movement")
+sys.path.append("..")
 from movement import *
 from session import *
 
 class FakeSession(Session):
+    
+    def __init__(self):
+        self.PHI = 0
+        self.THETA = 90
+        self.TMP_PHI = 0
+        self.TMP_THETA = 90
 
     def turn_on(self):
         print("Last call : turn_on")
