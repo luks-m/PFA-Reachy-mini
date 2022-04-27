@@ -21,17 +21,22 @@ NOCOLOR				=	"\033[0m"
 
 ############################## MAIN RULES ##############################
 
-all : initiate-camera
+all : initiate-camera build
+
+build :
+	@mkdir -p tmp
+	@mkdir -p tmp/img
+	@cd tmp/img && wget https://files.ros4.pro/reachy-mini.png
 
 initiate-camera:
 	@echo $(COLOR)$(BOLD)$(CYAN)"Starting autofocus"$(NOCOLOR)
 	@cd $(DETECTION_DIR) && python3 initiate_camera.py
 
-show-last-picture:
+show-last-picture: build
 	@echo $(COLOR)$(BOLD)$(CYAN)"Showing last image"$(NOCOLOR)
 	@cd $(STORAGE_MNG_DIR) && python3 show_last_img.py
 
-delete-images:
+delete-pictures: build
 	@echo $(COLOR)$(BOLD)$(CYAN)"Deleting last images"$(NOCOLOR)
 	@cd $(STORAGE_MNG_DIR) && python3 delete_png.py
 
@@ -50,7 +55,7 @@ reachy-only-aruco:
 	@echo $(COLOR)$(BOLD)$(GREEN)"Starting reachy with only aruco version"$(NOCOLOR)
 	@cd $(ST_MACHINES_DIR) && python3 reachy_state_machine_argv.py ../../$(JSON_DIR)/state_machine_only_aruco.json
 
-reachy-sans-recherche:
+reachy-without-research:
 	@echo $(COLOR)$(BOLD)$(GREEN)"Starting reachy with only aruco version"$(NOCOLOR)
 	@cd $(ST_MACHINES_DIR) && python3 reachy_state_machine_argv.py ../../$(JSON_DIR)/state_machine_sans_recherche.json
 
@@ -69,7 +74,7 @@ fake-reachy-only-aruco:
 	@echo $(COLOR)$(BOLD)$(GREEN)"Starting reachy with only aruco version"$(NOCOLOR)
 	@cd $(ST_MACHINES_DIR) && python3 fake_reachy_state_machine_argv.py ../../$(JSON_DIR)/state_machine_only_aruco.json
 
-fake-reachy-sans-recherche:
+fake-reachy-without-research:
 	@echo $(COLOR)$(BOLD)$(GREEN)"Starting reachy with only aruco version"$(NOCOLOR)
 	@cd $(ST_MACHINES_DIR) && python3 fake_reachy_state_machine_argv.py ../../$(JSON_DIR)/state_machine_sans_recherche.json
 
