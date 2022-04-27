@@ -68,7 +68,6 @@ def move_to(session, radius, theta, phi, v):
 
 #Make the head move and store the previous position to move back if necessary
 def update_position(session, theta, phi, v):
-    print(theta, phi)
     theta, phi = round(theta,2), round(phi,2)
 
     session.TMP_THETA, session.TMP_PHI = __fit_angles(session.THETA + theta, session.PHI + phi)

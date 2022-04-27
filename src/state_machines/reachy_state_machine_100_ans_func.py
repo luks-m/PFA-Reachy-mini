@@ -39,7 +39,6 @@ def __init_context(context):
     return context
 
 def allumage_robot_func(context):
-    #TODO
     context = __init_context(context)
     mv.motor_on(context["session"])
     mv.move_to(context["session"], 0.5, 90, 0, 0.5)
@@ -145,7 +144,7 @@ def incomprehension_func(context):
     sentence = context["command"]
     context["advanced_command"] += f"Human:{sentence} \n"
     context["advanced_command"] = advconv.openai_speech(context["advanced_command"])
-    print(context["advanced_command"])
+    debug_print(context["advanced_command"])
     return context
 
 def photo_func(context):
@@ -160,7 +159,6 @@ def photo_simple_func(context):
     speech.cadrage_speech()
     # penser a enlever le True de test
     angle = facedet.smart_give_angle(context["session"], 30, facedet.n_closest_angle, 1, True)
-    print("theta = ", angle.v, "phi = ", angle.h)
     mv.update_position(context["session"], angle.v, angle.h, 0.5)
     return context
 

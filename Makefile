@@ -35,6 +35,9 @@ delete-images:
 	@echo $(COLOR)$(BOLD)$(CYAN)"Deleting last images"$(NOCOLOR)
 	@cd $(STORAGE_MNG_DIR) && python3 delete_png.py
 
+
+############################## REACHY RULES ##############################
+
 reload_server:
 	@echo $(COLOR)$(BOLD)$(CYAN)"Reloading servers"$(NOCOLOR)
 	@./reload_server
@@ -55,9 +58,29 @@ reachy-test-photo:
 	@echo $(COLOR)$(BOLD)$(GREEN)"Starting reachy with only aruco version"$(NOCOLOR)
 	@cd $(ST_MACHINES_DIR) && python3 reachy_state_machine_argv.py ../../$(JSON_DIR)/state_machine_test_photo.json
 
+
+############################## FAKE-REACHY RULES ##############################
+
+fake-reachy-final:
+	@echo $(COLOR)$(BOLD)$(GREEN)"Starting reachy with final version"$(NOCOLOR)
+	@cd $(ST_MACHINES_DIR) && python3 fake_reachy_state_machine_argv.py ../../$(JSON_DIR)/state_machine_final.json
+
+fake-reachy-only-aruco:
+	@echo $(COLOR)$(BOLD)$(GREEN)"Starting reachy with only aruco version"$(NOCOLOR)
+	@cd $(ST_MACHINES_DIR) && python3 fake_reachy_state_machine_argv.py ../../$(JSON_DIR)/state_machine_only_aruco.json
+
+fake-reachy-sans-recherche:
+	@echo $(COLOR)$(BOLD)$(GREEN)"Starting reachy with only aruco version"$(NOCOLOR)
+	@cd $(ST_MACHINES_DIR) && python3 fake_reachy_state_machine_argv.py ../../$(JSON_DIR)/state_machine_sans_recherche.json
+
+fake-reachy-test-photo:
+	@echo $(COLOR)$(BOLD)$(GREEN)"Starting reachy with only aruco version"$(NOCOLOR)
+	@cd $(ST_MACHINES_DIR) && python3 fake_reachy_state_machine_argv.py ../../$(JSON_DIR)/state_machine_test_photo.json
+
 clean: $(TMP_DIR)
 	@echo $(COLOR)$(BOLD)$(RED)"Cleaning the tmp directory"$(NOCOLOR)
 	@rm -rf $^
+
 
 ############################## INSTALL RULES ##############################
 
