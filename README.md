@@ -68,7 +68,7 @@ Then you go back on the principal shell and you can launch the robot.
 
 ### Deleting pictures
 
-A python script allows you to delete the oldest images. In fect, you cannot save all the pictures because of the storage of the robot. So you can use this script which will automatically delete the oldest pictures when the storage is full.
+A python script allows you to delete the oldest images. In fact, you cannot save all the pictures because of the storage of the robot. So you can use this script which will automatically delete the oldest pictures when the storage is full.
 You have to **open a new shell** and use the command :
 
 ```bash
