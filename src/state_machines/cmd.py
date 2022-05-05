@@ -72,7 +72,11 @@ set_simple = transcript_cmd(STATE_CMD_PATH, "simple")
 
 set_groupe = transcript_cmd(STATE_CMD_PATH, "groupe")
 
+set_filtre = transcript_cmd(STATE_CMD_PATH, "filtre")
+
 set_face_swap = transcript_cmd(STATE_CMD_PATH, "face_swap")
+
+set_noir_et_blanc = transcript_cmd(STATE_CMD_PATH, "noir_et_blanc")
 
 ### CONVERSATION PART ###
 

@@ -88,11 +88,32 @@
                     "predicat": "photo_set_detection"
                 },
                 {
+                    "target": "filtre",
+                    "predicat": "filtre_set_detection"
+                },
+                {
                     "target": "face_swap",
-                    "predicat": "face_swap_set_detection"
+                    "predicat": "filtre_face_swap_sets_detection"
+                },
+                {
+                    "target": "noir_et_blanc",
+                    "predicat": "filtre_noir_et_blanc_sets_detection"
                 },
                 {
                     "target": "conversation"
+                }
+            ]
+        },
+        "filtre":{
+            "action":"filtre_func",
+            "transitions":[
+                {
+                    "target":"face_swap",
+                    "predicat":"face_swap_set_detection"
+                },
+                {
+                    "target":"noir_et_blanc",
+                    "predicat":"noir_et_blanc_set_detection"
                 }
             ]
         },
@@ -104,8 +125,24 @@
                 }
             ]
         },
+        "noir_et_blanc":{
+            "action": "photo_groupe_func",
+            "transitions": [
+                {   
+                    "target":"noir_et_blanc_prise_photo"
+                }
+            ]
+        },
         "face_swap_prise_photo":{
             "action":"face_swap_prise_photo_func",
+            "transitions":[
+                {
+                    "target":"attente_ordre"
+                }
+            ]
+        },
+        "noir_et_blanc_prise_photo":{
+            "action":"noir_et_blanc_prise_photo_func",
             "transitions":[
                 {
                     "target":"attente_ordre"

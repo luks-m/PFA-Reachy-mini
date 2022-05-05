@@ -30,6 +30,9 @@ def eteindre_speech():
 def photo_speech():
     return text_to_speech("Quel type de photo voulez vous ? simple ou de groupe ?")
 
+def filtre_speech():
+    return text_to_speech("Quel type de filtre voulez vous ? echange de visage ou noir et blanc ?")
+    
 def cadrage_speech() :
     return text_to_speech("Un petit cadrage de la photo, deux secondes s'il vous plait")
 
