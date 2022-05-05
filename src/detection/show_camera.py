@@ -3,7 +3,7 @@ sys.path.append("../session")
 import reachy_session as rs
 from face_detection import *
 
-# To set the focus
+
 def show_camera():
     session = rs.ReachySession()
 

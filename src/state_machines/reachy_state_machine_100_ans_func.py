@@ -154,7 +154,7 @@ def incomprehension_func(context):
     sentence = context["command"]
     context["advanced_command"] += f"Human:{sentence} \n"
     context["advanced_command"] = advconv.openai_speech(context["advanced_command"])
-    print(context["advanced_command"])
+    debug_print(context["advanced_command"])
     return context
 
 def photo_func(context):

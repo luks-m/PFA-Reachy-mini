@@ -13,6 +13,8 @@ sys.path.append("../session")
 Face_detector = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 MARKER_DIC = aruco.Dictionary_get(aruco.DICT_4X4_50)
 PARAM_MMARKERS = aruco.DetectorParameters_create()
+DETECTOR = dlib.get_frontal_face_detector()
+PREDICTOR = dlib.shape_predictor("../../assets/vision/shape_predictor_68_face_landmarks.dat")
 
 
 # Useful classes
@@ -58,6 +60,7 @@ def vector_magnitude(pos):  # Give the vector euclidian's magnitude
 def scale_to_angle(dist):   # A transformation to translate pixel distance in angle
     return dist / 150 * 20
 
+# Array management
 def faces_to_faces_and_values(faces):   # Conversion from a face table to a face_and_value table
     faces_and_values = []
     for face in faces:
@@ -90,6 +93,14 @@ def get_average_position(faces):   # Give the face center average position for a
     x /= n; y /= n
     return Pos(x, y)
 
+def extract_index_nparray(nparray):     # Useful extration for face swapping
+    index = None
+    for num in nparray[0]:
+        index = num
+        break
+    return index
+
+# Subfunctions for interfaces functions
 def get_n_closest_faces(faces, n):  # Give the n closest faces unsing the face height as distance approximation
     faces_and_values = faces_to_faces_and_values(faces)
     for face_and_val in faces_and_values:
@@ -127,6 +138,155 @@ def global_face_detection_service(frame, specific_getter_function, specific_gett
     scale = vector_center_to_pos(Pos(frame.shape[1]/2, frame.shape[0]/2), mean_faces_pos)
     return Angle(scale_to_angle(scale.width), scale_to_angle(scale.height))
 
+def swap_two_faces(frame):  # If the given frame contain at least two faces, swap two faces (the first and second accordingly to the detector)
+    img_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    height, width, channels = frame.shape
+    img2_new_face = np.zeros((height, width, channels), np.uint8)
+
+    # Face 1
+    faces = DETECTOR(img_gray)
+    if len(faces) >= 2 :
+        face_1 = faces[0]
+        face_2 = faces[1]
+    else :
+        return frame, False
+
+    landmarks = PREDICTOR(img_gray, face_1)
+    landmarks_points = []
+    for n in range(0, 68):
+        x = landmarks.part(n).x
+        y = landmarks.part(n).y
+        landmarks_points.append((x, y))
+
+    points = np.array(landmarks_points, np.int32)
+    convexhull = cv2.convexHull(points)
+
+    # Face 2
+    landmarks = PREDICTOR(img_gray, face_2)
+    landmarks_points2 = []
+    for n in range(0, 68):
+        x = landmarks.part(n).x
+        y = landmarks.part(n).y
+        landmarks_points2.append((x, y))
+
+    points2 = np.array(landmarks_points2, np.int32)
+    convexhull2 = cv2.convexHull(points2)
+
+    # Delaunay triangulation
+    rect = cv2.boundingRect(convexhull)
+    subdiv = cv2.Subdiv2D(rect)
+    subdiv.insert(landmarks_points)
+    triangles = subdiv.getTriangleList()
+    triangles = np.array(triangles, dtype=np.int32)
+
+    indexes_triangles = []
+    for t in triangles:
+        pt1 = (t[0], t[1])
+        pt2 = (t[2], t[3])
+        pt3 = (t[4], t[5])
+
+        index_pt1 = np.where((points == pt1).all(axis=1))
+        index_pt1 = extract_index_nparray(index_pt1)
+
+        index_pt2 = np.where((points == pt2).all(axis=1))
+        index_pt2 = extract_index_nparray(index_pt2)
+
+        index_pt3 = np.where((points == pt3).all(axis=1))
+        index_pt3 = extract_index_nparray(index_pt3)
+
+        if index_pt1 is not None and index_pt2 is not None and index_pt3 is not None:
+            triangle = [index_pt1, index_pt2, index_pt3]
+            indexes_triangles.append(triangle)
+
+    # Triangulation of both faces
+    for triangle_index in indexes_triangles:
+        # Triangulation of the first face
+        tr1_pt1 = landmarks_points[triangle_index[0]]
+        tr1_pt2 = landmarks_points[triangle_index[1]]
+        tr1_pt3 = landmarks_points[triangle_index[2]]
+        triangle1 = np.array([tr1_pt1, tr1_pt2, tr1_pt3], np.int32)
+
+        rect1 = cv2.boundingRect(triangle1)
+        (x, y, w, h) = rect1
+        cropped_triangle = frame[y: y + h, x: x + w]
+        cropped_tr1_mask = np.zeros((h, w), np.uint8)
+
+        points = np.array([[tr1_pt1[0] - x, tr1_pt1[1] - y],
+                           [tr1_pt2[0] - x, tr1_pt2[1] - y],
+                           [tr1_pt3[0] - x, tr1_pt3[1] - y]], np.int32)
+
+        cv2.fillConvexPoly(cropped_tr1_mask, points, 255)
+
+        # Triangulation of second face
+        tr2_pt1 = landmarks_points2[triangle_index[0]]
+        tr2_pt2 = landmarks_points2[triangle_index[1]]
+        tr2_pt3 = landmarks_points2[triangle_index[2]]
+        triangle2 = np.array([tr2_pt1, tr2_pt2, tr2_pt3], np.int32)
+
+        rect2 = cv2.boundingRect(triangle2)
+        (x2, y2, w2, h2) = rect2
+        cropped_triangle2 = frame[y2: y2 + h2, x2: x2 + w2]
+        cropped_tr2_mask = np.zeros((h2, w2), np.uint8)
+
+        points2 = np.array([[tr2_pt1[0] - x2, tr2_pt1[1] - y2],
+                            [tr2_pt2[0] - x2, tr2_pt2[1] - y2],
+                            [tr2_pt3[0] - x2, tr2_pt3[1] - y2]], np.int32)
+
+        cv2.fillConvexPoly(cropped_tr2_mask, points2, 255)
+
+        # Warp triangles
+        points = np.float32(points)
+        points2 = np.float32(points2)
+        M = cv2.getAffineTransform(points, points2)
+        M2 = cv2.getAffineTransform(points2, points)
+
+        warped_triangle = cv2.warpAffine(cropped_triangle, M, (w2, h2))
+        warped_triangle = cv2.bitwise_and(warped_triangle, warped_triangle, mask=cropped_tr2_mask)
+        warped_triangle2 = cv2.warpAffine(cropped_triangle2, M2, (w, h))
+        warped_triangle2 = cv2.bitwise_and(warped_triangle2, warped_triangle2, mask=cropped_tr1_mask)
+
+        # Reconstructing destination face
+        img2_new_face_rect_area = img2_new_face[y: y + h, x: x + w]
+        img2_new_face_rect_area2 = img2_new_face[y2: y2 + h2, x2: x2 + w2]
+
+        img2_new_face_rect_area_gray = cv2.cvtColor(img2_new_face_rect_area, cv2.COLOR_BGR2GRAY)
+        img2_new_face_rect_area_gray2 = cv2.cvtColor(img2_new_face_rect_area2, cv2.COLOR_BGR2GRAY)
+
+        _, mask_triangles_designed = cv2.threshold(img2_new_face_rect_area_gray, 1, 255, cv2.THRESH_BINARY_INV)
+        _, mask_triangles_designed2 = cv2.threshold(img2_new_face_rect_area_gray2, 1, 255, cv2.THRESH_BINARY_INV)
+
+        warped_triangle = cv2.bitwise_and(warped_triangle, warped_triangle, mask=mask_triangles_designed2)
+        warped_triangle2 = cv2.bitwise_and(warped_triangle2, warped_triangle2, mask=mask_triangles_designed)
+
+        img2_new_face_rect_area = cv2.add(img2_new_face_rect_area, warped_triangle2)
+        img2_new_face_rect_area2 = cv2.add(img2_new_face_rect_area2, warped_triangle)
+
+        img2_new_face[y: y + h, x: x + w] = img2_new_face_rect_area
+        img2_new_face[y2: y2 + h2, x2: x2 + w2] = img2_new_face_rect_area2
+
+    # Face swapped (putting 1st face into 2nd face)
+    img2_face_mask = np.zeros_like(img_gray)
+    img2_head_mask = cv2.fillConvexPoly(img2_face_mask, convexhull2, 255)
+    img2_face_mask = cv2.bitwise_not(img2_head_mask)
+    img2_face_mask2 = np.zeros_like(img_gray)
+    img2_head_mask2 = cv2.fillConvexPoly(img2_face_mask2, convexhull, 255)
+    img2_face_mask2 = cv2.bitwise_not(img2_head_mask2)
+
+
+    img2_head_noface = cv2.bitwise_and(frame, frame, mask=img2_face_mask)
+    img2_head_noface = cv2.bitwise_and(img2_head_noface, img2_head_noface, mask=img2_face_mask2)
+
+    result = cv2.add(img2_head_noface, img2_new_face)
+
+    (x, y, w, h) = cv2.boundingRect(convexhull2)
+    center_face = (int((x + x + w) / 2), int((y + y + h) / 2))
+    (x2, y2, w2, h2) = cv2.boundingRect(convexhull)
+    center_face2 = (int((x2 + x2 + w2) / 2), int((y2 + y2 + h2) / 2))
+
+    seamlessclone = cv2.seamlessClone(result, frame, img2_head_mask, center_face, cv2.NORMAL_CLONE)
+    seamlessclone = cv2.seamlessClone(result, seamlessclone, img2_head_mask2, center_face2, cv2.NORMAL_CLONE)
+
+    return seamlessclone, True
 
 # Capture and camera functionalities
 def open_capture(index):  # index is typed int
@@ -136,14 +296,14 @@ def open_capture(index):  # index is typed int
         exit()
     return cap
 
-def free_capture_and_windows(cap):
+def free_capture_and_windows(cap):  # Free all windows and release the given capture
     cap.release()
     cv2.destroyAllWindows()
 
-def read_capture(cap):
+def read_capture(cap):  # Give the current frame reading the given capture
     return cap.read()
 
-def give_in_gray(frame):
+def give_in_gray(frame):    # Give the given frame colored in gray
     return cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
 def face_detection_haar_cascade(frame): # A face detection using the Haar cascade method
@@ -160,20 +320,20 @@ def get_faces(frame):   # Translate the faces detected into a face class table
         faces.append(Face(x, y, w, h))
     return faces
 
-def draw_rectangle_on_frame(frame, face):
+def draw_rectangle_on_frame(frame, face):   # Draw a rectangle matching with the given face on the frame
     cv2.rectangle(frame, (face.pos.x, face.pos.y), (face.pos.x + face.scale.width, face.pos.y + face.scale.height), (255, 0, 0), 2)
 
 def frame_display(frame, window_name):
     cv2.imshow(window_name, frame)
 
-def get_aruco_code(frame):
+def get_aruco_code(frame):  # Give the aruco code associated to an aruco pattern if on the given frame
     grey_frame = give_in_gray(frame)
     bbox, ids, r = aruco.detectMarkers(grey_frame, MARKER_DIC, parameters=PARAM_MMARKERS)
     if not bbox:
         return None
     return ids[0][0]
 
-def get_frame(session):
+def get_frame(session):     # An interface function to deal with the session interface
     return session.get_frame()
 
 # Interface functions
@@ -214,7 +374,14 @@ def take_picture(session, noun): # Take a picture, with an automatic focus, and 
    time.sleep(2)
    cv2.imwrite("../../tmp/img/" + noun + ".png", get_frame(session))
 
-def smart_get_aruco_code(session, nbr_trials):
+def take_swapped_faces_picture(session, noun, nbr_trials): # Take a picture, swapping two faces
+    for i in range(max(nbr_trials, 1)):
+        frame, res = swap_two_faces(get_frame(session))
+        if res :
+            break
+    cv2.imwrite("../../tmp/" + noun + ".png", frame)
+
+def smart_get_aruco_code(session, nbr_trials): # Search an aruco pattern on nbr_trials frames and return the associated code if a pattern is detected, None otherwise
     for i in range(nbr_trials):
         id = get_aruco_code(get_frame(session))
         if id != None :
