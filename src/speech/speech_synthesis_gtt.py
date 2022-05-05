@@ -57,12 +57,17 @@ def sad_voice():
 def turn_of_voice():
     return play_voices("turn_off")
 
-def prise_de_photo():
+def prise_de_photo1():
     text_to_speech("1")
     text_to_speech("2")
     text_to_speech("3")
+    
+  
+def prise_de_photo2():
     text_to_speech("cliic")
     prise_de_photo_voice()
+    
+
 
 if __name__ == '__main__':
 

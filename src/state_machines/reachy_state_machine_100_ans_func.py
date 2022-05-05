@@ -39,7 +39,6 @@ def __init_context(context):
     return context
 
 def allumage_robot_func(context):
-    #TODO
     context = __init_context(context)
     mv.motor_on(context["session"])
     mv.move_to(context["session"], 0.5, 90, 0, 0.5)
@@ -48,12 +47,20 @@ def allumage_robot_func(context):
 
 # state action of Recherche d'Interaction
 def recherche_interaction_func(context):
+    context["session"].r_antenna_set_position(0)
+    context["session"].l_antenna_set_position(0)
+    angle = facedet.smart_give_angle(context["session"], 15, facedet.n_closest_angle, 1, True)
+    mv.update_position(context["session"], angle.v, angle.h, 0.5)
     #reset the context for advanced conversation
     context["advanced_command"] = "Ceci est une conversation entre une Intelligence artificielle et un Humain. Nous allons parler en français et nous sommes dans une école d'ingénieurs. Actuellement c'est la soirée partenaire de l'école, il y a des élèves et des entreprises qui se rencontrent. Tu es un robot de démonstration, donne ton maximum pour les impressionner.\n Human:Bonjour, j'espère que tu es heureux d'avoir été invité à la soirée partenaire de l'école.\nAI:Bonjour, c'est super je suis content d'y avoir été invité\n"
     context["activation"] = vr.hey_reachy_detection()
     return context
 
 def recherche_interaction__only_aruco_func(context):
+    context["session"].r_antenna_set_position(0)
+    context["session"].l_antenna_set_position(0)
+    angle = facedet.smart_give_angle(context["session"], 15, facedet.n_closest_angle, 1, True)
+    mv.update_position(context["session"], angle.v, angle.h, 0.5)
     #reset the context for advanced conversation
     context["advanced_command"] = "Ceci est une conversation entre une Intelligence artificielle et un Humain. Nous allons parler en français et nous sommes dans une école d'ingénieurs. Actuellement c'est la soirée partenaire de l'école, il y a des élèves et des entreprises qui se rencontrent. Tu es un robot de démonstration, donne ton maximum pour les impressionner.\n Human:Bonjour, j'espère que tu es heureux d'avoir été invité à la soirée partenaire de l'école.\nAI:Bonjour, c'est super je suis content d'y avoir été invité\n"
     context["aruco"] = facedet.smart_get_aruco_code(context["session"], 3)
@@ -71,12 +78,16 @@ def incitation_interaction_func(context):
 
 # state action of Attente d'Ordre
 def attente_ordre_func(context):
-    mv.listen(context["session"])
+    mv.move_to(context["session"], 0.5, 90, 0, 0.5)
+    mv.incentive(context["session"])
     speech.attente_ordre_speech()
     context["command"] = vr.record_and_transcript(context["recognizer"], context["micro"])
     return context
 
 def attente_ordre_only_aruco_func(context):
+    angle = facedet.smart_give_angle(context["session"], 15, facedet.n_closest_angle, 1, True)
+    mv.update_position(context["session"], angle.v, angle.h, 0.5)
+    context["aruco"] = None
     context["aruco"] = facedet.smart_get_aruco_code(context["session"], 3)
     return context
 
@@ -128,12 +139,10 @@ def gentil_func(context):
 def mechant_func(context):
     speech.sad_voice()
     mv.sad(context["session"])
-    speech.text_to_speech(cmd.one_out(cmd.set_mechant["s"]))
-    debug_print("(R) " + cmd.one_out(cmd.set_mechant["s"]))
     return context
 
 def eteindre_func(context):
-    #speech.text_to_speech(cmd.one_out(cmd.set_eteindre["s"]))
+    speech.text_to_speech(cmd.one_out(cmd.set_eteindre["s"]))
     debug_print("(R) " + cmd.one_out(cmd.set_eteindre["s"]))    
     mv.thanking(context["session"])
     speech.turn_of_voice()
@@ -160,7 +169,7 @@ def photo_simple_func(context):
     speech.cadrage_speech()
     # penser a enlever le True de test
     angle = facedet.smart_give_angle(context["session"], 30, facedet.n_closest_angle, 1, True)
-    print("theta = ", angle.v, "phi = ", angle.h)
+    #print("theta = ", angle.v, "phi = ", angle.h)
     mv.update_position(context["session"], angle.v, angle.h, 0.5)
     return context
 
@@ -174,8 +183,10 @@ def photo_groupe_func(context):
 
 def prise_photo_func(context):
     debug_print("(R) 3... 2... 1... clic !!")
-    speech.prise_de_photo()
+    speech.prise_de_photo1()
     facedet.take_picture(context["session"], __picture_noun())
+    speech.prise_de_photo2()
+
     return context
     
 ########################
@@ -184,6 +195,8 @@ def prise_photo_func(context):
 
 # transition action to reset the command key of the context
 def reset_for_attente_ordre(context):
+    mv.move_to(context["session"], 0.5, 90, 0, 0.5)
+    mv.incentive(context["session"])
     context["command"] = ""
     enregistrer_date(context)
     return context
@@ -193,6 +206,8 @@ def reset_for_recherche_interaction(context):
     return context
 
 def reset_activation(context):
+    mv.move_to(context["session"], 0.5, 90, 0, 0.5)
+    mv.incentive(context["session"])
     context["activation"] = False
     return context
 

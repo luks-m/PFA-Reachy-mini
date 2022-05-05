@@ -122,7 +122,7 @@ def global_face_detection_service(frame, specific_getter_function, specific_gett
         for i in range(len(faces)):
             face = faces[i]
             draw_rectangle_on_frame(frame, face)
-        frame_display(frame, 'face_detection')
+        # frame_display(frame, 'face_detection')
     mean_faces_pos = get_average_position(faces)
     scale = vector_center_to_pos(Pos(frame.shape[1]/2, frame.shape[0]/2), mean_faces_pos)
     return Angle(scale_to_angle(scale.width), scale_to_angle(scale.height))

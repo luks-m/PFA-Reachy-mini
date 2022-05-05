@@ -18,7 +18,7 @@
                 }
             ],
             "timeout":{
-                "time":40,
+                "time":120,
                 "target":"incitation_aruco"
             }
         },
@@ -129,10 +129,6 @@
                     "predicat": "aurevoir_set_detection"
                 },
                 {
-                    "target": "cava",
-                    "predicat": "cava_set_detection"
-                },
-                {
                     "target": "gentil",
                     "predicat": "gentil_set_detection"
                 },
@@ -149,7 +145,7 @@
             "action": "bonjour_func",
             "transitions": [
                 {
-                    "target": "attente_ordre",
+                    "target": "attente_ordre_only_aruco",
                     "action": "reset_for_attente_ordre"
                 }
             ]
@@ -158,16 +154,7 @@
             "action": "aurevoir_func",
             "transitions": [
                 {
-                    "target": "recherche_interaction",
-                    "action": "reset_for_attente_ordre"
-                }
-            ]
-        },
-        "cava": {
-            "action": "cava_func",
-            "transitions": [
-                {
-                    "target": "attente_ordre",
+                    "target": "recherche_interaction_only_aruco",
                     "action": "reset_for_attente_ordre"
                 }
             ]
@@ -176,7 +163,7 @@
             "action": "gentil_func",
             "transitions": [
                 {
-                    "target": "attente_ordre",
+                    "target": "attente_ordre_only_aruco",
                     "action": "reset_for_attente_ordre"
                 }
             ]
@@ -185,7 +172,7 @@
             "action": "mechant_func",
             "transitions": [
                 {
-                    "target": "attente_ordre",
+                    "target": "attente_ordre_only_aruco",
                     "action": "reset_for_attente_ordre"
                 }
             ]
@@ -194,7 +181,7 @@
             "action": "incomprehension_func",
             "transitions": [
                 {
-                    "target": "attente_ordre",
+                    "target": "attente_ordre_only_aruco",
                     "action": "reset_for_attente_ordre"
                 }
             ]
@@ -211,7 +198,8 @@
             "action": "photo_groupe_func",
             "transitions": [
                 {
-                    "target": "prise_photo"
+                    "target": "prise_photo",
+                    "action": "reset_for_attente_ordre"
                 }
             ]
         },
@@ -219,7 +207,8 @@
             "action": "prise_photo_func",
             "transitions": [
                 {
-                    "target": "attente_ordre_only_aruco"
+                    "target": "attente_ordre_only_aruco",
+                    "action": "reset_for_attente_ordre"
                 }
             ]
         }
