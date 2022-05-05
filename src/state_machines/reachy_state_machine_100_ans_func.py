@@ -13,7 +13,6 @@ import vocal_recognition as vr
 import cmd
 import advanced_conversation as advconv
 import speech_synthesis_gtt as speech
-import random
 
 def debug_print(str):
     print("DEBUG : " + str)
@@ -89,9 +88,7 @@ def incitation_aruco_func(context):
 # state action of Attente d'Ordre
 def attente_ordre_func(context):
     mv.listen(context["session"])
-    r1 = random.randint(1, 4)
-    if(r1 == 1):
-        speech.attente_ordre_speech()
+    speech.attente_ordre_speech()
     context["command"] = vr.record_and_transcript(context["recognizer"], context["micro"])
     return context
 
@@ -213,7 +210,11 @@ def face_swap_prise_photo_func(context):
     speech.prise_de_photo2()
     return context
 
-def noir_et_blanc_prise_photo_func(context): 
+def noir_et_blanc_prise_photo_func(context):
+    debug_print("(R) 3... 2... 1... cheese !!")
+    speech.prise_de_photo1()
+    facedet.take_picture_grey(context["session"], __picture_noun())
+    speech.prise_de_photo2()
     return context
 
 # state action when no one is detected after a timeout   
@@ -332,7 +333,7 @@ def photo_groupe_sets_detection(context):
     return (photo_set_detection(context) and groupe_set_detection(context)) 
 
 def filtre_set_detection(context):
-    return (cmd.all_in(context["command"], cmd.set_filtre))
+    return (cmd.one_in(context["command"], cmd.set_filtre))
 
 def filtre_face_swap_sets_detection(context):
     return (face_swap_set_detection(context) and filtre_set_detection(context))
@@ -344,7 +345,7 @@ def face_swap_set_detection(context):
     return (cmd.all_in(context["command"], cmd.set_face_swap))
 
 def noir_et_blanc_set_detection(context):
-    return (cmd.all_in(context["command"], cmd.set_noir_et_blanc))
+    return (cmd.one_in(context["command"], cmd.set_noir_et_blanc))
 
 # transition predicat to detect if someone is seen 
 def detection_personne(context):

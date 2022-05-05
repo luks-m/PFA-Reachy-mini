@@ -126,7 +126,7 @@ def get_closest_to_mean_faces(faces, percent_relat_to_avg): # Give the faces who
     return kept_faces
 
 def global_face_detection_service(frame, specific_getter_function, specific_getter_param, for_test):    # A code factorization function for interface functions, using multiple services defined in this file
-    frame = give_in_gray(frame)
+    frame = give_in_grey(frame)
     faces = get_faces(frame)
     faces = specific_getter_function(faces, specific_getter_param)
     if len(faces) == 0 :
@@ -306,7 +306,7 @@ def free_capture_and_windows(cap):  # Free all windows and release the given cap
 def read_capture(cap):  # Give the current frame reading the given capture
     return cap.read()
 
-def give_in_gray(frame):    # Give the given frame colored in gray
+def give_in_grey(frame):    # Give the given frame colored in gray
     return cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
 def face_detection_haar_cascade(frame): # A face detection using the Haar cascade method
@@ -330,7 +330,7 @@ def frame_display(frame, window_name):
     cv2.imshow(window_name, frame)
 
 def get_aruco_code(frame):  # Give the aruco code associated to an aruco pattern if on the given frame
-    grey_frame = give_in_gray(frame)
+    grey_frame = give_in_grey(frame)
     bbox, ids, r = aruco.detectMarkers(grey_frame, MARKER_DIC, parameters=PARAM_MMARKERS)
     if not bbox:
         return None
@@ -376,6 +376,10 @@ def smart_give_angle(session, nbr_trials, give_angle_function, give_angle_parame
 def take_picture(session, noun): # Take a picture, with an automatic focus, and save it at the 'path' location
    time.sleep(2)
    cv2.imwrite("../../tmp/img/" + noun + ".png", get_frame(session))
+
+def take_picture_grey(session, noun):
+    frame = give_in_grey(get_frame(session))
+    cv2.imwrite("../../tmp/img/" + noun + ".png", frame)
 
 def take_swapped_faces_picture(session, noun, nbr_trials): # Take a picture, swapping two faces
     for i in range(max(nbr_trials, 1)):
