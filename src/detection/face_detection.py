@@ -3,6 +3,7 @@
 from math import sqrt
 import time
 import cv2
+import dlib
 # from turtle import right
 from cv2 import aruco
 import sys
@@ -143,14 +144,22 @@ def swap_two_faces(frame):  # If the given frame contain at least two faces, swa
     height, width, channels = frame.shape
     img2_new_face = np.zeros((height, width, channels), np.uint8)
 
-    # Face 1
     faces = DETECTOR(img_gray)
+#
+    faces_and_values = faces_to_faces_and_values(faces)
+    for face_and_val in faces_and_values:
+        print(face_and_val.face)
+        face_and_val.value = face_and_val.face.h     # Height is an approximation of distances, despite of the different face dimensions
+    faces_and_values = face_and_value_decreasing_buble_sort(faces_and_values)
+    faces = faces_and_values_to_faces(faces_and_values)
+#
     if len(faces) >= 2 :
         face_1 = faces[0]
         face_2 = faces[1]
     else :
         return frame, False
 
+    # Face 1
     landmarks = PREDICTOR(img_gray, face_1)
     landmarks_points = []
     for n in range(0, 68):
