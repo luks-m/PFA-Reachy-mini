@@ -45,7 +45,7 @@ delete-pictures: build
 
 reload_server:
 	@echo $(COLOR)$(BOLD)$(CYAN)"Reloading servers"$(NOCOLOR)
-	@./reload_server
+	@./reload_server.sh
 
 reachy-final:
 	@echo $(COLOR)$(BOLD)$(GREEN)"Starting reachy with final version"$(NOCOLOR)
