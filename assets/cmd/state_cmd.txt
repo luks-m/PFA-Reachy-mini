@@ -22,3 +22,8 @@ cmd : groupe
 . ensemble
 . les
 ...
+
+cmd : face_swap
+. echange 
+. visage
+...

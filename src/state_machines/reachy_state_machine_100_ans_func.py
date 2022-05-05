@@ -194,7 +194,16 @@ def prise_photo_func(context):
     facedet.take_picture(context["session"], __picture_noun())
     speech.prise_de_photo2()
     return context
-    
+
+def face_swap_prise_photo_func(context):
+    return context
+
+# state action when no one is detected after a timeout   
+def triste_recherche_func(context):
+
+    mv.sad(context["session"])
+    return context
+
 ########################
 ## Transitions Actions ##
 ########################
@@ -304,6 +313,9 @@ def photo_simple_sets_detection(context):
 # transition predicat to detect the photo set's and groupe set's keywords
 def photo_groupe_sets_detection(context):
     return (photo_set_detection(context) and groupe_set_detection(context)) 
+
+def face_swap_set_detection(context):
+    return (cmd.all_in(context["command"], cmd.set_face_swap))
 
 # transition predicat to detect if someone is seen 
 def detection_personne(context):

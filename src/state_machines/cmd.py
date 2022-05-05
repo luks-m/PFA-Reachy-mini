@@ -72,6 +72,8 @@ set_simple = transcript_cmd(STATE_CMD_PATH, "simple")
 
 set_groupe = transcript_cmd(STATE_CMD_PATH, "groupe")
 
+set_face_swap = transcript_cmd(STATE_CMD_PATH, "face_swap")
+
 ### CONVERSATION PART ###
 
 # return one random element of the set
