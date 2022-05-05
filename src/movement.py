@@ -68,16 +68,15 @@ def move_to(session, radius, theta, phi, v):
 
 #Make the head move and store the previous position to move back if necessary
 def update_position(session, theta, phi, v):
-    print(theta, phi)
     theta, phi = round(theta,2), round(phi,2)
 
-    session.TMP_THETA, session.TMP_PHI = __fit_angles(session.THETA + theta, session.PHI + phi)
+    session.THETA, session.PHI = __fit_angles(session.TMP_THETA + theta, session.TMP_PHI + phi)
     
     mouv = None
 
     try:
         tmp = True
-        mouv = session.inverse_kinematics(__euler_to_quaternion(0, __degree_to_radian(session.TMP_THETA - session.THETA), __degree_to_radian(session.TMP_PHI - session.PHI)))
+        mouv = session.inverse_kinematics(__euler_to_quaternion(0, __degree_to_radian(session.THETA - session.TMP_THETA), __degree_to_radian(session.PHI - session.TMP_PHI)))
     except ValueError:
         tmp = False
 
@@ -89,10 +88,10 @@ def update_position(session, theta, phi, v):
             angles["neck_disk_bottom"]: mouv[2],
         }
 
-    session.goto(angle, __duration(__spherical_to_cartesian(0.5, session.THETA, session.PHI), __spherical_to_cartesian(1, session.TMP_THETA, session.TMP_PHI), v))
+    session.goto(angle, __duration(__spherical_to_cartesian(0.5, session.TMP_THETA, session.TMP_PHI), __spherical_to_cartesian(1, session.THETA, session.PHI), v))
 
-    session.THETA = session.TMP_THETA
-    session.PHI = session.TMP_PHI
+    session.TMP_THETA = session.THETA
+    session.TMP_PHI = session.PHI
 
 #Make the emotion of listening
 def listen(session):
@@ -150,26 +149,27 @@ def thanking(session):
     session.r_antenna_set_position(0.0)
     session.l_antenna_set_position(0.0)
 
-    move_to(session, 0.5, 5.74 + session.THETA, session.PHI, 0.15)
+    move_to(session, 0.5, 90, 0, 0.15)
 
     time.sleep(0.1)
 
     session.r_antenna_set_position(-40.0)
     session.l_antenna_set_position(40.0)
     
-    move_to(session, 0.5, 26.51 + session.THETA, session.PHI, 0.35)
+    move_to(session, 0.5, 120, 0, 0.35)
     
     time.sleep(0.3)
     
     session.r_antenna_set_position(0.0)
     session.l_antenna_set_position(0.0)
     
-    move_to(session, 0.5, 5.74 + session.THETA, session.PHI, 0.35)
+    move_to(session, 0.5, 90, 0, 0.35)
 
 #move back to the previous position
 def move_back(session):
-    position_prev = __spherical_to_cartesian(0.5, session.TMP_THETA, session.TMP_PHI)
-    session.TMP_THETA = session.THETA
-    session.TMP_PHI = session.PHI
-    position = __spherical_to_cartesian(0.5, session.THETA, session.PHI)
-    session.look_at(position[0], position[1], position[2], __duration(position_prev, position, 0.15))
+    update_position(session, session.THETA, session.PHI, 0.15)
+    # position_prev = __spherical_to_cartesian(0.5, session.TMP_THETA, session.TMP_PHI)
+    # session.TMP_THETA = session.THETA
+    # session.TMP_PHI = session.PHI
+    # position = __spherical_to_cartesian(0.5, session.THETA, session.PHI)
+    # session.look_at(position[0], position[1], position[2], __duration(position_prev, position, 0.15))
