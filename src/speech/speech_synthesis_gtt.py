@@ -67,7 +67,7 @@ def prise_de_photo1():
     
   
 def prise_de_photo2():
-    text_to_speech("cliic")
+    text_to_speech("cheese")
     prise_de_photo_voice()
     
 

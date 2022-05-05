@@ -1,6 +1,7 @@
 # from click import launch
 # from reachy_sdk import ReachySDK
 from math import sqrt
+import numpy as np
 import time
 import cv2
 import dlib
@@ -145,14 +146,7 @@ def swap_two_faces(frame):  # If the given frame contain at least two faces, swa
     img2_new_face = np.zeros((height, width, channels), np.uint8)
 
     faces = DETECTOR(img_gray)
-#
-    faces_and_values = faces_to_faces_and_values(faces)
-    for face_and_val in faces_and_values:
-        print(face_and_val.face)
-        face_and_val.value = face_and_val.face.h     # Height is an approximation of distances, despite of the different face dimensions
-    faces_and_values = face_and_value_decreasing_buble_sort(faces_and_values)
-    faces = faces_and_values_to_faces(faces_and_values)
-#
+
     if len(faces) >= 2 :
         face_1 = faces[0]
         face_2 = faces[1]

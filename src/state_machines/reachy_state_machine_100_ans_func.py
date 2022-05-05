@@ -112,6 +112,7 @@ def traitement_ordre_only_aruco_func(context):
 
 # state action of Conversation
 def conversation_func(context):
+    mv.move_back(context["session"])
     return context
 
 # state action of Bonjour
@@ -150,6 +151,7 @@ def mechant_func(context):
 
 # state actoin of Eteindre, this is the function the robot needs when it is turned off
 def eteindre_func(context):
+    mv.move_back(context["session"])
     mv.thanking(context["session"])
     speech.turn_of_voice()
     mv.motor_off(context["session"])
@@ -157,7 +159,6 @@ def eteindre_func(context):
 
 # state action of Incomprehension
 def incomprehension_func(context):
-    mv.thinking(context["session"])
     sentence = context["command"]
     context["advanced_command"] += f"Human:{sentence} \n"
     context["advanced_command"] = advconv.openai_speech(context["advanced_command"])
@@ -173,6 +174,7 @@ def photo_func(context):
 
 # state action of Photo Simple
 def photo_simple_func(context):
+    mv.move_back(context["session"])
     debug_print("(R) cadrage de la photo simple")
     speech.cadrage_speech()
     angle = facedet.smart_give_angle(context["session"], 30, facedet.n_closest_angle, 1, False)
@@ -181,6 +183,7 @@ def photo_simple_func(context):
 
 # state action of Photo Groupe
 def photo_groupe_func(context):
+    mv.move_back(context["session"])
     debug_print("(R) cadrage de la photo de groupe")
     speech.cadrage_speech()
     angle = facedet.smart_give_angle(context["session"], 30, facedet.framing_for_group_photo_angle, 99, False)
@@ -189,16 +192,16 @@ def photo_groupe_func(context):
 
 # state action of Prise Photo
 def prise_photo_func(context):
-    debug_print("(R) 3... 2... 1... clic !!")
+    debug_print("(R) 3... 2... 1... cheese !!")
     speech.prise_de_photo1()
     facedet.take_picture(context["session"], __picture_noun())
     speech.prise_de_photo2()
     return context
 
 def face_swap_prise_photo_func(context):
-    debug_print("(R) 3... 2... 1... clic !!")
+    debug_print("(R) 3... 2... 1... cheese !!")
     speech.prise_de_photo1()
-    facedet.take_swapped_faces_picture(context["session"], __picture_noun())
+    facedet.take_swapped_faces_picture(context["session"], __picture_noun(), 10)
     speech.prise_de_photo2()
     return context
 

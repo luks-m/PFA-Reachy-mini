@@ -88,6 +88,7 @@ def update_position(session, theta, phi, v):
             angles["neck_disk_bottom"]: mouv[2],
         }
 
+    reset_antennas(session)
     session.goto(angle, __duration(__spherical_to_cartesian(0.5, session.TMP_THETA, session.TMP_PHI), __spherical_to_cartesian(1, session.THETA, session.PHI), v))
     session.TMP_THETA = session.THETA
     session.TMP_PHI = session.PHI
@@ -171,9 +172,9 @@ def thanking(session):
 
 #move back to the previous position
 def move_back(session):
-    update_position(session, session.THETA, session.PHI, 0.15)
-    # position_prev = __spherical_to_cartesian(0.5, session.TMP_THETA, session.TMP_PHI)
-    # session.TMP_THETA = session.THETA
-    # session.TMP_PHI = session.PHI
-    # position = __spherical_to_cartesian(0.5, session.THETA, session.PHI)
-    # session.look_at(position[0], position[1], position[2], __duration(position_prev, position, 0.15))
+    reset_antennas(session)
+    position_prev = __spherical_to_cartesian(0.5, session.TMP_THETA, session.TMP_PHI)
+    session.TMP_THETA = session.THETA
+    session.TMP_PHI = session.PHI
+    position = __spherical_to_cartesian(0.5, session.THETA, session.PHI)
+    session.look_at(position[0], position[1], position[2], __duration(position_prev, position, 0.15))
