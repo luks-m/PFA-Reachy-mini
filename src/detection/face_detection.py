@@ -382,7 +382,7 @@ def take_swapped_faces_picture(session, noun, nbr_trials): # Take a picture, swa
         frame, res = swap_two_faces(get_frame(session))
         if res :
             break
-    cv2.imwrite("../../tmp/" + noun + ".png", frame)
+    cv2.imwrite("../../tmp/img/" + noun + ".png", frame)
 
 def smart_get_aruco_code(session, nbr_trials): # Search an aruco pattern on nbr_trials frames and return the associated code if a pattern is detected, None otherwise
     for i in range(nbr_trials):
