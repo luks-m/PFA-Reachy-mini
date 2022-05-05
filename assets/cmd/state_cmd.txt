@@ -23,7 +23,16 @@ cmd : groupe
 . les
 ...
 
+cmd : filtre
+. filtre
+...
+
 cmd : face_swap
 . échange 
 . visage
+...
+
+cmd : noir_et_blanc
+. noir
+. blanc
 ...
