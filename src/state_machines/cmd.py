@@ -2,8 +2,6 @@ import random
 from pathlib import Path
 STATE_CMD_PATH = Path("../../assets/cmd/state_cmd.txt" )
 CONVERSATION_CMD_PATH = Path("../../assets/cmd/conversation_cmd.txt") #to generalize it for different OS because on Windows it didn't work
-# STATE_CMD_PATH = "../assets/cmd/state_cmd.txt"
-# CONVERSATION_CMD_PATH = "../assets/cmd/conversation_cmd.txt"
 
 ### COMMANDS PART ###
 
@@ -29,6 +27,7 @@ def all_in(str, set):
             return False
     return True
 
+# return how many word in the set "set" are in the string "str"
 def how_many_in(str, set):
     r = 0
     for i in set:
@@ -63,6 +62,8 @@ def transcript_cmd(file, cmd):
                     keywords.append(data[j][2:].replace("\n", "").lower())#.replace(" ", ""))
     return "ERROR"
 
+# It creates the words sets for the keyword detection
+
 set_activation = transcript_cmd(STATE_CMD_PATH, "activation")
 
 set_photo = transcript_cmd(STATE_CMD_PATH, "photo")
@@ -77,17 +78,18 @@ set_groupe = transcript_cmd(STATE_CMD_PATH, "groupe")
 def one_out(set):
     return random.choice(set)
 
+# it separate a set into Ins (e_<word>) and Outs (s_<word>) 
 def create_conversation_set(set_name):
     return_set = {}
     return_set["e"] = transcript_cmd(CONVERSATION_CMD_PATH, "e_" + set_name)
     return_set["s"] = transcript_cmd(CONVERSATION_CMD_PATH, "s_" + set_name)
     return return_set
 
+# It creates the conversation set so with Ins and Outs
+
 set_bonjour = create_conversation_set("bonjour")
 
 set_cava = create_conversation_set("cava")
-# print(set_cava)
-# print(one_in("comment ça va", set_cava["e"]))
 
 set_gentil = create_conversation_set("gentil")
 

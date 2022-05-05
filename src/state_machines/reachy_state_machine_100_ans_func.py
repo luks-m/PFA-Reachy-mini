@@ -17,10 +17,11 @@ import speech_synthesis_gtt as speech
 def debug_print(str):
     print("DEBUG : " + str)
 
-###############################################
-## Fonctions Auxiliaires de la State Machine ##
-###############################################
+#############################################
+## Auxiliary Functions of the state machine ##
+#############################################
 
+# a function that return a string corresponding to a photo name format
 def __picture_noun():
     t = datetime.now()
     return f"{t.year}_{t.month}_{t.day}_{t.hour}_{t.minute}_{t.second}"
@@ -29,6 +30,7 @@ def __picture_noun():
 ## States Actions ##
 ####################
 
+# This function initialize the used values of the context
 def __init_context(context):
     context["aruco"] = None
     context["time"] = datetime.now()
@@ -38,6 +40,7 @@ def __init_context(context):
     (context["recognizer"], context["micro"]) = vr.init_record()
     return context
 
+# This function execute the function the robot need when it is turned on 
 def allumage_robot_func(context):
     context = __init_context(context)
     mv.motor_on(context["session"])
@@ -56,6 +59,7 @@ def recherche_interaction_func(context):
     context["activation"] = vr.hey_reachy_detection()
     return context
 
+# state action of Recherche d'Interaction but in the case where there is only Aruco detection
 def recherche_interaction__only_aruco_func(context):
     context["session"].r_antenna_set_position(0)
     context["session"].l_antenna_set_position(0)
@@ -66,14 +70,21 @@ def recherche_interaction__only_aruco_func(context):
     context["aruco"] = facedet.smart_get_aruco_code(context["session"], 3)
     return context
 
+# state action of Recherche de Personne
 def recherche_de_personne_func(context):
     mv.move_to(context["session"], 0.5, 90, -45, 0.3)
     mv.move_to(context["session"], 0.5, 90, 45, 0.3)
     mv.move_to(context["session"], 0.5, 90, 0, 0.3)
     return context
 
+# state action of Incitation d'Interaction
 def incitation_interaction_func(context):
     mv.incentive(context["session"])
+    return context
+
+# state action of Incitation d'interaction but in the case where there is only Aruco detection
+def incitation_aruco_func(context):
+    speech.text_to_speech("Si vous voulez communiquer avec moi il faut me montrer les code Aruco qui sont devant vous")
     return context
 
 # state action of Attente d'Ordre
@@ -84,6 +95,7 @@ def attente_ordre_func(context):
     context["command"] = vr.record_and_transcript(context["recognizer"], context["micro"])
     return context
 
+# state action of Attente d'Ordre but in the case where there is only Aruco detection
 def attente_ordre_only_aruco_func(context):
     angle = facedet.smart_give_angle(context["session"], 15, facedet.n_closest_angle, 1, True)
     mv.update_position(context["session"], angle.v, angle.h, 0.5)
@@ -91,16 +103,14 @@ def attente_ordre_only_aruco_func(context):
     context["aruco"] = facedet.smart_get_aruco_code(context["session"], 3)
     return context
 
+# state action of Traitement d'ordre 
 def traitement_ordre_func(context):
     #TODO
     return context
 
+# state action of Traitement d'ordre but in the case where there is only Aruco detection
 def traitement_ordre_only_aruco_func(context):
     #TODO
-    return context
-
-def incitation_aruco_func(context):
-    speech.text_to_speech("Si vous voulez communiquer avec moi il faut me montrer les code Aruco qui sont devant vous")
     return context
 
 # state action of Conversation
@@ -141,9 +151,8 @@ def mechant_func(context):
     mv.sad(context["session"])
     return context
 
+# state actoin of Eteindre, this is the function the robot needs when it is turned off
 def eteindre_func(context):
-    speech.text_to_speech(cmd.one_out(cmd.set_eteindre["s"]))
-    debug_print("(R) " + cmd.one_out(cmd.set_eteindre["s"]))    
     mv.thanking(context["session"])
     speech.turn_of_voice()
     mv.motor_off(context["session"])
@@ -157,6 +166,7 @@ def incomprehension_func(context):
     debug_print(context["advanced_command"])
     return context
 
+# state action of Photo
 def photo_func(context):
     #TODO
     debug_print("(R) Quel type de photo voulez vous ? simple ou de groupe ?")
@@ -164,23 +174,23 @@ def photo_func(context):
     context["command"] = vr.record_and_transcript(context["recognizer"], context["micro"])
     return context
 
+# state action of Photo Simple
 def photo_simple_func(context):
     debug_print("(R) cadrage de la photo simple")
     speech.cadrage_speech()
-    # penser a enlever le True de test
-    angle = facedet.smart_give_angle(context["session"], 30, facedet.n_closest_angle, 1, True)
-    #print("theta = ", angle.v, "phi = ", angle.h)
+    angle = facedet.smart_give_angle(context["session"], 30, facedet.n_closest_angle, 1, False)
     mv.update_position(context["session"], angle.v, angle.h, 0.5)
     return context
 
+# state action of Photo Groupe
 def photo_groupe_func(context):
     debug_print("(R) cadrage de la photo de groupe")
     speech.cadrage_speech()
-    # penser a enlever le True de test
-    angle = facedet.smart_give_angle(context["session"], 30, facedet.framing_for_group_photo_angle, 99, True)
+    angle = facedet.smart_give_angle(context["session"], 30, facedet.framing_for_group_photo_angle, 99, False)
     mv.update_position(context["session"], angle.v, angle.h, 0.5)
     return context
 
+# state action of Prise Photo
 def prise_photo_func(context):
     debug_print("(R) 3... 2... 1... clic !!")
     speech.prise_de_photo1()
@@ -190,7 +200,7 @@ def prise_photo_func(context):
     return context
     
 ########################
-## Transitions Action ##
+## Transitions Actions ##
 ########################
 
 # transition action to reset the command key of the context
@@ -201,30 +211,36 @@ def reset_for_attente_ordre(context):
     enregistrer_date(context)
     return context
 
+# transition action to reset the context when it returns to Recherche dI'nteraction
 def reset_for_recherche_interaction(context):
     (context["recognizer"], context["micro"]) = vr.init_record()
     return context
 
+# transition action to reset the activation key of the context
 def reset_activation(context):
     mv.move_to(context["session"], 0.5, 90, 0, 0.5)
     mv.incentive(context["session"])
     context["activation"] = False
     return context
 
+# transition action when it is almost timeout
 def temps_presque_ecoule_func(context):
     speech.temps_presque_ecoule_speech()
     debug_print("(R) Le temps est presque écoulé")
     return context
 
+# transition action when it is timeout
 def temps_ecoule_func(context):
     speech.temps_ecoule_speech()
     debug_print("(R) Le temps est écoulé")
     return context
 
+# transition action to save the actual date (especialy the hour, minute and second)
 def enregistrer_date(context):
     context["time"] = datetime.now()
     return context
 
+# transition action to reset the context when it returns to Incitation d'Interaction
 def reset_for_incitation_interaction(context):
     #TODO
     return context
@@ -261,145 +277,155 @@ def gentil_set_detection(context):
 def mechant_set_detection(context):
     return (cmd.one_in(context["command"], cmd.set_mechant["e"]))
 
+# transition predicat to detect the eteindre set's keywords
 def eteindre_set_detection(context):
     return (cmd.one_in(context["command"], cmd.set_eteindre["e"]))
 
+# transition predicat to detect if it is almost timeout
 def temps_presque_ecoule(context):
     temps = datetime.now() - context["time"]
     return (temps.total_seconds() > 15 and temps.total_seconds() < 20)
 
+# transition predicat to detect if it is timeout
 def temps_ecoule(context):
     temps = datetime.now() - context["time"]
     return (temps.total_seconds() > 30)
 
+# transition predicat to detect the photo set's keywords
 def photo_set_detection(context):
     return (cmd.one_in(context["command"], cmd.set_photo))
 
+# transition predicat to detect the simple set's keywords
 def simple_set_detection(context):
     return (cmd.one_in(context["command"], cmd.set_simple))
 
+# transition predicat to detect the groupe set's keywords
 def groupe_set_detection(context):
     return (cmd.one_in(context["command"], cmd.set_groupe))
 
+# transition predicat to detect the photo set's and simple set's keywords
 def photo_simple_sets_detection(context):
     return (photo_set_detection(context) and simple_set_detection(context)) 
 
+# transition predicat to detect the photo set's and groupe set's keywords
 def photo_groupe_sets_detection(context):
     return (photo_set_detection(context) and groupe_set_detection(context)) 
 
+# transition predicat to detect if someone is seen 
 def detection_personne(context):
-    mv.happy(context["session"])
+    #mv.happy(context["session"])
     return context
 
-############################
-########## ARUCO ###########
-############################
+###########################
+##### ARUCO Functions #####
+###########################
 
+# transition predicats to detect if there is an ARUCO detected
 def aruco_verif(context):
     return context["aruco"] != None
 
-# photo simple predicat
+# transition predicats to detect if there is the "activation" ARUCO detected
 def activation_aruco_det(context):
     return context["aruco"] == 1
 
-# photo simple predicat
+# transition predicats to detect if there is the "prend moi en photo" ARUCO detected
 def photo_simple_aruco_det(context):
     return context["aruco"] == 2
 
-# photo groupe predicat
+# transition predicats to detect if there is the "prend une photo de groupe" ARUCO detected
 def photo_groupe_aruco_det(context):
     return context["aruco"] == 3
 
-# éteindre predicat
+# transition predicats to detect if there is the "Eteins-toi" ARUCO detected
 def eteindre_aruco_det(context):
     return context["aruco"] == 4
 
-# éteindre predicat
+# transition predicats to detect if there is the "Bonjour" ARUCO detected
 def bonjour_aruco_det(context):
     return context["aruco"] == 5
 
-# éteindre action
+# transition action if there is the "Bonjour" ARUCO detected
 def bonjour_aruco_action(context):
     context["command"] = "bonjour"
     return context
 
-# comment vas-tu predicat
+# transition predicats to detect if there is the "Comment vas-tu" ARUCO detected
 def cava_aruco_det(context):
     return context["aruco"] == 6
 
-# comment vas-tu action
+# transition action if there is the "Comment vas-tu" ARUCO detected
 def cava_aruco_action(context):
     context["command"] = "comment vas-tu"
     return context
 
-# je vais bien predicat
+# transition predicats to detect if there is the "Je vais bien" ARUCO detected
 def bien_aruco_det(context):
     return context["aruco"] == 7
 
-# je vais bien action
+# transition action if there is the "Je vais bien" ARUCO detected
 def bien_aruco_action(context):
     context["command"] = "je vais bien"
     return context
 
-# moyennement bien predicat
+# transition predicats to detect if there is the "Je vais moyennement bien" ARUCO detected
 def moyennement_aruco_det(context):
     return context["aruco"] == 8
 
-# moyennement bien action
+# transition action if there is the "Je vais moyennement bien" ARUCO detected
 def moyennement_aruco_action(context):
     context["command"] = "je vais moyennement bien"
     return context
 
-# pas trop predicat
+# transition predicats to detect if there is the "ça ne va pas trop" ARUCO detected
 def pas_trop_aruco_det(context):
     return context["aruco"] == 9
 
-# pas trop action
+# transition action if there is the "ça ne va pas trop" ARUCO detected
 def pas_trop_aruco_action(context):
     context["command"] = "ça ne va pas trop"
     return context
 
-# raconte moi une histoire predicat
+# transition predicats to detect if there is the "Raconte moi une histoire" ARUCO detected
 def histoire_aruco_det(context):
     return context["aruco"] == 10
 
-# raconte moi une histoire action
+# transition action if there is the "Raconte moi une histoire" ARUCO detected
 def histoire_aruco_action(context):
     context["command"] = "raconte moi une histoire"
     return context
 
-# au revoir predicat
+# transition predicats to detect if there is the "Au revoir" ARUCO detected
 def aurevoir_aruco_det(context):
     return context["aruco"] == 11
 
-# au revoir action
+# transition action if there is the "Au revoir" ARUCO detected
 def aurevoir_aruco_action(context):
     context["command"] = "au revoir"
     return context
 
-# tu es mignon predicat
+# transition predicats to detect if there is the "Tu es mignon" ARUCO detected
 def mignon_aruco_det(context):
     return context["aruco"] == 12
 
-# tu es mignon action
+# transition action if there is the "Tu es mignon" ARUCO detected
 def mignon_aruco_action(context):
     context["command"] = "tu es mignon"
     return context
 
-# tu es moche predicat
+# transition predicats to detect if there is the "Tu es moche" ARUCO detected
 def moche_aruco_det(context):
     return context["aruco"] == 13
 
-# tu es moche action
+# transition action if there is the "Tu es moche" ARUCO detected
 def moche_aruco_action(context):
     context["command"] = "tu es moche"
     return context
 
-# continue predicat
+# transition predicats to detect if there is the "Continue" ARUCO detected
 def continue_aruco_det(context):
     return context["aruco"] == 14
 
-# continue action
+# transition action if there is the "Continue" ARUCO detected
 def continue_aruco_action(context):
     context["command"] = "continue"
     return context

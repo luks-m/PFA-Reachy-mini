@@ -7,15 +7,18 @@ import fake_session as fs
 ## Creation of the State Machine ##
 ###################################
 
+if(sys.argc < 1):
+    print("You need to specify a file path to load a State Machine json")
+
+# create the State Machine from the json file specified in arguments
 state_machine = ld.load(sys.argv[1])
 
 ##########
 ## Test ##
 ##########
 
+# create an executor with a fake session in order to work without Reachy
 executeur = state_machine.create_executor(fs.FakeSession())
 
-#try:
+# lauch the Executor / State Machine
 executeur.launch()
-#except:
-    #S.turn_off()

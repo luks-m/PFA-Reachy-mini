@@ -8,15 +8,18 @@ import reachy_session as rs
 ## Creation of the State Machine ##
 ###################################
 
+if(sys.argc < 1):
+    print("You need to specify a file path to load a State Machine json")
+
+# create the State Machine from the json file specified in arguments
 state_machine = ld.load(sys.argv[1])
 
 ##########
 ## Test ##
 ##########
 
+# create an executor with a true session in order to work with Reachy
 executeur = state_machine.create_executor(rs.ReachySession())
 
-#try:
+# lauch the Executor / State Machine
 executeur.launch()
-#except:
-    #S.turn_off()
