@@ -35,7 +35,7 @@
             "action":"triste_recherche_func",
             "transitions": [
                 {
-                    "target":"recherche_de personne_2"
+                    "target":"recherche_de_personne_2"
                 }
             ]
         },

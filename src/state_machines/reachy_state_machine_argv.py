@@ -8,9 +8,6 @@ import reachy_session as rs
 ## Creation of the State Machine ##
 ###################################
 
-if(sys.argc < 1):
-    print("You need to specify a file path to load a State Machine json")
-
 # create the State Machine from the json file specified in arguments
 state_machine = ld.load(sys.argv[1])
 

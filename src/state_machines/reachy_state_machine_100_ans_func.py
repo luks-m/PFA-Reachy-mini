@@ -44,7 +44,7 @@ def __init_context(context):
 def allumage_robot_func(context):
     context = __init_context(context)
     mv.motor_on(context["session"])
-    mv.update_position(context["session"], 90, 0, 0.5)
+    mv.move_to(context["session"], 0.5, 90, 0, 0.5)
     speech.start_voice()
     return context
 
@@ -196,11 +196,14 @@ def prise_photo_func(context):
     return context
 
 def face_swap_prise_photo_func(context):
+    debug_print("(R) 3... 2... 1... clic !!")
+    speech.prise_de_photo1()
+    facedet.take_swapped_faces_picture(context["session"], __picture_noun())
+    speech.prise_de_photo2()
     return context
 
 # state action when no one is detected after a timeout   
 def triste_recherche_func(context):
-
     mv.sad(context["session"])
     return context
 
@@ -319,7 +322,6 @@ def face_swap_set_detection(context):
 
 # transition predicat to detect if someone is seen 
 def detection_personne(context):
-    mv.happy(context["session"])
     return context["detected"] == True
 
 ###########################

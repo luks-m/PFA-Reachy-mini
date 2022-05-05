@@ -49,7 +49,7 @@ reload_server:
 
 reachy-final:
 	@echo $(COLOR)$(BOLD)$(GREEN)"Starting reachy with final version"$(NOCOLOR)
-	@cd $(ST_MACHINES_DIR) && python3 reachy_state_machine_argv.py ../../$(JSON_DIR)/state_machine_100_ans.json
+	@cd $(ST_MACHINES_DIR) && python3 reachy_state_machine_argv.py ../../$(JSON_DIR)/state_machine_final.json
 
 reachy-only-aruco:
 	@echo $(COLOR)$(BOLD)$(GREEN)"Starting reachy with only aruco version"$(NOCOLOR)
@@ -57,7 +57,7 @@ reachy-only-aruco:
 
 reachy-without-research:
 	@echo $(COLOR)$(BOLD)$(GREEN)"Starting reachy with only aruco version"$(NOCOLOR)
-	@cd $(ST_MACHINES_DIR) && python3 reachy_state_machine_argv.py ../../$(JSON_DIR)/state_machine_sans_recherche.json
+	@cd $(ST_MACHINES_DIR) && python3 reachy_state_machine_argv.py ../../$(JSON_DIR)/state_machine_without_searching.json
 
 reachy-test-photo:
 	@echo $(COLOR)$(BOLD)$(GREEN)"Starting reachy with only aruco version"$(NOCOLOR)

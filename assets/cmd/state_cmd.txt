@@ -24,6 +24,6 @@ cmd : groupe
 ...
 
 cmd : face_swap
-. echange 
+. échange 
 . visage
 ...

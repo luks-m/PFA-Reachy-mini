@@ -89,7 +89,6 @@ def update_position(session, theta, phi, v):
         }
 
     session.goto(angle, __duration(__spherical_to_cartesian(0.5, session.TMP_THETA, session.TMP_PHI), __spherical_to_cartesian(1, session.THETA, session.PHI), v))
-
     session.TMP_THETA = session.THETA
     session.TMP_PHI = session.PHI
 
