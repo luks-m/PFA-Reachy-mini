@@ -1,4 +1,4 @@
-from jinja2 import contextfilter
+from jinja2 import contextfilter, contextfunction
 import time
 from datetime import datetime
 import sys
@@ -44,16 +44,13 @@ def __init_context(context):
 def allumage_robot_func(context):
     context = __init_context(context)
     mv.motor_on(context["session"])
-    mv.move_to(context["session"], 0.5, 90, 0, 0.5)
+    mv.update_position(context["session"], 90, 0, 0.5)
     speech.start_voice()
     return context
 
 # state action of Recherche d'Interaction
 def recherche_interaction_func(context):
-    context["session"].r_antenna_set_position(0)
-    context["session"].l_antenna_set_position(0)
-    angle = facedet.smart_give_angle(context["session"], 15, facedet.n_closest_angle, 1, True)
-    mv.update_position(context["session"], angle.v, angle.h, 0.5)
+    mv.reset_antennas(context["session"])
     #reset the context for advanced conversation
     context["advanced_command"] = "Ceci est une conversation entre une Intelligence artificielle et un Humain. Nous allons parler en français et nous sommes dans une école d'ingénieurs. Actuellement c'est la soirée partenaire de l'école, il y a des élèves et des entreprises qui se rencontrent. Tu es un robot de démonstration, donne ton maximum pour les impressionner.\n Human:Bonjour, j'espère que tu es heureux d'avoir été invité à la soirée partenaire de l'école.\nAI:Bonjour, c'est super je suis content d'y avoir été invité\n"
     context["activation"] = vr.hey_reachy_detection()
@@ -61,8 +58,7 @@ def recherche_interaction_func(context):
 
 # state action of Recherche d'Interaction but in the case where there is only Aruco detection
 def recherche_interaction__only_aruco_func(context):
-    context["session"].r_antenna_set_position(0)
-    context["session"].l_antenna_set_position(0)
+    mv.reset_antennas(context["session"])
     angle = facedet.smart_give_angle(context["session"], 15, facedet.n_closest_angle, 1, True)
     mv.update_position(context["session"], angle.v, angle.h, 0.5)
     #reset the context for advanced conversation
@@ -72,9 +68,10 @@ def recherche_interaction__only_aruco_func(context):
 
 # state action of Recherche de Personne
 def recherche_de_personne_func(context):
-    mv.move_to(context["session"], 0.5, 90, -45, 0.3)
-    mv.move_to(context["session"], 0.5, 90, 45, 0.3)
-    mv.move_to(context["session"], 0.5, 90, 0, 0.3)
+    context["deteced"] = False
+    angle = facedet.smart_give_angle(context["session"], 15, facedet.n_closest_angle, 1, True)
+    context["detected"] = (angle.h != 0 or angle.v != 0)
+
     return context
 
 # state action of Incitation d'Interaction
@@ -84,33 +81,33 @@ def incitation_interaction_func(context):
 
 # state action of Incitation d'interaction but in the case where there is only Aruco detection
 def incitation_aruco_func(context):
+    mv.incentive(context["session"])
     speech.text_to_speech("Si vous voulez communiquer avec moi il faut me montrer les code Aruco qui sont devant vous")
     return context
 
 # state action of Attente d'Ordre
 def attente_ordre_func(context):
-    mv.move_to(context["session"], 0.5, 90, 0, 0.5)
-    mv.incentive(context["session"])
+    mv.listen(context["session"])
     speech.attente_ordre_speech()
     context["command"] = vr.record_and_transcript(context["recognizer"], context["micro"])
     return context
 
 # state action of Attente d'Ordre but in the case where there is only Aruco detection
 def attente_ordre_only_aruco_func(context):
-    angle = facedet.smart_give_angle(context["session"], 15, facedet.n_closest_angle, 1, True)
-    mv.update_position(context["session"], angle.v, angle.h, 0.5)
+    mv.listen(context["session"])
+    speech.attente_ordre_aruco_speech()
     context["aruco"] = None
     context["aruco"] = facedet.smart_get_aruco_code(context["session"], 3)
     return context
 
 # state action of Traitement d'ordre 
 def traitement_ordre_func(context):
-    #TODO
+    mv.thinking(context["session"])
     return context
 
 # state action of Traitement d'ordre but in the case where there is only Aruco detection
 def traitement_ordre_only_aruco_func(context):
-    #TODO
+    mv.thinking(context["session"])
     return context
 
 # state action of Conversation
@@ -160,6 +157,7 @@ def eteindre_func(context):
 
 # state action of Incomprehension
 def incomprehension_func(context):
+    mv.thinking(context["session"])
     sentence = context["command"]
     context["advanced_command"] += f"Human:{sentence} \n"
     context["advanced_command"] = advconv.openai_speech(context["advanced_command"])
@@ -168,7 +166,6 @@ def incomprehension_func(context):
 
 # state action of Photo
 def photo_func(context):
-    #TODO
     debug_print("(R) Quel type de photo voulez vous ? simple ou de groupe ?")
     speech.photo_speech()
     context["command"] = vr.record_and_transcript(context["recognizer"], context["micro"])
@@ -196,7 +193,6 @@ def prise_photo_func(context):
     speech.prise_de_photo1()
     facedet.take_picture(context["session"], __picture_noun())
     speech.prise_de_photo2()
-
     return context
     
 ########################
@@ -205,21 +201,20 @@ def prise_photo_func(context):
 
 # transition action to reset the command key of the context
 def reset_for_attente_ordre(context):
-    mv.move_to(context["session"], 0.5, 90, 0, 0.5)
-    mv.incentive(context["session"])
+    mv.move_back(context["session"])
     context["command"] = ""
     enregistrer_date(context)
     return context
 
 # transition action to reset the context when it returns to Recherche dI'nteraction
 def reset_for_recherche_interaction(context):
+    mv.update_position(context["session"], 90, 0, 0.5)
     (context["recognizer"], context["micro"]) = vr.init_record()
     return context
 
 # transition action to reset the activation key of the context
 def reset_activation(context):
-    mv.move_to(context["session"], 0.5, 90, 0, 0.5)
-    mv.incentive(context["session"])
+    mv.listen(context["session"])
     context["activation"] = False
     return context
 
@@ -242,7 +237,6 @@ def enregistrer_date(context):
 
 # transition action to reset the context when it returns to Incitation d'Interaction
 def reset_for_incitation_interaction(context):
-    #TODO
     return context
 
 ###########################
@@ -313,8 +307,8 @@ def photo_groupe_sets_detection(context):
 
 # transition predicat to detect if someone is seen 
 def detection_personne(context):
-    #mv.happy(context["session"])
-    return context
+    mv.happy(context["session"])
+    return context["detected"] == True
 
 ###########################
 ##### ARUCO Functions #####

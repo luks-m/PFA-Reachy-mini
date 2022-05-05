@@ -127,6 +127,11 @@ def happy(session):
     session.r_antenna_set_position(0.0)
     session.l_antenna_set_position(0.0)
 
+#Reset position of antennas
+def reset_antennas(session):
+    session.r_antenna_set_position(0)
+    session.l_antenna_set_position(0)
+
 #Make the move to attract people
 def incentive(session):
     session.antennas_speed_limit(70.0)

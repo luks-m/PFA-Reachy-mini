@@ -19,7 +19,10 @@ def text_to_speech(text):
         os.remove(PATH+"file.mp3")     #removing the mp3 file
 
 def attente_ordre_speech():
-    return text_to_speech("allez-y, dites moi ce que vous souhaitez")
+    return text_to_speech("Allez-y, dites moi ce que vous souhaitez")
+
+def attente_ordre_aruco_speech():
+    return text_to_speech("Allez y, montrez moi un code Aruco")
 
 def eteindre_speech():
     return text_to_speech("A")
