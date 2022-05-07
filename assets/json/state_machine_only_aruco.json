@@ -112,6 +112,16 @@
                     "action": "continue_aruco_action"
                 },  
                 {
+                    "target": "conversation",
+                    "predicat": "face_swap_aruco_det",
+                    "action": "face_swap_aruco_action"
+                },  
+                {
+                    "target": "conversation",
+                    "predicat": "noir_et_blanc_aruco_det",
+                    "action": "noir_et_blanc_aruco_action"
+                },  
+                {
                     "target": "attente_ordre_only_aruco"
                 }
  
@@ -135,6 +145,14 @@
                 {
                     "target": "mechant",
                     "predicat": "mechant_set_detection"
+                },
+                {
+                    "target": "face_swap",
+                    "predicat": "filtre_face_swap_sets_detection"
+                },
+                {
+                    "target": "noir_et_blanc",
+                    "predicat": "filtre_noir_et_blanc_sets_detection"
                 },
                 {
                     "target": "incomprehension"
@@ -209,6 +227,38 @@
                 {
                     "target": "attente_ordre_only_aruco",
                     "action": "reset_for_attente_ordre"
+                }
+            ]
+        },
+        "face_swap":{
+            "action": "photo_groupe_func",
+            "transitions": [
+                {   
+                    "target":"face_swap_prise_photo"
+                }
+            ]
+        },
+        "noir_et_blanc":{
+            "action": "photo_groupe_func",
+            "transitions": [
+                {   
+                    "target":"noir_et_blanc_prise_photo"
+                }
+            ]
+        },
+        "face_swap_prise_photo":{
+            "action":"face_swap_prise_photo_func",
+            "transitions":[
+                {
+                    "target":"attente_ordre"
+                }
+            ]
+        },
+        "noir_et_blanc_prise_photo":{
+            "action":"noir_et_blanc_prise_photo_func",
+            "transitions":[
+                {
+                    "target":"attente_ordre"
                 }
             ]
         }

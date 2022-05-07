@@ -472,3 +472,21 @@ def continue_aruco_det(context):
 def continue_aruco_action(context):
     context["command"] = "continue"
     return context
+
+# transition predicats to detect if there is the "Filtre échange de visage" ARUCO detected
+def face_swap_aruco_det(context):
+    return context["aruco"] == 15
+
+# transition action if there is the "Filtre échange de visage" ARUCO detected
+def face_swap_aruco_action(context):
+    context["command"] = "filtre échange de visage"
+    return context
+
+# transition predicats to detect if there is the "Filtre noir et blanc" ARUCO detected
+def noir_et_blanc_aruco_det(context):
+    return context["aruco"] == 16
+
+# transition action if there is the "Filtre noir et blanc" ARUCO detected
+def noir_et_blanc_aruco_action(context):
+    context["command"] = "filtre noir et blanc"
+    return context
