@@ -198,11 +198,13 @@ def prise_photo_func(context):
     speech.prise_de_photo2()
     return context
 
+# state action of Filtre
 def filtre_func(context):
     speech.filtre_speech()
     context["command"] = vr.record_and_transcript(context["recognizer"], context["micro"])
     return context
 
+# state action of Prise Photo Face Swap
 def face_swap_prise_photo_func(context):
     debug_print("(R) 3... 2... 1... cheese !!")
     speech.prise_de_photo1()
@@ -210,6 +212,7 @@ def face_swap_prise_photo_func(context):
     speech.prise_de_photo2()
     return context
 
+# state action of Prise Photo Noir et Blanc
 def noir_et_blanc_prise_photo_func(context):
     debug_print("(R) 3... 2... 1... cheese !!")
     speech.prise_de_photo1()
@@ -332,18 +335,23 @@ def photo_simple_sets_detection(context):
 def photo_groupe_sets_detection(context):
     return (photo_set_detection(context) and groupe_set_detection(context)) 
 
+# transition predicat to detect the filtre set's keywords
 def filtre_set_detection(context):
     return (cmd.one_in(context["command"], cmd.set_filtre))
 
+# transition predicat to detect the filtre set's and face_swap set's keywords
 def filtre_face_swap_sets_detection(context):
     return (face_swap_set_detection(context) and filtre_set_detection(context))
 
+# transition predicat to detect the filtre set's and noir_et_blanc set's keywords
 def filtre_noir_et_blanc_sets_detection(context):
     return (noir_et_blanc_set_detection(context) and filtre_set_detection(context))
 
+# transition predicat to detect the face_swap set's keywords
 def face_swap_set_detection(context):
     return (cmd.all_in(context["command"], cmd.set_face_swap))
 
+# transition predicat to detect the noir_et_blanc set's keywords
 def noir_et_blanc_set_detection(context):
     return (cmd.one_in(context["command"], cmd.set_noir_et_blanc))
 
