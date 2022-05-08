@@ -20,62 +20,75 @@ PREDICTOR = dlib.shape_predictor("../../assets/vision/shape_predictor_68_face_la
 
 
 # Useful classes
-class Pos:      # Represent a face square upper left position
+# Represent a face square upper left position
+class Pos:      
     def __init__(self, x, y):
         self.x = x
         self.y = y
 
-class Scale:    # Represent a face dimensions, or a vector coordinates
+# Represent a face dimensions, or a vector coordinates
+class Scale:    
     def __init__(self, w, h):
         self.width = w
         self.height = h
 
-class Angle:   # Represent both angle values (resp. for the horizontal angle and the vertical one)
+# Represent both angle values (resp. for the horizontal angle and the vertical one)
+class Angle:   
     def __init__(self, horizontal, vertical):
         self.h = horizontal
         self.v = vertical
 
-class Face:     # Represent a face square, with its position and dimensions
+# Represent a face square, with its position and dimensions
+class Face:     
     def __init__(self, x, y, w, h):
         self.pos = Pos(x, y)
         self.scale = Scale(w, h)
 
-class Face_and_value:   # Represent a face square extended with a value
+# Represent a face square extended with a value
+class Face_and_value:   
     def __init__(self, face, value):
         self.face = face
         self.value = value
 
 # Mathematical transformations
-def give_face_center(face): # Given a face square object, gice the square center
+# Given a face square object, gice the square center
+def give_face_center(face): 
     return Pos(face.pos.x + face.scale.width/2, face.pos.y + face.scale.height/2)
 
-def vector_center_to_pos(frame_center_pos, pos):    # Give the vector from the center to the given position
+# Give the vector from the center to the given position
+def vector_center_to_pos(frame_center_pos, pos):    
     return Scale(pos.x - frame_center_pos.x, frame_center_pos.y - pos.y)
 
-def vector_center_to_face(frame_center_pos, face):  # Give the vector from the frame_center to the face center
+# Give the vector from the frame_center to the face center
+def vector_center_to_face(frame_center_pos, face):  
     center_pos = give_face_center(face)
     return vector_center_to_pos(frame_center_pos, center_pos)
 
-def vector_magnitude(pos):  # Give the vector euclidian's magnitude
+# Give the vector euclidian's magnitude
+def vector_magnitude(pos):  
     return sqrt((pos.x)**2 + (pos.y)**2)
 
-def scale_to_angle(dist):   # A transformation to translate pixel distance in angle
+# A transformation to translate pixel distance in angle
+def scale_to_angle(dist):   
     return dist / 150 * 20
 
 # Array management
-def faces_to_faces_and_values(faces):   # Conversion from a face table to a face_and_value table
+# Conversion from a face table to a face_and_value table
+def faces_to_faces_and_values(faces):   
     faces_and_values = []
     for face in faces:
         faces_and_values.append(Face_and_value(face, 0))
     return faces_and_values
 
-def faces_and_values_to_faces(faces_and_values):    # Conversion from a face face_and_value table to a face table
+# Conversion from a face face_and_value table to a face table
+def faces_and_values_to_faces(faces_and_values):    
     faces = []
     for face_and_value in faces_and_values:
         faces.append(face_and_value.face)
     return faces
 
-def face_and_value_decreasing_buble_sort(faces_and_values): # A buble sort based on the values into a face_and_value table, giving a decreasing order
+# A buble sort based on the values into a face_and_value table, giving a decreasing order
+def face_and_value_decreasing_buble_sort(faces_and_values): 
     if(len(faces_and_values) < 2):
         return faces_and_values
     has_switched = True
@@ -87,7 +100,8 @@ def face_and_value_decreasing_buble_sort(faces_and_values): # A buble sort based
                 faces_and_values[i], faces_and_values[i+1] = faces_and_values[i+1], faces_and_values[i]
     return faces_and_values
 
-def get_average_position(faces):   # Give the face center average position for a face table
+# Give the face center average position for a face table
+def get_average_position(faces):   
     x, y, n = 0, 0, len(faces)
     for face in faces:
         cent_pos = give_face_center(face)
@@ -95,7 +109,8 @@ def get_average_position(faces):   # Give the face center average position for a
     x /= n; y /= n
     return Pos(x, y)
 
-def extract_index_nparray(nparray):     # Useful extration for face swapping
+# Useful extration for face swapping
+def extract_index_nparray(nparray):     
     index = None
     for num in nparray[0]:
         index = num
@@ -103,14 +118,16 @@ def extract_index_nparray(nparray):     # Useful extration for face swapping
     return index
 
 # Subfunctions for interfaces functions
-def get_n_closest_faces(faces, n):  # Give the n closest faces unsing the face height as distance approximation
+# Give the n closest faces unsing the face height as distance approximation
+def get_n_closest_faces(faces, n):  
     faces_and_values = faces_to_faces_and_values(faces)
     for face_and_val in faces_and_values:
         face_and_val.value = face_and_val.face.scale.height     # Height is an approximation of distances, despite of the different face dimensions
     faces_and_values = face_and_value_decreasing_buble_sort(faces_and_values)
     return faces_and_values_to_faces(faces_and_values[:n])
 
-def get_closest_to_mean_faces(faces, percent_relat_to_avg): # Give the faces whose the height is 'percent_relat_to_avg' or less near from the height average
+# Give the faces whose the height is 'percent_relat_to_avg' or less near from the height average
+def get_closest_to_mean_faces(faces, percent_relat_to_avg): 
     s, n = 0, len(faces)
     if n == 0 :
         return []
@@ -125,7 +142,8 @@ def get_closest_to_mean_faces(faces, percent_relat_to_avg): # Give the faces who
             kept_faces.append(face)
     return kept_faces
 
-def global_face_detection_service(frame, specific_getter_function, specific_getter_param, for_test):    # A code factorization function for interface functions, using multiple services defined in this file
+# A code factorization function for interface functions, using multiple services defined in this file
+def global_face_detection_service(frame, specific_getter_function, specific_getter_param, for_test):    
     frame = give_in_grey(frame)
     faces = get_faces(frame)
     faces = specific_getter_function(faces, specific_getter_param)
@@ -140,7 +158,8 @@ def global_face_detection_service(frame, specific_getter_function, specific_gett
     scale = vector_center_to_pos(Pos(frame.shape[1]/2, frame.shape[0]/2), mean_faces_pos)
     return Angle(scale_to_angle(scale.width), scale_to_angle(scale.height))
 
-def swap_two_faces(frame):  # If the given frame contain at least two faces, swap two faces (the first and second accordingly to the detector)
+# If the given frame contain at least two faces, swap two faces (the first and second accordingly to the detector)
+def swap_two_faces(frame):  
     img_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     height, width, channels = frame.shape
     img2_new_face = np.zeros((height, width, channels), np.uint8)
@@ -292,61 +311,73 @@ def swap_two_faces(frame):  # If the given frame contain at least two faces, swa
     return seamlessclone, True
 
 # Capture and camera functionalities
-def open_capture(index):  # index is typed int
+# index is typed int
+def open_capture(index):  
     cap = cv2.VideoCapture(index)
     if not cap.isOpened():
         print("Cannot open camera")
         exit()
     return cap
 
-def free_capture_and_windows(cap):  # Free all windows and release the given capture
+# Free all windows and release the given capture
+def free_capture_and_windows(cap):  
     cap.release()
     cv2.destroyAllWindows()
 
-def read_capture(cap):  # Give the current frame reading the given capture
+# Give the current frame reading the given capture
+def read_capture(cap):  
     return cap.read()
 
-def give_in_grey(frame):    # Give the given frame colored in gray
+# Give the given frame colored in gray
+def give_in_grey(frame):    
     return cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-def face_detection_haar_cascade(frame): # A face detection using the Haar cascade method
+# A face detection using the Haar cascade method
+def face_detection_haar_cascade(frame): 
     return Face_detector.detectMultiScale(frame, 
                                           scaleFactor=1.1,
                                           minNeighbors=4,
                                           minSize=(60, 60),
                                           flags=cv2.CASCADE_SCALE_IMAGE)
 
-def get_faces(frame):   # Translate the faces detected into a face class table
+# Translate the faces detected into a face class table
+def get_faces(frame):   
     recognised = face_detection_haar_cascade(frame)
     faces = []
     for (x, y, w, h) in recognised:
         faces.append(Face(x, y, w, h))
     return faces
 
-def draw_rectangle_on_frame(frame, face):   # Draw a rectangle matching with the given face on the frame
+# Draw a rectangle matching with the given face on the frame
+def draw_rectangle_on_frame(frame, face):   
     cv2.rectangle(frame, (face.pos.x, face.pos.y), (face.pos.x + face.scale.width, face.pos.y + face.scale.height), (255, 0, 0), 2)
 
 def frame_display(frame, window_name):
     cv2.imshow(window_name, frame)
 
-def get_aruco_code(frame):  # Give the aruco code associated to an aruco pattern if on the given frame
+# Give the aruco code associated to an aruco pattern if on the given frame
+def get_aruco_code(frame):  
     grey_frame = give_in_grey(frame)
     bbox, ids, r = aruco.detectMarkers(grey_frame, MARKER_DIC, parameters=PARAM_MMARKERS)
     if not bbox:
         return None
     return ids[0][0]
 
-def get_frame(session):     # An interface function to deal with the session interface
+# An interface function to deal with the session interface
+def get_frame(session):     
     return session.get_frame()
 
 # Interface functions
-def n_closest_angle(frame, n, for_test = False): # Give the average angle for the n closest faces using get_n_closest_face
+# Give the average angle for the n closest faces using get_n_closest_face
+def n_closest_angle(frame, n, for_test = False): 
     return global_face_detection_service(frame, get_n_closest_faces, n, for_test)
 
-def framing_for_group_photo_angle(frame, percent_relat_to_avg, for_test = False): # Give the average angle for the faces whose the height is 'percent_relat_to_avg' or less near from the height average, using get_mean_distant_faces
+# Give the average angle for the faces whose the height is 'percent_relat_to_avg' or less near from the height average, using get_mean_distant_faces
+def framing_for_group_photo_angle(frame, percent_relat_to_avg, for_test = False): 
     return global_face_detection_service(frame, get_closest_to_mean_faces, percent_relat_to_avg, for_test)
 
-def smart_give_angle(session, nbr_trials, give_angle_function, give_angle_parameter, for_test = False):  # Give the angle, taking face detection hazard into account (no faces detected, non face object detected) to avoid errors whenever possible
+# Give the angle, taking face detection hazard into account (no faces detected, non face object detected) to avoid errors whenever possible
+def smart_give_angle(session, nbr_trials, give_angle_function, give_angle_parameter, for_test = False):  
     angle_table = []
     avg_angle = Angle(0, 0)
     
@@ -373,7 +404,8 @@ def smart_give_angle(session, nbr_trials, give_angle_function, give_angle_parame
     nearest_angle.h *= -1
     return nearest_angle   
 
-def take_picture(session, noun): # Take a picture, with an automatic focus, and save it at the 'path' location
+# Take a picture, with an automatic focus, and save it at the 'path' location
+def take_picture(session, noun): 
    time.sleep(2)
    cv2.imwrite("../../tmp/img/" + noun + ".png", get_frame(session))
 
@@ -381,14 +413,16 @@ def take_picture_grey(session, noun):
     frame = give_in_grey(get_frame(session))
     cv2.imwrite("../../tmp/img/" + noun + ".png", frame)
 
-def take_swapped_faces_picture(session, noun, nbr_trials): # Take a picture, swapping two faces
+# Take a picture, swapping two faces
+def take_swapped_faces_picture(session, noun, nbr_trials): 
     for i in range(max(nbr_trials, 1)):
         frame, res = swap_two_faces(get_frame(session))
         if res :
             break
     cv2.imwrite("../../tmp/img/" + noun + ".png", frame)
 
-def smart_get_aruco_code(session, nbr_trials): # Search an aruco pattern on nbr_trials frames and return the associated code if a pattern is detected, None otherwise
+# Search an aruco pattern on nbr_trials frames and return the associated code if a pattern is detected, None otherwise
+def smart_get_aruco_code(session, nbr_trials): 
     for i in range(nbr_trials):
         id = get_aruco_code(get_frame(session))
         if id != None :
