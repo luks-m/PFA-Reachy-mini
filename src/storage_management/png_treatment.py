@@ -14,16 +14,17 @@ def increase_date_sort(paths):
     return paths
 
 # Be careful, deletion of png here !
-def delete_png_in(path, n_to_delete, m_if_over):
+def delete_png_in(path, n_if_over, m_to_delete):
     paths = []
     for file in os.listdir(path):
         if os.path.isfile(path + '/' + file) and file.endswith(".png"):
             paths.append(path + '/' + file)
-    if len(paths) < m_if_over:
+    if len(paths) < n_if_over:
+        print(n_if_over)
         print("Nothing to remove")
         return
     paths = increase_date_sort(paths)
-    paths = paths[:n_to_delete]
+    paths = paths[:m_to_delete]
     for path in paths:
         os.remove(path)
         print(f"Removed : {path}")

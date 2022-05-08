@@ -40,8 +40,8 @@ show-last-picture: build
 	@cd $(STORAGE_MNG_DIR) && python3 show_last_img.py
 
 delete-pictures: build
-	@echo $(COLOR)$(BOLD)$(CYAN)"Deleting last images"$(NOCOLOR)
-	@cd $(STORAGE_MNG_DIR) && python3 delete_png.py ${NB_PHOTOS} ${NB_TO_DELETE}
+	@echo $(COLOR)$(BOLD)$(CYAN)"Deleting oldest images"$(NOCOLOR)
+	@cd $(STORAGE_MNG_DIR) && python3 delete_images.py ${NB_PHOTOS} ${NB_TO_DELETE}
 
 
 ############################## REACHY RULES ##############################
@@ -86,6 +86,10 @@ fake-reachy-test-photo:
 	@cd $(ST_MACHINES_DIR) && python3 fake_reachy_state_machine_argv.py ../../$(JSON_DIR)/state_machine_test_photo.json
 
 clean: $(TMP_DIR)
+	@echo $(COLOR)$(BOLD)$(RED)"Cleaning the imported images"$(NOCOLOR)
+	@rm -rf $(TMP_DIR)/img/reachy*
+
+clean-all: $(TMP_DIR)
 	@echo $(COLOR)$(BOLD)$(RED)"Cleaning the tmp directory"$(NOCOLOR)
 	@rm -rf $^
 
