@@ -68,15 +68,6 @@ def prise_de_photo1():
     text_to_speech("2")
     text_to_speech("3")
     
-  
 def prise_de_photo2():
     text_to_speech("cheese")
     prise_de_photo_voice()
-    
-
-
-if __name__ == '__main__':
-
-    text_to_speech('salut, je suis reachy ! Souhaitez-vous prendre une photo ?')
-    #cadrage_speech()
-    #text_to_speech(cmd.one_out(cmd.set_aurevoir["s"]))

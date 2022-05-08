@@ -85,10 +85,10 @@ fake-reachy-only-aruco:
 
 ############################## CLEANING RULES ##############################
 
-clean: $(TMP_DIR)
+clean: build
 	@echo $(COLOR)$(BOLD)$(RED)"Cleaning the repository"$(NOCOLOR)
 	@rm -rf $(TMP_DIR)/img/reachy* $(SRC_DIR)/*/__pycache__ $(SRC_DIR)/__pycache__
 
-clean-all: $(TMP_DIR)
+clean-all: build
 	@echo $(COLOR)$(BOLD)$(RED)"Cleaning the all repository"$(NOCOLOR)
 	@rm -rf $^ $(SRC_DIR)/*/__pycache__ $(SRC_DIR)/__pycache__
