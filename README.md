@@ -68,11 +68,11 @@ Then you go back on the principal shell and you can launch the robot.
 
 ### Deleting pictures
 
-A python script allows you to delete the oldest images. In fact, you cannot save all the pictures because of the storage of the robot. So you can use this script which will automatically delete the oldest pictures when the storage is full.
+A python script allows you to delete the oldest images. In fact, you cannot save all the pictures because of the storage of the robot. So you can use this script which will automatically delete the oldest pictures when the storage is full. This command allows you to chose how many pictures **P** you want to delete when **N** pictures have been stored.
 You have to **open a new shell** and use the command :
 
 ```bash
-$ make delete-pictures
+$ make delete-pictures NB_PHOTOS=<N> NB_TO_DELETE=<P>
 ```
 
 ## Using the robot
@@ -87,14 +87,6 @@ $ make reachy-final
 $ make reachy-only-aruco
 ```
 
-```bash
-$ make reachy-without-research
-```
-
-```bash
-$ make reachy-test-photo
-```
-
 ## Testing the project without the robot
 
 You can test the project without having the robot. For this, we use a fake reachy that only print what he does without doing it concerning the movements. Here are the command to use to launch the diferent versions :
@@ -107,12 +99,18 @@ $ make fake-reachy-final
 $ make fake-reachy-only-aruco
 ```
 
-```bash
-$ make fake-reachy-without-research
-```
+## Cleaning the repository
+
+You can delete all the pitcures and so the tmp directory using the command :
 
 ```bash
-$ make fake-reachy-test-photo
+$ make clean-all
+```
+
+Or you can delete only the imported image of reachy that has been imported to create the tmp directory at the begining :
+
+```bash
+$ make clean
 ```
 
 ## Dealing with the crashes
