@@ -18,6 +18,9 @@ BOLD				=	";1"
 ITALIC				=	";3"
 NOCOLOR				=	"\033[0m"
 
+NB_PHOTOS			?= 100
+NB_TO_DELETE		?= 2
+
 
 ############################## MAIN RULES ##############################
 
@@ -38,7 +41,7 @@ show-last-picture: build
 
 delete-pictures: build
 	@echo $(COLOR)$(BOLD)$(CYAN)"Deleting last images"$(NOCOLOR)
-	@cd $(STORAGE_MNG_DIR) && python3 delete_png.py
+	@cd $(STORAGE_MNG_DIR) && python3 delete_png.py ${NB_PHOTOS} ${NB_TO_DELETE}
 
 
 ############################## REACHY RULES ##############################
