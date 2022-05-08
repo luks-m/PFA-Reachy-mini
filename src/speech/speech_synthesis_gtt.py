@@ -22,7 +22,7 @@ def attente_ordre_speech():
     return text_to_speech("Allez-y, dites moi ce que vous souhaitez")
 
 def attente_ordre_aruco_speech():
-    return text_to_speech("Allez y, montrez moi un code Aruco")
+    return text_to_speech("Allez-y, montrez moi un code Aruco")
 
 def eteindre_speech():
     return text_to_speech("A")

@@ -250,7 +250,7 @@
             "action":"face_swap_prise_photo_func",
             "transitions":[
                 {
-                    "target":"attente_ordre"
+                    "target":"attente_ordre_only_aruco"
                 }
             ]
         },
@@ -258,7 +258,7 @@
             "action":"noir_et_blanc_prise_photo_func",
             "transitions":[
                 {
-                    "target":"attente_ordre"
+                    "target":"attente_ordre_only_aruco"
                 }
             ]
         }

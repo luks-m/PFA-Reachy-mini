@@ -1,3 +1,4 @@
+import random
 from jinja2 import contextfilter, contextfunction
 import time
 from datetime import datetime
@@ -95,7 +96,9 @@ def attente_ordre_func(context):
 # state action of Attente d'Ordre but in the case where there is only Aruco detection
 def attente_ordre_only_aruco_func(context):
     mv.listen(context["session"])
-    speech.attente_ordre_aruco_speech()
+    to_talk = random.randint(1, 5)
+    if to_talk == 1:
+        speech.attente_ordre_aruco_speech()
     context["aruco"] = None
     context["aruco"] = facedet.smart_get_aruco_code(context["session"], 3)
     return context
