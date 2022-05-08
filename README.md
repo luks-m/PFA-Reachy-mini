@@ -3,6 +3,7 @@
 ## Table of content
 
 - [Description](#description)
+- [Report](#report)
 - [Before using the robot](#installation)
     - [Installing the requirements](#installing-the-requirements)
     - [Realoading the servers](#reloading-the-servers)
@@ -11,6 +12,7 @@
     - [Deleting pictures](#deleting-pictures)
 - [Using the robot](#using-the-robot)
 - [Testing the project without the robot](#testing-the-project-without-the-robot)
+- [Cleaning the repository](#cleaning-the-repository)
 - [Dealing with the crashes](#dealing-with-the-crashes)
 
 
@@ -18,6 +20,10 @@
 
 This project is a 2nd year engeneering school project for a group of 7 students.
 The purpose is to create a vocal assistant which can also take pictures in response to the commands that can be made by voice or codes.
+
+## Report
+
+You can find the report about the project in the folder **report**.
 
 ## Before using the robot
 
