@@ -91,4 +91,4 @@ clean: build
 
 clean-all: build
 	@echo $(COLOR)$(BOLD)$(RED)"Cleaning the all repository"$(NOCOLOR)
-	@rm -rf $^ $(SRC_DIR)/*/__pycache__ $(SRC_DIR)/__pycache__
+	@rm -rf $(TMP_DIR) $(SRC_DIR)/*/__pycache__ $(SRC_DIR)/__pycache__
