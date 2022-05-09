@@ -12,7 +12,7 @@ import vocal_recognition as vr
 # it also say the sentences thanks to gtt
 def openai_speech(str):
   # key to access to GTP-3
-  openai.api_key="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"
+  openai.api_key="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"
 
   # the string that will stock the AI answer
   var=""
