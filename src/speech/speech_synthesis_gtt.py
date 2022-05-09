@@ -10,13 +10,17 @@ import cmd
 PATH = "../../tmp/"
 VOICES_PATH="../../assets/voices/"
 
-
+#Convert a text to speech
 def text_to_speech(text):
     tts = gTTS(text=text, lang='fr', slow=False)
-    tts.save(PATH+"file.mp3") 
-    os.system("mpg123 "+PATH+"file.mp3")
+    tts.save(PATH+"file.mp3")
+    os.system("mpg123 "+PATH+"file.mp3") #Creating the mp3 file
     if os.path.exists(PATH+"file.mp3"):
-        os.remove(PATH+"file.mp3")     #removing the mp3 file
+        os.remove(PATH+"file.mp3")       #Removing the mp3 file
+        
+'''
+The following functions are implemented to be associated with different states and transitions of the robot
+'''
 
 def attente_ordre_speech():
     return text_to_speech("Allez-y, dites moi ce que vous souhaitez")
